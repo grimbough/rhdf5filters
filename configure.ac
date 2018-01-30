@@ -22,10 +22,14 @@ AC_PROG_CC
 # determine the location of the Rhdf5lib versions of the HDF5 library
 RHDF5_LIBS=`echo 'Rhdf5lib::pkgconfig("PKG_C_LIBS")'|\
     "${R_HOME}/bin/R" --vanilla --slave`
+RHDF5_INCLUDE=`echo 'cat(system.file("include", package="Rhdf5lib"))'|\
+    "${R_HOME}/bin/R" --vanilla --slave`
+    
+echo $RHDF5_INCLUDE
 
 echo "building the LZF filter...";
-cd ../lzf
-${CC} -O2 -fPIC -shared lzf/*.c lzf_filter.c $RHDF5_LIBS -o liblzf_filter.so
+cd src/lzf
+${CC} -I${RHDF5_INCLUDE} -O2 -fPIC -shared lib/*.c lzf_filter.c $RHDF5_LIBS -o liblzf_filter.so
 cd ../../
 
 echo "building the LZ4 filter...";
