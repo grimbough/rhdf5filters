@@ -1,0 +1,11 @@
+Package: hdf5Filters
+Type: Package
+Title: Collection of filters to use with HDF5
+Version: 0.0.1
+Authors@R: c(person("Mike", "Smith", role=c("aut", "cre"), email = "grimbough@gmail.com"))
+Description: This package provides a collection of filters for use with HDF5. 
+License: Artistic-2.0
+LazyLoad: true
+VignetteBuilder: knitr
+Imports: Rhdf5lib
+LinkingTo: Rhdf5lib
