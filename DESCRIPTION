@@ -9,3 +9,4 @@ LazyLoad: true
 VignetteBuilder: knitr
 Imports: Rhdf5lib
 LinkingTo: Rhdf5lib
+RoxygenNote: 6.0.1
