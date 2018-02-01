@@ -34,11 +34,11 @@ cd ../../
 
 echo "building the LZ4 filter...";
 ## build LZ4 filter
-#cd src/lz4/lib;
-#make
-#cd ../
-#${CC} ${CLFAGS} -fPIC -shared -w H5Zlz4.c ../../${BASEPBNAME}/src lib/liblz4.a ../../${BASEPBNAME}/src/.libs/libhdf5.a -o libH5Zlz4.so
-#cd ../../../
+cd src/lz4/lib;
+make
+cd ../
+${CC} ${CLFAGS} -fPIC -shared -w -I$RHDF5_INCLUDE H5Zlz4.c lib/liblz4.a $RHDF5_LIBS  -o libH5Zlz4.so
+cd ../../
 
 
 #update variables in Makevars
@@ -46,8 +46,8 @@ HDF5_INCLUDE="${BASEPBNAME}/src"
 AC_SUBST(HDF5_INCLUDE)
 AC_MSG_NOTICE([   HDF5_INCLUDE=${HDF5_INCLUDE}])
 
-#LZ4_LIB="filters/lz4/libH5Zlz4.so"
 LZF_LIB="lzf/liblzf_filter.so"
+LZ4_LIB="lz4/libH5Zlz4.so"
 
 AC_SUBST(LZF_LIB)
 AC_SUBST(LZ4_LIB)
