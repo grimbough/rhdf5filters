@@ -587,6 +587,7 @@ PACKAGE_URL=''
 ac_unique_file="src"
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
+BLOSC_LIB
 LZ4_LIB
 LZF_LIB
 HDF5_INCLUDE
@@ -2576,6 +2577,8 @@ $as_echo "$as_me:    HDF5_INCLUDE=${HDF5_INCLUDE}" >&6;}
 
 LZF_LIB="lzf/liblzf_filter.so"
 LZ4_LIB="lz4/libH5Zlz4.so"
+BLOSC_LIB="blosc/libh5blosc.so"
+
 
 
 
@@ -2583,6 +2586,8 @@ LZ4_LIB="lz4/libH5Zlz4.so"
 $as_echo "$as_me:    LZF_LIB=${LZF_LIB}" >&6;}
 { $as_echo "$as_me:${as_lineno-$LINENO}:    LZ4_LIB=${LZ4_LIB}" >&5
 $as_echo "$as_me:    LZ4_LIB=${LZ4_LIB}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:    BLOSC_LIB=${BLOSC_LIB}" >&5
+$as_echo "$as_me:    BLOSC_LIB=${BLOSC_LIB}" >&6;}
 ac_config_files="$ac_config_files src/Makevars"
 
 cat >confcache <<\_ACEOF

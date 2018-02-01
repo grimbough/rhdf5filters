@@ -36,7 +36,7 @@ pkgconfig <- function(opt = c("PKG_LIB")) {
                      PKG_LIB = {
                          switch(Sys.info()['sysname'], 
                                 Linux = {
-                                    sprintf('-Wl,-rpath=%s -L%s -llzf_filter',
+                                    sprintf('-Wl,-rpath=%s -L%s -llzf_filter -lH5Zlz4 -lh5blosc',
                                             patharch, patharch)
                                 #}, Darwin = {
                                 #     sprintf('%s/libhdf5.a %s/libsz.a', 

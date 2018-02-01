@@ -1,5 +1,6 @@
 LZF_LIB=@LZF_LIB@
 LZ4_LIB=@LZ4_LIB@
+BLOSC_LIB=@BLOSC_LIB@
 
 
 RHDF5_LIBS=$(shell echo 'Rhdf5lib::pkgconfig("PKG_C_LIBS")'|\
@@ -16,3 +17,4 @@ copying:
 	mkdir -p "${USER_LIB_DIR}"
 	cp ${LZF_LIB} ${USER_LIB_DIR}
 	cp ${LZ4_LIB} ${USER_LIB_DIR}
+	cp ${BLOSC_LIB} ${USER_LIB_DIR}
