@@ -2,8 +2,7 @@ LZF_LIB=@LZF_LIB@
 LZ4_LIB=@LZ4_LIB@
 BLOSC_LIB=@BLOSC_LIB@
 
-
-RHDF5_LIBS=$(shell echo 'Rhdf5lib::pkgconfig("PKG_C_LIBS")'|\
+RHDF5_LIBS=$(shell echo 'Rhdf5lib::pkgconfig("PKG_C_DYNAMIC_LIBS")'|\
     "${R_HOME}/bin/R" --vanilla --slave)  
 PKG_LIBS=$(RHDF5_LIBS)
 

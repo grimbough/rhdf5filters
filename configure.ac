@@ -20,7 +20,7 @@ MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
 AC_PROG_CC
 
 # determine the location of the Rhdf5lib versions of the HDF5 library
-RHDF5_LIBS=`echo 'Rhdf5lib::pkgconfig("PKG_C_LIBS")'|\
+RHDF5_LIBS=`echo 'Rhdf5lib::pkgconfig("PKG_C_DYNAMIC_LIBS")'|\
     "${R_HOME}/bin/R" --vanilla --slave`
 RHDF5_INCLUDE=`echo 'cat(system.file("include", package="Rhdf5lib"))'|\
     "${R_HOME}/bin/R" --vanilla --slave`
