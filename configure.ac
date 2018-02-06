@@ -14,6 +14,8 @@ fi
 
 CC=`"${R_HOME}/bin/R" CMD config CC`
 CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
+CXX=`"${R_HOME}/bin/R" CMD config CXX`
+CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
 MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
 
 # Checks for programs.
@@ -29,7 +31,7 @@ echo $RHDF5_INCLUDE
 
 echo "building the LZF filter...";
 cd src/lzf
-${CC} -I${RHDF5_INCLUDE} -O2 -fPIC -shared lib/*.c lzf_filter.c $RHDF5_LIBS -o liblzf_filter.so
+${CC} -I${RHDF5_INCLUDE} -fPIC -shared lib/*.c lzf_filter.c $RHDF5_LIBS -o liblzf_filter.so
 cd ../../
 
 echo "building the LZ4 filter...";
@@ -38,6 +40,25 @@ cd src/lz4/lib;
 make
 cd ../
 ${CC} ${CLFAGS} -fPIC -shared -w -I$RHDF5_INCLUDE H5Zlz4.c lib/liblz4.a $RHDF5_LIBS  -o libH5Zlz4.so
+cd ../../
+
+echo `pwd`
+
+echo "building the BLOSC filter...";
+cd src/blosc/lib/lz4-r119
+${CC} ${CFLAGS} -fPIC -c *.c
+cd ../snappy-1.1.1
+${CXX} ${CXXFLAGS} -fPIC -c *.cc
+cd ../blosc-1.4.1
+${CC} ${CFLAGS} -fPIC -I../lz4-r119/ -I../snappy-1.1.1/ -c *.c
+cd ../../
+${CC} ${CFLAGS} -fPIC -I${RHDF5_INCLUDE} -I./lib/blosc-1.4.1/ -c H5Zblosc.c
+## Linking step
+${CXX} ${CXXFLAGS} -fPIC -shared \
+    -I${RHDF5_INCLUDE} -I./lib/blosc-1.4.1/ \
+    -o libh5blosc.so \
+    H5Zblosc.o lib/blosc-1.4.1/*.o lib/lz4-r119/*.o lib/snappy-1.1.1/*.o \
+    ${RHDF5_LIBS} -lz -lpthread
 cd ../../
 
 
