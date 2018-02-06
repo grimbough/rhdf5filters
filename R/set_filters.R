@@ -25,12 +25,17 @@ H5Pset_lz4 <- function( h5plist ) {
 
 ## BLOSC Filter
 #' @export
-H5Pset_blosc <- function( h5plist ) {
+H5Pset_blosc <- function( h5plist, method = 1L, level = 6L ) {
     
     if(!is.loaded('_H5Pset_blosc', PACKAGE = 'rhdf5'))
         stop('BLOSC filter not found.  Please reinstall rhdf5.')
     
+    if(!method %in% 1:5) {
+        method <- 1L
+        warning('Invalid method selected.  Using blosclz')
+    }
+    
     rhdf5:::h5checktypeAndPLC(h5plist, "H5P_DATASET_CREATE")
-    res <- .Call("_H5Pset_blosc", h5plist@ID, PACKAGE='rhdf5')
+    res <- .Call("_H5Pset_blosc", h5plist@ID, as.integer(method-1L), as.integer(level), PACKAGE='rhdf5')
     invisible(res)
 }
