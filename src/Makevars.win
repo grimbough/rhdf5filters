@@ -1,0 +1,9 @@
+#expose headers in installed package include folder
+USER_LIB_DIR = ${R_PACKAGE_DIR}/lib${R_ARCH}/
+
+all: copying $(SHLIB)
+
+#copy hdf5 library headers to package include
+copying:
+	mkdir -p "${USER_LIB_DIR}"
+	cp winlib$(R_ARCH)/libh5blosc.dll "${USER_LIB_DIR}"
