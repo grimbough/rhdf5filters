@@ -1,0 +1,11 @@
+#!/bin/sh
+
+rm -f src/blosc/*.o
+rm -f src/blosc/*.so
+rm -f src/blosc/lib/blosc-*/*.o
+rm -f src/blosc/lib/snappy-*/*.o
+rm -f src/blosc/lib/lz4-r119/*.o
+
+rm -f src/lz4/lib/*.o
+rm -f src/lz4/lib/*.so*
+rm -f src/lz4/*.so
