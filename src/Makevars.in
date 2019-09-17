@@ -1,4 +1,4 @@
-LZF_LIB=@LZF_LIB@
+#LZF_LIB=@LZF_LIB@
 LZ4_LIB=@LZ4_LIB@
 BLOSC_LIB=@BLOSC_LIB@
 
@@ -14,6 +14,6 @@ all: copying $(SHLIB)
 #copy hdf5 library headers to package include
 copying:
 	mkdir -p "${USER_LIB_DIR}"
-	cp ${LZF_LIB} ${USER_LIB_DIR}
+#	cp ${LZF_LIB} ${USER_LIB_DIR}
 	cp ${LZ4_LIB} ${USER_LIB_DIR}
 	cp ${BLOSC_LIB} ${USER_LIB_DIR}
