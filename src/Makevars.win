@@ -7,3 +7,5 @@ all: copying $(SHLIB)
 copying:
 	mkdir -p "${USER_LIB_DIR}"
 	cp winlib$(R_ARCH)/libh5blosc.dll "${USER_LIB_DIR}"
+  cp winlib$(R_ARCH)/liblzf_filter.dll "${USER_LIB_DIR}"
+  
