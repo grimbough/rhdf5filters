@@ -90,7 +90,7 @@ herr_t blosc_set_local(hid_t dcpl, hid_t type, hid_t space){
     size_t nelements = 8;
     unsigned int values[] = {0,0,0,0,0,0,0,0};
     hid_t super_type;
-    H5T_class_t class;
+    H5T_class_t classA;
 
     r = H5Pget_filter_by_id(dcpl, H5Z_FILTER_BLOSC, &flags, &nelements, values, 0, NULL, NULL);
     if(r<0) return -1;
@@ -111,8 +111,8 @@ herr_t blosc_set_local(hid_t dcpl, hid_t type, hid_t space){
     typesize = H5Tget_size(type);
     if (typesize==0) return -1;
     /* Get the size of the base type, even for ARRAY types */
-    class = H5Tget_class(type);
-    if (class == H5T_ARRAY) {
+    classA = H5Tget_class(type);
+    if (classA == H5T_ARRAY) {
       /* Get the array base component */
       super_type = H5Tget_super(type);
       basetypesize = H5Tget_size(super_type);
@@ -176,7 +176,7 @@ size_t H5Z_filter_blosc(unsigned flags, size_t cd_nelmts,
     int compcode;                  /* Blosc compressor */
     int code;
     char *compname = NULL;
-    char *complist;
+    const char *complist;
     char errmsg[256];
 
     /* Filter params that are always set */
@@ -192,7 +192,7 @@ size_t H5Z_filter_blosc(unsigned flags, size_t cd_nelmts,
     if (cd_nelmts >= 7) {
         compcode = cd_values[6];     /* The Blosc compressor used */
 	/* Check that we actually have support for the compressor code */
-        complist = blosc_list_compressors();
+    complist = blosc_list_compressors();
 	code = blosc_compcode_to_compname(compcode, &compname);
 	if (code == -1) {
 	    sprintf(errmsg, "this Blosc library does not have support for "
@@ -201,7 +201,7 @@ size_t H5Z_filter_blosc(unsigned flags, size_t cd_nelmts,
             PUSH_ERR("blosc_filter", H5E_CALLBACK, errmsg);
             goto failed;
 	}
-    }
+    }   
 
     /* We're compressing */
     if(!(flags & H5Z_FLAG_REVERSE)){

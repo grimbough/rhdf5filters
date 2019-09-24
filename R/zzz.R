@@ -4,9 +4,10 @@
     
     path <- Sys.getenv(
         x = "HDF5FILTERS_RPATH",
-        unset = system.file("lib", package="hdf5Filters", mustWork=TRUE)
+        unset = system.file("lib", package="hdf5Filters", mustWork=FALSE)
     )
     
+    ## record the architecture if it exists
     if (nzchar(.Platform$r_arch)) {
         arch <- sprintf("/%s", .Platform$r_arch)
     } else {
@@ -36,8 +37,8 @@ pkgconfig <- function(opt = c("PKG_LIB")) {
                      PKG_LIB = {
                          switch(Sys.info()['sysname'], 
                                 Linux = {
-                                    sprintf('-Wl,-rpath=%s -L%s -lH5Zlz4 -lh5blosc',
-                                            patharch, patharch)
+                                    sprintf('-L%s -lh5blosc -lH5Zbz2',
+                                            patharch)
                                 #}, Darwin = {
                                 #     sprintf('%s/libhdf5.a %s/libsz.a', 
                                 #             patharch, patharch)

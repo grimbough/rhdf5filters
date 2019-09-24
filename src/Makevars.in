@@ -1,10 +1,5 @@
-#LZF_LIB=@LZF_LIB@
-LZ4_LIB=@LZ4_LIB@
+BZIP2_LIB=@BZIP2_LIB@
 BLOSC_LIB=@BLOSC_LIB@
-
-RHDF5_LIBS=$(shell echo 'Rhdf5lib::pkgconfig("PKG_C_DYNAMIC_LIBS")'|\
-    "${R_HOME}/bin/R" --vanilla --slave)  
-PKG_LIBS=$(RHDF5_LIBS)
 
 #expose headers in installed package include folder
 USER_LIB_DIR = ${R_PACKAGE_DIR}/lib${R_ARCH}/
@@ -14,6 +9,5 @@ all: copying $(SHLIB)
 #copy hdf5 library headers to package include
 copying:
 	mkdir -p "${USER_LIB_DIR}"
-#	cp ${LZF_LIB} ${USER_LIB_DIR}
-	cp ${LZ4_LIB} ${USER_LIB_DIR}
+	cp ${BZIP2_LIB} ${USER_LIB_DIR}
 	cp ${BLOSC_LIB} ${USER_LIB_DIR}

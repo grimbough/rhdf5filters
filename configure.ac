@@ -34,31 +34,37 @@ echo $RHDF5_INCLUDE
 #${CC} -I${RHDF5_INCLUDE} -fPIC -shared lib/*.c lzf_filter.c $RHDF5_LIBS -o liblzf_filter.so
 #cd ../../
 
-echo "building the LZ4 filter...";
+#echo "building the LZ4 filter...";
 ## build LZ4 filter
-cd src/lz4/lib;
-make
+#cd src/lz4/lib;
+#make
+#cd ../
+#${CC} ${CLFAGS} -fPIC -shared -w -I$RHDF5_INCLUDE H5Zlz4.c lib/liblz4.a $RHDF5_LIBS  -o libH5Zlz4.so
+#cd ../../
+
+echo "building BZIP2 filter..."
+cd src/bzip2/bzip2-1.0.8;
+$MAKE
 cd ../
-${CC} ${CLFAGS} -fPIC -shared -w -I$RHDF5_INCLUDE H5Zlz4.c lib/liblz4.a $RHDF5_LIBS  -o libH5Zlz4.so
+${CC} ${CFLAGS} -fPIC -shared H5Zbzip2.c -I$RHDF5_INCLUDE -I./bzip2-1.0.8/ ./bzip2-1.0.8/libbz2.a -o libH5Zbz2.so
 cd ../../
 
-echo `pwd`
-
 echo "building the BLOSC filter...";
-cd src/blosc/lib/lz4-r119
+cd src/blosc/lib/lz4-1.8.3
 ${CC} ${CFLAGS} -fPIC -c *.c
 cd ../snappy-1.1.1
 ${CXX} ${CXXFLAGS} -fPIC -c *.cc
-cd ../blosc-1.4.1
-${CC} ${CFLAGS} -fPIC -I../lz4-r119/ -I../snappy-1.1.1/ -c *.c
+cd ../zstd-1.3.8
+$MAKE ZSTD_LEGACY_SUPPORT=0
+cd ../blosc-1.16.3
+${CC} ${CFLAGS} -fPIC -c *.c
 cd ../../
-${CC} ${CFLAGS} -fPIC -I${RHDF5_INCLUDE} -I./lib/blosc-1.4.1/ -c H5Zblosc.c
+${CC} ${CFLAGS} -fPIC -c H5Zblosc.c -I${RHDF5_INCLUDE} -I./lib/blosc-1.16.3/ 
 ## Linking step
 ${CXX} ${CXXFLAGS} -fPIC -shared \
-    -I${RHDF5_INCLUDE} -I./lib/blosc-1.4.1/ \
-    -o libh5blosc.so \
-    H5Zblosc.o lib/blosc-1.4.1/*.o lib/lz4-r119/*.o lib/snappy-1.1.1/*.o \
-    ${RHDF5_LIBS} -lz -lpthread
+    -o libH5Zblosc.so \
+    H5Zblosc.o ./lib/blosc-1.16.3/*.o ./lib/lz4-1.8.3/*.o ./lib/snappy-1.1.1/*.o ./lib/zstd-1.3.8/libzstd.a \
+    -lpthread
 cd ../../
 
 
@@ -67,15 +73,13 @@ HDF5_INCLUDE="${BASEPBNAME}/src"
 AC_SUBST(HDF5_INCLUDE)
 AC_MSG_NOTICE([   HDF5_INCLUDE=${HDF5_INCLUDE}])
 
-#LZF_LIB="lzf/liblzf_filter.so"
 LZ4_LIB="lz4/libH5Zlz4.so"
-BLOSC_LIB="blosc/libh5blosc.so"
+BZIP2_LIB="bzip2/libH5Zbz2.so"
+BLOSC_LIB="blosc/libH5Zblosc.so"
 
-#AC_SUBST(LZF_LIB)
-AC_SUBST(LZ4_LIB)
+AC_SUBST(BZIP2_LIB)
 AC_SUBST(BLOSC_LIB)
-#AC_MSG_NOTICE([   LZF_LIB=${LZF_LIB}])
-AC_MSG_NOTICE([   LZ4_LIB=${LZ4_LIB}])
+AC_MSG_NOTICE([   BZIP2_LIB=${BZIP2_LIB}])
 AC_MSG_NOTICE([   BLOSC_LIB=${BLOSC_LIB}])
 AC_CONFIG_FILES([src/Makevars])
 AC_OUTPUT

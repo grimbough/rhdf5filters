@@ -1,6 +1,5 @@
 
 #' LZF Filter
-#' @export
 H5Pset_lzf <- function( h5plist ) {
     
     if(!is.loaded('_H5Pset_lzf', PACKAGE = 'rhdf5'))
@@ -12,7 +11,6 @@ H5Pset_lzf <- function( h5plist ) {
 }
 
 ## LZ4 Filter
-#' @export
 H5Pset_lz4 <- function( h5plist ) {
     
     if(!is.loaded('_H5Pset_lz4', PACKAGE = 'rhdf5'))
@@ -20,6 +18,18 @@ H5Pset_lz4 <- function( h5plist ) {
     
     rhdf5:::h5checktypeAndPLC(h5plist, "H5P_DATASET_CREATE")
     res <- .Call("_H5Pset_lz4", h5plist@ID, PACKAGE='rhdf5')
+    invisible(res)
+}
+
+## BZIP2 Filter
+#' @export
+H5Pset_bzip2 <- function( h5plist, level = 2L ) {
+    
+    if(!is.loaded('_H5Pset_bzip2', PACKAGE = 'rhdf5'))
+        stop('LZ4 filter not found.  Please reinstall rhdf5.')
+    
+    rhdf5:::h5checktypeAndPLC(h5plist, "H5P_DATASET_CREATE")
+    res <- .Call("_H5Pset_bzip2", h5plist@ID, as.integer(level), PACKAGE='rhdf5')
     invisible(res)
 }
 
