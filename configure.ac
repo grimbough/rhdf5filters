@@ -55,7 +55,7 @@ ${CC} ${CFLAGS} -fPIC -c *.c
 cd ../snappy-1.1.1
 ${CXX} ${CXXFLAGS} -fPIC -c *.cc
 cd ../zstd-1.3.8
-$MAKE ZSTD_LEGACY_SUPPORT=0
+$MAKE CFLAGS="${CFLAGS} -fPIC" ZSTD_LEGACY_SUPPORT=0
 cd ../blosc-1.16.3
 ${CC} ${CFLAGS} -fPIC -c *.c
 cd ../../
@@ -63,7 +63,8 @@ ${CC} ${CFLAGS} -fPIC -c H5Zblosc.c -I${RHDF5_INCLUDE} -I./lib/blosc-1.16.3/
 ## Linking step
 ${CXX} ${CXXFLAGS} -fPIC -shared \
     -o libH5Zblosc.so \
-    H5Zblosc.o ./lib/blosc-1.16.3/*.o ./lib/lz4-1.8.3/*.o ./lib/snappy-1.1.1/*.o ./lib/zstd-1.3.8/libzstd.a \
+    H5Zblosc.o ./lib/blosc-1.16.3/*.o ./lib/lz4-1.8.3/*.o ./lib/snappy-1.1.1/*.o \
+    ./lib/zstd-1.3.8/compress/*.o ./lib/zstd-1.3.8/decompress/*.o ./lib/zstd-1.3.8/common/*.o \
     -lpthread
 cd ../../
 
@@ -73,7 +74,6 @@ HDF5_INCLUDE="${BASEPBNAME}/src"
 AC_SUBST(HDF5_INCLUDE)
 AC_MSG_NOTICE([   HDF5_INCLUDE=${HDF5_INCLUDE}])
 
-LZ4_LIB="lz4/libH5Zlz4.so"
 BZIP2_LIB="bzip2/libH5Zbz2.so"
 BLOSC_LIB="blosc/libH5Zblosc.so"
 

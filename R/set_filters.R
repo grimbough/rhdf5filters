@@ -34,8 +34,12 @@ H5Pset_bzip2 <- function( h5plist, level = 2L ) {
 }
 
 ## BLOSC Filter
+## Filter from https://github.com/nexusformat/HDF5-External-Filter-Plugins/
+## contains a call to blosc_set_local() which determines chunk size & blosc
+## parameters. This requires calls to HDF5 functions and doesn't play well
+## with our static linking.  We move this setup code into the function below.
 #' @export
-H5Pset_blosc <- function( h5plist, method = 1L, level = 6L ) {
+H5Pset_blosc <- function( h5plist, h5tid, method = 1L, level = 6L ) {
     
     if(!is.loaded('_H5Pset_blosc', PACKAGE = 'rhdf5'))
         stop('BLOSC filter not found.  Please reinstall rhdf5.')
@@ -44,8 +48,21 @@ H5Pset_blosc <- function( h5plist, method = 1L, level = 6L ) {
         method <- 1L
         warning('Invalid method selected.  Using blosclz')
     }
+
+    ## simplified reimplementation of C code from H5Zblosc.c
+    chunkdims <- H5Pget_chunk(h5plist)
+
+    typesize <- rhdf5:::H5Tget_size(h5tid)
+    if(typesize > 255) { typesize <- 1 }
+
+    bufsize <- typesize * prod(chunkdims)
+    ## END
     
+
     rhdf5:::h5checktypeAndPLC(h5plist, "H5P_DATASET_CREATE")
-    res <- .Call("_H5Pset_blosc", h5plist@ID, as.integer(method-1L), as.integer(level), PACKAGE='rhdf5')
+    res <- .Call("_H5Pset_blosc", h5plist@ID, 
+        as.integer(method-1L), as.integer(level), 
+        as.integer(typesize), as.integer(bufsize),
+        PACKAGE='rhdf5')
     invisible(res)
 }
