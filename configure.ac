@@ -59,13 +59,13 @@ $MAKE CFLAGS="${CFLAGS} -fPIC" ZSTD_LEGACY_SUPPORT=0
 cd ../blosc-1.16.3
 ${CC} ${CFLAGS} -fPIC -c *.c
 cd ../../
-${CC} ${CFLAGS} -fPIC -c H5Zblosc.c -I${RHDF5_INCLUDE} -I./lib/blosc-1.16.3/ 
+${CC} ${CFLAGS} -fPIC -msse2 -mavx -c H5Zblosc.c -I${RHDF5_INCLUDE} -I./lib/blosc-1.16.3/ 
 ## Linking step
-${CXX} ${CXXFLAGS} -fPIC -shared \
+${CC} ${CFLAGS} -fPIC -shared \
     -o libH5Zblosc.so \
     H5Zblosc.o ./lib/blosc-1.16.3/*.o ./lib/lz4-1.8.3/*.o ./lib/snappy-1.1.1/*.o \
     ./lib/zstd-1.3.8/compress/*.o ./lib/zstd-1.3.8/decompress/*.o ./lib/zstd-1.3.8/common/*.o \
-    -lpthread
+    -lz -lpthread
 cd ../../
 
 
