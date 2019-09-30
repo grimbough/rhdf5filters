@@ -17,9 +17,9 @@
 
 #include "fastcopy.h"
 
-#if defined(USING_CMAKE)
+/* #if defined(USING_CMAKE)*/
   #include "config.h"
-#endif /*  USING_CMAKE */
+/*#endif */
 #include "blosc.h"
 #include "shuffle.h"
 #include "blosclz.h"

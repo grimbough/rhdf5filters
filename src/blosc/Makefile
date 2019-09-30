@@ -1,63 +1,40 @@
 SHELL=/bin/sh
 
 # To assist in cross-compiling
-CC=gcc
-CXX=g++
-AR=ar
 RANLIB=ranlib
-LDFLAGS=
-CFLAGS=-fPIC -O2
-CXXFLAGS=-fPIC -O2
 
-BLOSC_OBJS=	blosc/bitshuffle-avx2.o \
-			blosc/blosc.o \
-			blosc/shuffle-avx2.o \
-			blosc/shuffle-sse2.o \
-			blosc/bitshuffle-generic.o \
-			blosc/blosclz.o \
-			blosc/shuffle.o \
-			blosc/bitshuffle-sse2.o \
-			blosc/fastcopy.o \
-			blosc/shuffle-generic.o
+BLOSC_OBJS=	lib/blosc-1.16.3/bitshuffle-avx2.o \
+			lib/blosc-1.16.3/blosc.o \
+			lib/blosc-1.16.3/shuffle-avx2.o \
+			lib/blosc-1.16.3/shuffle-sse2.o \
+			lib/blosc-1.16.3/bitshuffle-generic.o \
+			lib/blosc-1.16.3/blosclz.o \
+			lib/blosc-1.16.3/shuffle.o \
+			lib/blosc-1.16.3/bitshuffle-sse2.o \
+			lib/blosc-1.16.3/fastcopy.o \
+			lib/blosc-1.16.3/shuffle-generic.o
 
-LZ4_OBJS=	internal-complibs/lz4-1.8.3/lz4.o \
-		 	internal-complibs/lz4-1.8.3/lz4hc.o
+LZ4_OBJS=	lib/lz4-1.8.3/lz4.o \
+		 	lib/lz4-1.8.3/lz4hc.o
 
-SNAPPY_OBJS=internal-complibs/snappy-1.1.1/snappy.o \
-			internal-complibs/snappy-1.1.1/snappy-c.o \
-			internal-complibs/snappy-1.1.1/snappy-sinksource.o \
-			internal-complibs/snappy-1.1.1/snappy-stubs-internal.o
+SNAPPY_OBJS=lib/snappy-1.1.1/snappy.o \
+			lib/snappy-1.1.1/snappy-c.o \
+			lib/snappy-1.1.1/snappy-sinksource.o \
+			lib/snappy-1.1.1/snappy-stubs-internal.o
 
-ZSTD_OBJS=	internal-complibs/zstd-1.3.8/debug.o \
-            internal-complibs/zstd-1.3.8/fse_decompress.o \
-            internal-complibs/zstd-1.3.8/pool.o \
-            internal-complibs/zstd-1.3.8/zstd_compress.o \
-            internal-complibs/zstd-1.3.8/zstd_double_fast.o \
-            internal-complibs/zstd-1.3.8/zstdmt_compress.o \
-			internal-complibs/zstd-1.3.8/entropy_common.o \
-			internal-complibs/zstd-1.3.8/hist.o \
-			internal-complibs/zstd-1.3.8/threading.o \
-			internal-complibs/zstd-1.3.8/zstd_ddict.o \
-			internal-complibs/zstd-1.3.8/zstd_fast.o \
-			internal-complibs/zstd-1.3.8/zstd_opt.o \
-			internal-complibs/zstd-1.3.8/error_private.o \
-			internal-complibs/zstd-1.3.8/huf_compress.o \
-			internal-complibs/zstd-1.3.8/xxhash.o \
-			internal-complibs/zstd-1.3.8/zstd_decompress_block.o \
-			internal-complibs/zstd-1.3.8/zstd_lazy.o \
-			internal-complibs/zstd-1.3.8/fse_compress.o \
-			internal-complibs/zstd-1.3.8/huf_decompress.o \
-			internal-complibs/zstd-1.3.8/zstd_common.o \
-			internal-complibs/zstd-1.3.8/zstd_decompress.o \
-			internal-complibs/zstd-1.3.8/zstd_ldm.o
+ZSTDCOMMON_FILES := $(sort $(wildcard lib/zstd-1.3.8/common/*.c))
+ZSTDCOMP_FILES := $(sort $(wildcard lib/zstd-1.3.8/compress/*.c))
+ZSTDDECOMP_FILES := $(sort $(wildcard lib/zstd-1.3.8/decompress/*.c))
+ZSTD_FILES := $(ZSTDCOMMON_FILES) $(ZSTDCOMP_FILES) $(ZSTDDECOMP_FILES)
+ZSTD_OBJS   := $(patsubst %.c,%.o,$(ZSTD_FILES))
 
 
 all: libH5Zblosc.so
 
 libH5Zblosc.so:	libblosc.a
-	$(CXX) $(CXXFLAGS) -shared -o libH5Zblosc.so H5Zblosc.c \
-			-I/mnt/Storage/R-library/3.6.1/Rhdf5lib/include -I./blosc \
-			/home/msmith/Code/PyTables/c-blosc/build/blosc/libblosc.a \
+	$(CXX) $(CXXFLAGS) $(CPICFLAGS) -shared -o libH5Zblosc.so H5Zblosc.c \
+			$(CPPFLAGS) -I./lib/blosc-1.16.3 \
+			libblosc.a \
 			-lpthread -lz
 
 libblosc.a:  blosc
@@ -72,9 +49,9 @@ libblosc.a:  blosc
 .PHONY: blosc
 
 blosc: subdirs
-	$(MAKE) -C blosc all
+	$(MAKE) -C lib/blosc-1.16.3 all
 
-SUBDIRS = internal-complibs/snappy-1.1.1 internal-complibs/lz4-1.8.3 internal-complibs/zstd-1.3.8
+SUBDIRS = lib/snappy-1.1.1 lib/lz4-1.8.3 lib/zstd-1.3.8
 
 .PHONY: subdirs $(SUBDIRS)
 
@@ -86,7 +63,7 @@ $(SUBDIRS):
 clean:
 	rm -f libH5Zblosc.so
 	rm -f libblosc.a
-	rm -f blosc/*.o
-	rm -f internal-complibs/snappy-1.1.1/*.o
-	rm -f internal-complibs/lz4-1.8.3/*.o
-	rm -f internal-complibs/zstd-1.3.8/*.o
+	rm -f lib/blosc-1.16.3/*.o
+	rm -f lib/snappy-1.1.1/*.o
+	rm -f lib/lz4-1.8.3/*.o
+	$(MAKE) -C lib/zstd-1.3.8/ clean
