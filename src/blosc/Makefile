@@ -1,7 +1,14 @@
 SHELL=/bin/sh
 
-# To assist in cross-compiling
-RANLIB=ranlib
+export CC
+export CFLAGS
+export CPICFLAGS
+export CXX
+export CXXFLAGS
+export CXXPICFLAGS	
+export CPPFLAGS
+export MAKE
+export AR
 
 BLOSC_OBJS=	lib/blosc-1.16.3/bitshuffle-avx2.o \
 			lib/blosc-1.16.3/blosc.o \

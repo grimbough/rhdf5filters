@@ -1,15 +1,10 @@
 SHELL=/bin/sh
 
-# To assist in cross-compiling
-CC=gcc
-AR=ar
-LDFLAGS=
-CPPFLAGS+=-I../lz4-1.8.3 -I../snappy-1.1.1 -I../zstd-1.3.8
-CFLAGS+=-fPIC -O2
-FLAGS=$(CPPFLAGS) $(CFLAGS)
+EXTRA_FLAGS+=-I../lz4-1.8.3 -I../snappy-1.1.1 -I../zstd-1.3.8
+FLAGS=$(CFLAGS) $(CPICFLAGS) $(CPPFLAGS) $(EXTRA_FLAGS)
 
 BLOSC_FILES := $(sort $(wildcard *.c))
-BLOSC_OBJS   := $(patsubst %.c,%.o,$(BLOSC_FILES))
+BLOSC_OBJS  := $(patsubst %.c,%.o,$(BLOSC_FILES))
 
 all: $(BLOSC_OBJS)
 

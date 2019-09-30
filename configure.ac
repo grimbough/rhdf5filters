@@ -20,6 +20,7 @@ CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
 CXXPICFLAGS=`"${R_HOME}/bin/R" CMD config CXXPICFLAGS`
 MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
 AR=`"${R_HOME}/bin/R" CMD config AR`
+RANLIB=`"${R_HOME}/bin/R" CMD config RANLIB`
 
 # Checks for programs.
 AC_PROG_CC
@@ -30,31 +31,16 @@ RHDF5_LIBS=`echo 'Rhdf5lib::pkgconfig("PKG_C_LIBS")'|\
 RHDF5_INCLUDE=`echo 'cat(system.file("include", package="Rhdf5lib"))'|\
     "${R_HOME}/bin/R" --vanilla --slave`
     
-echo $RHDF5_INCLUDE
-
-#echo "building the LZF filter...";
-#cd src/lzf
-#${CC} -I${RHDF5_INCLUDE} -fPIC -shared lib/*.c lzf_filter.c $RHDF5_LIBS -o liblzf_filter.so
-#cd ../../
-
-#echo "building the LZ4 filter...";
-## build LZ4 filter
-#cd src/lz4/lib;
-#make
-#cd ../
-#${CC} ${CLFAGS} -fPIC -shared -w -I$RHDF5_INCLUDE H5Zlz4.c lib/liblz4.a $RHDF5_LIBS  -o libH5Zlz4.so
-#cd ../../
-
 echo "building BZIP2 filter..."
 cd src/bzip2/bzip2-1.0.8;
 $MAKE
 cd ../
-${CC} ${CFLAGS} -fPIC -shared H5Zbzip2.c -I$RHDF5_INCLUDE -I./bzip2-1.0.8/ ./bzip2-1.0.8/libbz2.a -o libH5Zbz2.so
+${CC} ${CFLAGS} ${CPICFLAGS} -shared H5Zbzip2.c -I$RHDF5_INCLUDE -I./bzip2-1.0.8/ ./bzip2-1.0.8/libbz2.a -o libH5Zbz2.so
 cd ../../
 
 echo "building the BLOSC filter...";
 cd src/blosc/
-$MAKE CC="${CC}" CPPFLAGS="-I${RHDF5_INCLUDE}" CPICFLAGS="${CPICFLAGS}"
+$MAKE CC="${CC}" CFLAGS="${CFLAGS}" CPICFLAGS="${CPICFLAGS}" CXX="${CXX}" CXXFLAGS="${CXXFLAGS}" CXXPICFLAGS="${CXXPICFLAGS}" CPPFLAGS="-I${RHDF5_INCLUDE}" AR="${AR}" MAKE="${MAKE}"
 cd ../../
 
 
