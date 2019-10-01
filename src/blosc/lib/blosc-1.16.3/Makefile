@@ -21,7 +21,7 @@ bitshuffle-generic.o: bitshuffle-generic.c
 blosclz.o: blosclz.c
 	$(CC) $(FLAGS) -c blosclz.c
 shuffle.o: shuffle.c
-	$(CC) $(FLAGS) -c shuffle.c
+	$(CC) $(FLAGS) -DSHUFFLE_AVX2_ENABLED -c shuffle.c
 bitshuffle-sse2.o: bitshuffle-sse2.c
 	$(CC) $(FLAGS) -msse2 -c bitshuffle-sse2.c
 fastcopy.o: fastcopy.c

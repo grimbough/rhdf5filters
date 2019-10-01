@@ -11,3 +11,5 @@ rm -f src/blosc/lib/lz4-*/*.o
 
 cd src/blosc/lib/zstd-1.3.8/
 make clean
+
+rm -f src/blosc/libH5Zblosc.so

@@ -22,8 +22,6 @@ MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
 AR=`"${R_HOME}/bin/R" CMD config AR`
 RANLIB=`"${R_HOME}/bin/R" CMD config RANLIB`
 
-# Checks for programs.
-AC_PROG_CC
 
 # determine the location of the Rhdf5lib versions of the HDF5 library
 RHDF5_LIBS=`echo 'Rhdf5lib::pkgconfig("PKG_C_LIBS")'|\
