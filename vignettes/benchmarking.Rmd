@@ -1,7 +1,10 @@
 
-pbmc8k <- TENxPBMCData::TENxPBMCData("pbmc8k")
+```{r, loadData}
+pbmc8k <- TENxPBMCData::TENxPBMCData("pbmc3k")
 dat <- as.matrix(assay(pbmc8k))
+```
 
+```{r, defineFunction}
 run_test <- function(dat, filter, method, level, shuffle = TRUE, h5File = NULL, rm = TRUE) {
     if(is.null(h5File))
         h5File <- tempfile(pattern = "ex_save", fileext = ".h5")
@@ -33,29 +36,57 @@ run_test <- function(dat, filter, method, level, shuffle = TRUE, h5File = NULL, 
     H5Dclose(did)
 
 }
+```
 
-bm <- microbenchmark::microbenchmark(
-    run_test(dat, filter = "blosc", method = 1, level = 5),
-    run_test(dat, filter = "blosc", method = 2, level = 5),
-    run_test(dat, filter = "blosc", method = 3, level = 5),
-    run_test(dat, filter = "blosc", method = 4, level = 5),
-    run_test(dat, filter = "blosc", method = 5, level = 5),
-    run_test(dat, filter = "blosc", method = 6, level = 5),
-    run_test(dat, filter = "gzip", level = 5),
-    run_test(dat, filter = "bzip2", level = 5),
-    run_test(dat, filter = "szip"),
-    run_test(dat, filter = "blosc", method = 1, level = 5, shuffle = FALSE),
-    run_test(dat, filter = "blosc", method = 2, level = 5, shuffle = FALSE),
-    run_test(dat, filter = "blosc", method = 3, level = 5, shuffle = FALSE),
-    run_test(dat, filter = "blosc", method = 4, level = 5, shuffle = FALSE),
-    run_test(dat, filter = "blosc", method = 5, level = 5, shuffle = FALSE),
-    run_test(dat, filter = "blosc", method = 6, level = 5, shuffle = FALSE),
-    run_test(dat, filter = "gzip", level = 5, shuffle = FALSE),
-    run_test(dat, filter = "bzip2", level = 5, shuffle = FALSE),
-    run_test(dat, filter = "szip", shuffle = FALSE),
-    times = 5L, control = list(warmup = 0L))
-)
+```{r, blosc}
+bm_blosc <- list()
+for(i in c(1,5,9)) {
+bm_blosc[[ paste(i) ]] <- microbenchmark::microbenchmark(
+    run_test(dat, filter = "blosc", method = 1, level = i),
+    run_test(dat, filter = "blosc", method = 2, level = i),
+    run_test(dat, filter = "blosc", method = 3, level = i),
+    run_test(dat, filter = "blosc", method = 4, level = i),
+    run_test(dat, filter = "blosc", method = 5, level = i),
+    run_test(dat, filter = "blosc", method = 6, level = i),
+    run_test(dat, filter = "blosc", method = 1, level = i, shuffle = FALSE),
+    run_test(dat, filter = "blosc", method = 2, level = i, shuffle = FALSE),
+    run_test(dat, filter = "blosc", method = 3, level = i, shuffle = FALSE),
+    run_test(dat, filter = "blosc", method = 4, level = i, shuffle = FALSE),
+    run_test(dat, filter = "blosc", method = 5, level = i, shuffle = FALSE),
+    run_test(dat, filter = "blosc", method = 6, level = i, shuffle = FALSE),
+    times = 2L, control = list(warmup = 0L))
+}
+```
 
+```{r, gzip}
+bm_gzip <- list()
+for(i in c(1,5,9)) {
+    bm_gzip[[ paste(i) ]] <- microbenchmark::microbenchmark(
+        run_test(dat, filter = "gzip", level = i),
+        run_test(dat, filter = "gzip", level = i, shuffle = FALSE)
+    )
+}
+```
+
+```{r, bzip2}
+bm_bzip2 <- list()
+for(i in c(1,5,9)) {
+    bm_bzip2[[ paste(i) ]] <- microbenchmark::microbenchmark(
+        run_test(dat, filter = "bzip2", level = i),
+        run_test(dat, filter = "bzip2", level = i, shuffle = FALSE)
+    )
+}
+```
+
+```{r, szip}
+bm_szip <- list()
+    bm_szip[[ 1 ]] <- microbenchmark::microbenchmark(
+        run_test(dat, filter = "szip"),
+        run_test(dat, filter = "szip", shuffle = FALSE)
+    )
+```
+
+```{r, eval = FALSE}
 for(i in 1:6) {
     run_test(dat, filter = "blosc", method = i, level = 5, h5File = paste0("/tmp/blosc_", i, "_shuffle.h5"), rm = FALSE)
     run_test(dat, filter = "blosc", method = i, level = 5, shuffle = FALSE, h5File = paste0("/tmp/blosc_", i, "_noshuffle.h5"), rm = FALSE)
@@ -66,5 +97,4 @@ run_test(dat, filter = "bzip2", level = 5, h5File = paste("/tmp/bzip2_shuffle.h5
 run_test(dat, filter = "bzip2", level = 5, shuffle = FALSE, h5File = paste("/tmp/bzip2_noshuffle.h5"), rm = FALSE)
 run_test(dat, filter = "szip", level = 5, h5File = paste("/tmp/szip_shuffle.h5"), rm = FALSE)
 run_test(dat, filter = "szip", level = 5, shuffle = FALSE, h5File = paste("/tmp/szip_noshuffle.h5"), rm = FALSE)
-
-
+```
