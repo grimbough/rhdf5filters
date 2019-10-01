@@ -1,0 +1,70 @@
+
+pbmc8k <- TENxPBMCData::TENxPBMCData("pbmc8k")
+dat <- as.matrix(assay(pbmc8k))
+
+run_test <- function(dat, filter, method, level, shuffle = TRUE, h5File = NULL, rm = TRUE) {
+    if(is.null(h5File))
+        h5File <- tempfile(pattern = "ex_save", fileext = ".h5")
+    fid <- H5Fcreate(h5File)
+    on.exit(H5Fclose(fid))
+    
+    if(rm) { on.exit(file.remove(h5File), add = TRUE) }
+    
+    sid <- H5Screate_simple(dims = dim(dat), maxdims = dim(dat))
+    on.exit( H5Sclose(sid), add = TRUE )
+    tid <- rhdf5:::.setDataType(H5type = NULL, storage.mode = "integer")
+    dcpl <- H5Pcreate("H5P_DATASET_CREATE"); 
+    H5Pset_fill_time( dcpl, "H5D_FILL_TIME_ALLOC" )
+    H5Pset_chunk( dcpl, c(100, 200))
+    if(filter == "blosc") {
+        hdf5Filters::H5Pset_blosc(dcpl, tid, method = method, level = level, shuffle = shuffle)
+    } else if (filter == "gzip") {
+        if(shuffle) { H5Pset_shuffle(dcpl) }
+        rhdf5::H5Pset_deflate(dcpl, level = level)
+    } else if (filter == "bzip2") {
+        if(shuffle) { H5Pset_shuffle(dcpl) }
+        hdf5Filters::H5Pset_bzip2(dcpl, level = level)
+    } else if (filter == "szip") {
+        if(shuffle) { H5Pset_shuffle(dcpl) }
+        rhdf5:::H5Pset_szip(dcpl, options_mask = 1L, pixels_per_block = 32)
+    }
+    did <- H5Dcreate(fid, paste0("test"), tid, sid, dcpl = dcpl)
+    H5Dwrite(dat, h5dataset = did)
+    H5Dclose(did)
+
+}
+
+bm <- microbenchmark::microbenchmark(
+    run_test(dat, filter = "blosc", method = 1, level = 5),
+    run_test(dat, filter = "blosc", method = 2, level = 5),
+    run_test(dat, filter = "blosc", method = 3, level = 5),
+    run_test(dat, filter = "blosc", method = 4, level = 5),
+    run_test(dat, filter = "blosc", method = 5, level = 5),
+    run_test(dat, filter = "blosc", method = 6, level = 5),
+    run_test(dat, filter = "gzip", level = 5),
+    run_test(dat, filter = "bzip2", level = 5),
+    run_test(dat, filter = "szip"),
+    run_test(dat, filter = "blosc", method = 1, level = 5, shuffle = FALSE),
+    run_test(dat, filter = "blosc", method = 2, level = 5, shuffle = FALSE),
+    run_test(dat, filter = "blosc", method = 3, level = 5, shuffle = FALSE),
+    run_test(dat, filter = "blosc", method = 4, level = 5, shuffle = FALSE),
+    run_test(dat, filter = "blosc", method = 5, level = 5, shuffle = FALSE),
+    run_test(dat, filter = "blosc", method = 6, level = 5, shuffle = FALSE),
+    run_test(dat, filter = "gzip", level = 5, shuffle = FALSE),
+    run_test(dat, filter = "bzip2", level = 5, shuffle = FALSE),
+    run_test(dat, filter = "szip", shuffle = FALSE),
+    times = 5L, control = list(warmup = 0L))
+)
+
+for(i in 1:6) {
+    run_test(dat, filter = "blosc", method = i, level = 5, h5File = paste0("/tmp/blosc_", i, "_shuffle.h5"), rm = FALSE)
+    run_test(dat, filter = "blosc", method = i, level = 5, shuffle = FALSE, h5File = paste0("/tmp/blosc_", i, "_noshuffle.h5"), rm = FALSE)
+}
+run_test(dat, filter = "gzip", level = 5, h5File = paste("/tmp/gzip_shuffle.h5"), rm = FALSE)
+run_test(dat, filter = "gzip", level = 5, shuffle = FALSE, h5File = paste("/tmp/gzip_noshuffle.h5"), rm = FALSE)
+run_test(dat, filter = "bzip2", level = 5, h5File = paste("/tmp/bzip2_shuffle.h5"), rm = FALSE)
+run_test(dat, filter = "bzip2", level = 5, shuffle = FALSE, h5File = paste("/tmp/bzip2_noshuffle.h5"), rm = FALSE)
+run_test(dat, filter = "szip", level = 5, h5File = paste("/tmp/szip_shuffle.h5"), rm = FALSE)
+run_test(dat, filter = "szip", level = 5, shuffle = FALSE, h5File = paste("/tmp/szip_noshuffle.h5"), rm = FALSE)
+
+
