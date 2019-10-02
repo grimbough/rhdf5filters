@@ -1,7 +1,21 @@
+---
+title: "Benchmarking filters"
+author: "Mike Smith"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+library(microbenchmark)
+library(rhdf5)
+library(stringr)
+```
 
 ```{r, loadData}
 pbmc8k <- TENxPBMCData::TENxPBMCData("pbmc3k")
 dat <- as.matrix(assay(pbmc8k))
+levels <- c(1,2)
+iterations <- 2L
 ```
 
 ```{r, defineFunction}
@@ -40,7 +54,7 @@ run_test <- function(dat, filter, method, level, shuffle = TRUE, h5File = NULL, 
 
 ```{r, blosc}
 bm_blosc <- list()
-for(i in c(1,5,9)) {
+for(i in levels) {
 bm_blosc[[ paste(i) ]] <- microbenchmark::microbenchmark(
     run_test(dat, filter = "blosc", method = 1, level = i),
     run_test(dat, filter = "blosc", method = 2, level = i),
@@ -56,45 +70,117 @@ bm_blosc[[ paste(i) ]] <- microbenchmark::microbenchmark(
     run_test(dat, filter = "blosc", method = 6, level = i, shuffle = FALSE),
     times = 2L, control = list(warmup = 0L))
 }
+
+bm_blosc2 <- mapply(function(x, y) { 
+    x$expr <- gsub(x = x$expr, pattern = "level = i", replacement = paste0("level = ", y)); 
+    x
+    }, bm_blosc2, names(bm_blosc2), SIMPLIFY = FALSE ) %>% 
+    bind_rows()
+
+blosc_res <- as_tibble(bm_blosc2) %>% 
+    mutate(filter = paste0(stringr::str_match(expr, "\"(.*)\"")[,2], "-",
+                          stringr::str_match(expr, "method = ([0-9])")[,2]),
+           level = stringr::str_match(expr, "level = ([0-9])")[,2],
+           shuffle = !stringr::str_detect(expr, "shuffle = FALSE"), 
+           time = time / 1e9) %>%
+    select(filter, level, shuffle, time)
 ```
 
 ```{r, gzip}
 bm_gzip <- list()
-for(i in c(1,5,9)) {
+for(i in levels) {
     bm_gzip[[ paste(i) ]] <- microbenchmark::microbenchmark(
-        run_test(dat, filter = "gzip", level = i),
-        run_test(dat, filter = "gzip", level = i, shuffle = FALSE)
+        run_test(dat, filter = 'gzip', level = i),
+        run_test(dat, filter = 'gzip', level = i, shuffle = FALSE),
+        times = 2L, control = list(warmup = 0L)
     )
 }
+
+bm_gzip2 <- mapply(function(x, y) { 
+    x$expr <- gsub(x = x$expr, pattern = "level = i", replacement = paste0("level = ", y)); 
+    x
+    }, bm_gzip, names(bm_gzip), SIMPLIFY = FALSE ) %>% bind_rows()
+
+gzip_res <- as_tibble(bm_gzip2) %>% 
+    mutate(filter = stringr::str_match(expr, "\"(.*)\"")[,2],
+           level = stringr::str_match(expr, "level = ([0-9])")[,2],
+           shuffle = !stringr::str_detect(expr, "shuffle = FALSE"), 
+           time = time / 1e9) %>%
+    select(filter, level, shuffle, time)
 ```
 
 ```{r, bzip2}
 bm_bzip2 <- list()
-for(i in c(1,5,9)) {
+for(i in levels) {
     bm_bzip2[[ paste(i) ]] <- microbenchmark::microbenchmark(
         run_test(dat, filter = "bzip2", level = i),
-        run_test(dat, filter = "bzip2", level = i, shuffle = FALSE)
+        run_test(dat, filter = "bzip2", level = i, shuffle = FALSE),
+        times = 2L, control = list(warmup = 0L)
     )
 }
+
+bm_bzip22 <- mapply(function(x, y) { 
+    x$expr <- gsub(x = x$expr, pattern = "level = i", replacement = paste0("level = ", y)); 
+    x
+    }, bm_bzip2, names(bm_bzip2), SIMPLIFY = FALSE ) %>% bind_rows()
+
+bzip2_res <- as_tibble(bm_bzip22) %>% 
+    mutate(filter = stringr::str_match(expr, "\"(.*)\"")[,2],
+           level = stringr::str_match(expr, "level = ([0-9])")[,2],
+           shuffle = !stringr::str_detect(expr, "shuffle = FALSE"), 
+           time = time / 1e9) %>%
+    select(filter, level, shuffle, time)
 ```
 
-```{r, szip}
+```{r, szip, eval = FALSE}
 bm_szip <- list()
     bm_szip[[ 1 ]] <- microbenchmark::microbenchmark(
         run_test(dat, filter = "szip"),
-        run_test(dat, filter = "szip", shuffle = FALSE)
+        run_test(dat, filter = "szip", shuffle = FALSE),
+        times = 2L, control = list(warmup = 0L)
     )
 ```
 
-```{r, eval = FALSE}
-for(i in 1:6) {
-    run_test(dat, filter = "blosc", method = i, level = 5, h5File = paste0("/tmp/blosc_", i, "_shuffle.h5"), rm = FALSE)
-    run_test(dat, filter = "blosc", method = i, level = 5, shuffle = FALSE, h5File = paste0("/tmp/blosc_", i, "_noshuffle.h5"), rm = FALSE)
+```{r, eval=TRUE}
+all_timings <- bind_row(blosc_res, gzip_res, bzip2_res)
+saveRDS(all_timings, file = "all_timings.rds")
+```
+
+
+```{r, sizes, eval = FALSE}
+size_table <- list()
+for(i in levels) {
+    for(j in 1:6) {
+        run_test(dat, filter = "blosc", method = j, level = i, 
+                 h5File = paste0("/tmp/blosc-", j, "_", i, "_TRUE.h5"), rm = FALSE)
+        run_test(dat, filter = "blosc", method = j, level = i, shuffle = FALSE, 
+                 h5File = paste0("/tmp/blosc-", j,  "_", i, "_FALSE.h5"), rm = FALSE)
+    }
+    run_test(dat, filter = "gzip", level = i, 
+             h5File = paste0("/tmp/gzip_", i, "_TRUE.h5"), rm = FALSE)
+    run_test(dat, filter = "gzip", level = i, shuffle = FALSE, 
+             h5File = paste0("/tmp/gzip_", i, "_FALSE.h5"), rm = FALSE)
+    run_test(dat, filter = "bzip2", level = i, 
+             h5File = paste0("/tmp/bzip2_", i, "_TRUE.h5"), rm = FALSE)
+    run_test(dat, filter = "bzip2", level = i, shuffle = FALSE, 
+             h5File = paste0("/tmp/bzip2_", i, "_FALSE.h5"), rm = FALSE)
+    
+    files <- list.files("*.h5", path = "/tmp", full.names = TRUE)
+    size_table[[paste(i)]] <- tibble(file = basename(files), size = file.size(files))
+
+    file.remove(files)
 }
-run_test(dat, filter = "gzip", level = 5, h5File = paste("/tmp/gzip_shuffle.h5"), rm = FALSE)
-run_test(dat, filter = "gzip", level = 5, shuffle = FALSE, h5File = paste("/tmp/gzip_noshuffle.h5"), rm = FALSE)
-run_test(dat, filter = "bzip2", level = 5, h5File = paste("/tmp/bzip2_shuffle.h5"), rm = FALSE)
-run_test(dat, filter = "bzip2", level = 5, shuffle = FALSE, h5File = paste("/tmp/bzip2_noshuffle.h5"), rm = FALSE)
-run_test(dat, filter = "szip", level = 5, h5File = paste("/tmp/szip_shuffle.h5"), rm = FALSE)
-run_test(dat, filter = "szip", level = 5, shuffle = FALSE, h5File = paste("/tmp/szip_noshuffle.h5"), rm = FALSE)
+
+size_table2 <- bind_rows(size_table) %>%
+    mutate(filter = str_match(file, "([a-z0-9-]*)_")[,2],
+           level = str_match(file, "_([0-9])_")[,2],
+           shuffle = as.logical(str_match(file, "_([A-Z]*).h5")[,2])) %>%
+    select(filter, level, shuffle, size)
+
+saveRDS(size_table2, file = "all_sizes.rds")
+```
+
+```{r, combine, eval=TRUE}
+all_data <- left_join(all_timings, size_table2)
+saveRDS(all_data, file = "all_data.rds")
 ```
