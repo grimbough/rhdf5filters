@@ -16,6 +16,7 @@ pbmc8k <- TENxPBMCData::TENxPBMCData("pbmc3k")
 dat <- as.matrix(assay(pbmc8k))
 levels <- c(1,2)
 iterations <- 2L
+workingdir <- tempdir()
 ```
 
 ```{r, defineFunction}
@@ -52,7 +53,7 @@ run_test <- function(dat, filter, method, level, shuffle = TRUE, h5File = NULL, 
 }
 ```
 
-```{r, blosc}
+```{r, blosc, cache=TRUE}
 bm_blosc <- list()
 for(i in levels) {
 bm_blosc[[ paste(i) ]] <- microbenchmark::microbenchmark(
@@ -68,13 +69,15 @@ bm_blosc[[ paste(i) ]] <- microbenchmark::microbenchmark(
     run_test(dat, filter = "blosc", method = 4, level = i, shuffle = FALSE),
     run_test(dat, filter = "blosc", method = 5, level = i, shuffle = FALSE),
     run_test(dat, filter = "blosc", method = 6, level = i, shuffle = FALSE),
-    times = 2L, control = list(warmup = 0L))
+    times = iterations, control = list(warmup = 0L))
 }
+```
 
+```{r, process-blosc}
 bm_blosc2 <- mapply(function(x, y) { 
     x$expr <- gsub(x = x$expr, pattern = "level = i", replacement = paste0("level = ", y)); 
     x
-    }, bm_blosc2, names(bm_blosc2), SIMPLIFY = FALSE ) %>% 
+    }, bm_blosc, names(bm_blosc), SIMPLIFY = FALSE ) %>% 
     bind_rows()
 
 blosc_res <- as_tibble(bm_blosc2) %>% 
@@ -86,16 +89,18 @@ blosc_res <- as_tibble(bm_blosc2) %>%
     select(filter, level, shuffle, time)
 ```
 
-```{r, gzip}
+```{r, gzip-run, cache = TRUE}
 bm_gzip <- list()
 for(i in levels) {
     bm_gzip[[ paste(i) ]] <- microbenchmark::microbenchmark(
         run_test(dat, filter = 'gzip', level = i),
         run_test(dat, filter = 'gzip', level = i, shuffle = FALSE),
-        times = 2L, control = list(warmup = 0L)
+        times = iterations, control = list(warmup = 0L)
     )
 }
+```
 
+```{r, gzip-process}
 bm_gzip2 <- mapply(function(x, y) { 
     x$expr <- gsub(x = x$expr, pattern = "level = i", replacement = paste0("level = ", y)); 
     x
@@ -109,16 +114,18 @@ gzip_res <- as_tibble(bm_gzip2) %>%
     select(filter, level, shuffle, time)
 ```
 
-```{r, bzip2}
+```{r, bzip2-run, cache = TRUE}
 bm_bzip2 <- list()
 for(i in levels) {
     bm_bzip2[[ paste(i) ]] <- microbenchmark::microbenchmark(
         run_test(dat, filter = "bzip2", level = i),
         run_test(dat, filter = "bzip2", level = i, shuffle = FALSE),
-        times = 2L, control = list(warmup = 0L)
+        times = iterations, control = list(warmup = 0L)
     )
 }
+```
 
+```{r, bzip2-processes}
 bm_bzip22 <- mapply(function(x, y) { 
     x$expr <- gsub(x = x$expr, pattern = "level = i", replacement = paste0("level = ", y)); 
     x
@@ -137,35 +144,35 @@ bm_szip <- list()
     bm_szip[[ 1 ]] <- microbenchmark::microbenchmark(
         run_test(dat, filter = "szip"),
         run_test(dat, filter = "szip", shuffle = FALSE),
-        times = 2L, control = list(warmup = 0L)
+        times = iterations, control = list(warmup = 0L)
     )
 ```
 
 ```{r, eval=TRUE}
-all_timings <- bind_row(blosc_res, gzip_res, bzip2_res)
+all_timings <- bind_rows(blosc_res, gzip_res, bzip2_res)
 saveRDS(all_timings, file = "all_timings.rds")
 ```
 
 
-```{r, sizes, eval = FALSE}
+```{r, sizes, eval = TRUE}
 size_table <- list()
 for(i in levels) {
     for(j in 1:6) {
         run_test(dat, filter = "blosc", method = j, level = i, 
-                 h5File = paste0("/tmp/blosc-", j, "_", i, "_TRUE.h5"), rm = FALSE)
+                 h5File = paste0(workingdir, "/blosc-", j, "_", i, "_TRUE.h5"), rm = FALSE)
         run_test(dat, filter = "blosc", method = j, level = i, shuffle = FALSE, 
-                 h5File = paste0("/tmp/blosc-", j,  "_", i, "_FALSE.h5"), rm = FALSE)
+                 h5File = paste0(workingdir, "/blosc-", j,  "_", i, "_FALSE.h5"), rm = FALSE)
     }
     run_test(dat, filter = "gzip", level = i, 
-             h5File = paste0("/tmp/gzip_", i, "_TRUE.h5"), rm = FALSE)
+             h5File = paste0(workingdir, "/gzip_", i, "_TRUE.h5"), rm = FALSE)
     run_test(dat, filter = "gzip", level = i, shuffle = FALSE, 
-             h5File = paste0("/tmp/gzip_", i, "_FALSE.h5"), rm = FALSE)
+             h5File = paste0(workingdir, "/gzip_", i, "_FALSE.h5"), rm = FALSE)
     run_test(dat, filter = "bzip2", level = i, 
-             h5File = paste0("/tmp/bzip2_", i, "_TRUE.h5"), rm = FALSE)
+             h5File = paste0(workingdir, "/bzip2_", i, "_TRUE.h5"), rm = FALSE)
     run_test(dat, filter = "bzip2", level = i, shuffle = FALSE, 
-             h5File = paste0("/tmp/bzip2_", i, "_FALSE.h5"), rm = FALSE)
+             h5File = paste0(workingdir, "/bzip2_", i, "_FALSE.h5"), rm = FALSE)
     
-    files <- list.files("*.h5", path = "/tmp", full.names = TRUE)
+    files <- list.files("*.h5", path = workingdir, full.names = TRUE)
     size_table[[paste(i)]] <- tibble(file = basename(files), size = file.size(files))
 
     file.remove(files)
@@ -184,3 +191,21 @@ saveRDS(size_table2, file = "all_sizes.rds")
 all_data <- left_join(all_timings, size_table2)
 saveRDS(all_data, file = "all_data.rds")
 ```
+
+
+```{r, plotting}
+ggplot(all_data) + 
+    geom_point(aes(x = level, y = size, color = shuffle)) + 
+    facet_wrap('filter')
+
+ggplot(all_data) + 
+    geom_bar(aes(x = level, y = size, fill = shuffle), stat = "identity", position=position_dodge()) +
+    facet_wrap('filter')
+
+all_data %>%
+    group_by(filter, level, shuffle) %>%
+    summarise(mean_time = mean(time), size = mean(size)) %>%
+    ggplot() + 
+        geom_point(aes(x = mean_time, y = size, color = filter))
+```
+
