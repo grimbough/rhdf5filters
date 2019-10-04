@@ -9,20 +9,23 @@ library(dplyr)
 library(microbenchmark)
 library(rhdf5)
 library(stringr)
+library(hdf5Filters)
+library(ggplot2)
 ```
 
 ```{r, loadData}
 pbmc8k <- TENxPBMCData::TENxPBMCData("pbmc3k")
 dat <- as.matrix(assay(pbmc8k))
-levels <- c(1,2)
-iterations <- 2L
-workingdir <- tempdir()
+levels <- c(1,2,3,4,5,6,7,8,9)
+#levels <- c(1,2,5,7)
+iterations <- 10L
+workingdir <- "/tmpdata/msmith/benchmark"
 ```
 
 ```{r, defineFunction}
 run_test <- function(dat, filter, method, level, shuffle = TRUE, h5File = NULL, rm = TRUE) {
     if(is.null(h5File))
-        h5File <- tempfile(pattern = "ex_save", fileext = ".h5")
+        h5File <- tempfile(pattern = "ex_save", fileext = ".h5", tmpdir = workingdir)
     fid <- H5Fcreate(h5File)
     on.exit(H5Fclose(fid))
     
@@ -45,66 +48,134 @@ run_test <- function(dat, filter, method, level, shuffle = TRUE, h5File = NULL, 
     } else if (filter == "szip") {
         if(shuffle) { H5Pset_shuffle(dcpl) }
         rhdf5:::H5Pset_szip(dcpl, options_mask = 1L, pixels_per_block = 32)
+    } else if (filter == "none") {
+
     }
     did <- H5Dcreate(fid, paste0("test"), tid, sid, dcpl = dcpl)
     H5Dwrite(dat, h5dataset = did)
     H5Dclose(did)
 
 }
+
+mapLevels <- function(x, y) { 
+    x$expr <- gsub(x = x$expr, 
+                   pattern = "level = i", 
+                   replacement = paste0("level = ", y))
+    return(x)
+}
+
 ```
 
-```{r, blosc, cache=TRUE}
-bm_blosc <- list()
+```{r, uncompressed, cache = FALSE}
+bm_uncmp <- microbenchmark::microbenchmark(
+    run_test(dat, filter = "none"),
+    run_test(dat, filter = "none", shuffle = FALSE),
+    times = iterations, control = list(warmup = 1L)
+)
+
+uncmp_res <- as_tibble(bm_uncmp) %>%
+    mutate(filter = "none", 
+           level = "0", 
+           shuffle = !stringr::str_detect(expr, "shuffle = FALSE"),
+           time = time / 1e9) %>%
+    select(filter, level, shuffle, time)
+    
+```
+
+```{r, blosc-1-run, cache=FALSE}
+bm_blosc_lz <- list()
 for(i in levels) {
-bm_blosc[[ paste(i) ]] <- microbenchmark::microbenchmark(
-    run_test(dat, filter = "blosc", method = 1, level = i),
-    run_test(dat, filter = "blosc", method = 2, level = i),
-    run_test(dat, filter = "blosc", method = 3, level = i),
-    run_test(dat, filter = "blosc", method = 4, level = i),
-    run_test(dat, filter = "blosc", method = 5, level = i),
-    run_test(dat, filter = "blosc", method = 6, level = i),
-    run_test(dat, filter = "blosc", method = 1, level = i, shuffle = FALSE),
-    run_test(dat, filter = "blosc", method = 2, level = i, shuffle = FALSE),
-    run_test(dat, filter = "blosc", method = 3, level = i, shuffle = FALSE),
-    run_test(dat, filter = "blosc", method = 4, level = i, shuffle = FALSE),
-    run_test(dat, filter = "blosc", method = 5, level = i, shuffle = FALSE),
-    run_test(dat, filter = "blosc", method = 6, level = i, shuffle = FALSE),
-    times = iterations, control = list(warmup = 0L))
+    bm_blosc_lz[[ paste(i) ]] <- microbenchmark::microbenchmark(
+        run_test(dat, filter = "blosc", method = 1, level = i),
+        run_test(dat, filter = "blosc", method = 1, level = i, shuffle = FALSE),
+        times = iterations, control = list(warmup = 1L))
 }
+bm_blosc_lz <- mapply(mapLevels, bm_blosc_lz, levels, SIMPLIFY = FALSE ) %>% 
+    bind_rows()
+```
+
+```{r, blosc-2-run, cache=FALSE}
+bm_blosc_lz4 <- list()
+for(i in levels) {
+    bm_blosc_lz4[[ paste(i) ]] <- microbenchmark::microbenchmark(
+        run_test(dat, filter = "blosc", method = 2, level = i),
+        run_test(dat, filter = "blosc", method = 2, level = i, shuffle = FALSE),
+        times = iterations, control = list(warmup = 1L))
+}
+bm_blosc_lz4 <- mapply(mapLevels, bm_blosc_lz4, levels, SIMPLIFY = FALSE ) %>% 
+    bind_rows()
+```
+
+```{r, blosc-3-run, cache=FALSE}
+bm_blosc_lz4hc <- list()
+for(i in levels) {
+    bm_blosc_lz4hc[[ paste(i) ]] <- microbenchmark::microbenchmark(
+        run_test(dat, filter = "blosc", method = 3, level = i),
+        run_test(dat, filter = "blosc", method = 3, level = i, shuffle = FALSE),
+        times = iterations, control = list(warmup = 1L))
+}
+bm_blosc_lz4hc <- mapply(mapLevels, bm_blosc_lz4hc, levels, SIMPLIFY = FALSE ) %>% 
+    bind_rows()
+```
+
+```{r, blosc-4-run, cache=FALSE}
+bm_blosc_snappy <- microbenchmark::microbenchmark(
+    run_test(dat, filter = "blosc", method = 4, level = 1),
+    run_test(dat, filter = "blosc", method = 4, level = 1, shuffle = FALSE),
+    times = iterations, control = list(warmup = 1L)
+) %>% as_tibble()
+```
+
+```{r, blosc-5-run, cache=FALSE}
+bm_blosc_zlib <- list()
+for(i in levels) {
+    bm_blosc_zlib[[ paste(i) ]] <- microbenchmark::microbenchmark(
+        run_test(dat, filter = "blosc", method = 5, level = i),
+        run_test(dat, filter = "blosc", method = 5, level = i, shuffle = FALSE),
+        times = iterations, control = list(warmup = 1L))
+}
+bm_blosc_zlib <- mapply(mapLevels, bm_blosc_zlib, levels, SIMPLIFY = FALSE ) %>% 
+    bind_rows()
+```
+
+```{r, blosc-6-run, cache=FALSE}
+bm_blosc_zstd <- list()
+for(i in levels) {
+    bm_blosc_zstd[[ paste(i) ]] <- microbenchmark::microbenchmark(
+        run_test(dat, filter = "blosc", method = 6, level = i),
+        run_test(dat, filter = "blosc", method = 6, level = i, shuffle = FALSE),
+        times = iterations, control = list(warmup = 1L))
+}
+bm_blosc_zstd <- mapply(mapLevels, bm_blosc_zstd, levels, SIMPLIFY = FALSE ) %>% 
+    bind_rows()
 ```
 
 ```{r, process-blosc}
-bm_blosc2 <- mapply(function(x, y) { 
-    x$expr <- gsub(x = x$expr, pattern = "level = i", replacement = paste0("level = ", y)); 
-    x
-    }, bm_blosc, names(bm_blosc), SIMPLIFY = FALSE ) %>% 
-    bind_rows()
-
-blosc_res <- as_tibble(bm_blosc2) %>% 
+blosc_res <- bind_rows(bm_blosc_lz, bm_blosc_lz4, bm_blosc_lz4hc,
+                       bm_blosc_snappy, bm_blosc_zlib, bm_blosc_zstd) %>% 
     mutate(filter = paste0(stringr::str_match(expr, "\"(.*)\"")[,2], "-",
                           stringr::str_match(expr, "method = ([0-9])")[,2]),
            level = stringr::str_match(expr, "level = ([0-9])")[,2],
            shuffle = !stringr::str_detect(expr, "shuffle = FALSE"), 
            time = time / 1e9) %>%
     select(filter, level, shuffle, time)
+saveRDS(blosc_res, file = "blosc_res.rds")
 ```
 
-```{r, gzip-run, cache = TRUE}
+```{r, gzip-run, cache = FALSE}
 bm_gzip <- list()
 for(i in levels) {
     bm_gzip[[ paste(i) ]] <- microbenchmark::microbenchmark(
         run_test(dat, filter = 'gzip', level = i),
         run_test(dat, filter = 'gzip', level = i, shuffle = FALSE),
-        times = iterations, control = list(warmup = 0L)
+        times = iterations, control = list(warmup = 1L)
     )
 }
 ```
 
 ```{r, gzip-process}
-bm_gzip2 <- mapply(function(x, y) { 
-    x$expr <- gsub(x = x$expr, pattern = "level = i", replacement = paste0("level = ", y)); 
-    x
-    }, bm_gzip, names(bm_gzip), SIMPLIFY = FALSE ) %>% bind_rows()
+bm_gzip2 <- mapply(mapLevels, bm_gzip, names(bm_gzip), SIMPLIFY = FALSE ) %>% 
+    bind_rows()
 
 gzip_res <- as_tibble(bm_gzip2) %>% 
     mutate(filter = stringr::str_match(expr, "\"(.*)\"")[,2],
@@ -112,9 +183,10 @@ gzip_res <- as_tibble(bm_gzip2) %>%
            shuffle = !stringr::str_detect(expr, "shuffle = FALSE"), 
            time = time / 1e9) %>%
     select(filter, level, shuffle, time)
+saveRDS(gzip_res, file = "gzip_res.rds")
 ```
 
-```{r, bzip2-run, cache = TRUE}
+```{r, bzip2-run, cache = FALSE}
 bm_bzip2 <- list()
 for(i in levels) {
     bm_bzip2[[ paste(i) ]] <- microbenchmark::microbenchmark(
@@ -137,27 +209,31 @@ bzip2_res <- as_tibble(bm_bzip22) %>%
            shuffle = !stringr::str_detect(expr, "shuffle = FALSE"), 
            time = time / 1e9) %>%
     select(filter, level, shuffle, time)
+saveRDS(bzip2_res, file = "bzip2_res.rds")
 ```
 
 ```{r, szip, eval = FALSE}
 bm_szip <- list()
-    bm_szip[[ 1 ]] <- microbenchmark::microbenchmark(
+bm_szip[[ 1 ]] <- microbenchmark::microbenchmark(
         run_test(dat, filter = "szip"),
         run_test(dat, filter = "szip", shuffle = FALSE),
         times = iterations, control = list(warmup = 0L)
-    )
+)
 ```
 
 ```{r, eval=TRUE}
-all_timings <- bind_rows(blosc_res, gzip_res, bzip2_res)
+all_timings <- bind_rows(uncmp_res, blosc_res, gzip_res, bzip2_res) %>%
+    dplyr::rename(write_time = time) %>%
+    arrange(filter, level, shuffle)
 saveRDS(all_timings, file = "all_timings.rds")
 ```
 
 
 ```{r, sizes, eval = TRUE}
 size_table <- list()
+bm_read <- list()
 for(i in levels) {
-    for(j in 1:6) {
+    for(j in c(1,2,3,5,6)) {
         run_test(dat, filter = "blosc", method = j, level = i, 
                  h5File = paste0(workingdir, "/blosc-", j, "_", i, "_TRUE.h5"), rm = FALSE)
         run_test(dat, filter = "blosc", method = j, level = i, shuffle = FALSE, 
@@ -174,38 +250,140 @@ for(i in levels) {
     
     files <- list.files("*.h5", path = workingdir, full.names = TRUE)
     size_table[[paste(i)]] <- tibble(file = basename(files), size = file.size(files))
+    
+    bm_read[[ paste(i) ]] <- microbenchmark::microbenchmark(
+        h5read(paste0(workingdir, "/blosc-1_", i, "_TRUE.h5"), name = "test"),
+        h5read(paste0(workingdir, "/blosc-1_", i, "_FALSE.h5"), name = "test"),
+        h5read(paste0(workingdir, "/blosc-2_", i, "_TRUE.h5"), name = "test"),
+        h5read(paste0(workingdir, "/blosc-2_", i, "_FALSE.h5"), name = "test"),
+        h5read(paste0(workingdir, "/blosc-3_", i, "_TRUE.h5"), name = "test"),
+        h5read(paste0(workingdir, "/blosc-3_", i, "_FALSE.h5"), name = "test"),
+        h5read(paste0(workingdir, "/blosc-5_", i, "_TRUE.h5"), name = "test"),
+        h5read(paste0(workingdir, "/blosc-5_", i, "_FALSE.h5"), name = "test"),
+        h5read(paste0(workingdir, "/blosc-6_", i, "_TRUE.h5"), name = "test"),
+        h5read(paste0(workingdir, "/blosc-6_", i, "_FALSE.h5"), name = "test"),
+        h5read(paste0(workingdir, "/gzip_", i, "_TRUE.h5"), name = "test"),
+        h5read(paste0(workingdir, "/gzip_", i, "_FALSE.h5"), name = "test"),
+        h5read(paste0(workingdir, "/bzip2_", i, "_TRUE.h5"), name = "test"),
+        h5read(paste0(workingdir, "/bzip2_", i, "_FALSE.h5"), name = "test"),
+        times = iterations, control = list(warmup = 1L)
+    )
 
     file.remove(files)
 }
 
+## treat snappy seperately since levels don't mean anything
+run_test(dat, filter = "blosc", method = 4, level = 1, 
+            h5File = paste0(workingdir, "/blosc-4_1_TRUE.h5"), rm = FALSE)
+run_test(dat, filter = "blosc", method = 4, level = 1, shuffle = FALSE, 
+            h5File = paste0(workingdir, "/blosc-4_1_FALSE.h5"), rm = FALSE)
+run_test(dat, filter = "none", method = 4, level = 0, 
+            h5File = paste0(workingdir, "/none_0_TRUE.h5"), rm = FALSE)
+run_test(dat, filter = "none", method = 4, level = 0, shuffle = FALSE, 
+            h5File = paste0(workingdir, "/none_0_FALSE.h5"), rm = FALSE)
+
+files <- list.files("*.h5", path = workingdir, full.names = TRUE)
+size_table[[ '1' ]] <- bind_rows(size_table[[ '1' ]], 
+                                 tibble(file = basename(files), size = file.size(files)))
+
+bm_read[[ '1' ]] <- bind_rows(bm_read[[ '1' ]],
+                              microbenchmark::microbenchmark(
+                                h5read(paste0(workingdir, "/blosc-4_1_TRUE.h5"), name = "test"),
+                                h5read(paste0(workingdir, "/blosc-4_1_FALSE.h5"), name = "test"),
+                                h5read(paste0(workingdir, "/none_0_TRUE.h5"), name = "test"),
+                                h5read(paste0(workingdir, "/none_0_FALSE.h5"), name = "test"),
+                                times = iterations, control = list(warmup = 1L)
+                              )
+    )
+
+file.remove(files)
+```
+
+```{r, size-processing}
 size_table2 <- bind_rows(size_table) %>%
     mutate(filter = str_match(file, "([a-z0-9-]*)_")[,2],
            level = str_match(file, "_([0-9])_")[,2],
            shuffle = as.logical(str_match(file, "_([A-Z]*).h5")[,2])) %>%
-    select(filter, level, shuffle, size)
+    select(filter, level, shuffle, size) %>%
+    arrange(filter, level, shuffle)
 
 saveRDS(size_table2, file = "all_sizes.rds")
 ```
 
+```{r, read-processing}
+
+bm_read2 <- mapply(function(x, y) { 
+    x$expr <- gsub(x = x$expr, pattern = "\", i, \"", replacement = y); 
+    x
+    }, bm_read, names(bm_read), SIMPLIFY = FALSE ) %>% 
+    bind_rows()
+
+bm_read2 <- bm_read2 %>%
+    mutate(filter = str_match(expr, "([a-z0-9-]*)_")[,2],
+           level = str_match(expr, "_([0-9])_")[,2],
+           shuffle = as.logical(str_match(expr, "_([A-Z]*).h5")[,2])) %>%
+    select(filter, level, shuffle, read_time = time) %>%
+    arrange(filter, level, shuffle)
+```
+
 ```{r, combine, eval=TRUE}
-all_data <- left_join(all_timings, size_table2)
+all_data <- left_join(all_timings, size_table2) %>%
+    mutate(read_time = bm_read2$read_time / 1e9)
 saveRDS(all_data, file = "all_data.rds")
 ```
 
 
 ```{r, plotting}
 ggplot(all_data) + 
-    geom_point(aes(x = level, y = size, color = shuffle)) + 
-    facet_wrap('filter')
+    geom_boxplot(aes(x = interaction(level, filter), y = write_time, fill = filter, color = filter)) + 
+    geom_jitter(aes(x = interaction(level, filter), y = write_time, color = filter)) +
+    facet_grid(rows = 'shuffle') +
+    theme_bw()
 
 ggplot(all_data) + 
-    geom_bar(aes(x = level, y = size, fill = shuffle), stat = "identity", position=position_dodge()) +
+    geom_point(aes(x = level, y = read_time, color = shuffle)) + 
     facet_wrap('filter')
+
 
 all_data %>%
     group_by(filter, level, shuffle) %>%
-    summarise(mean_time = mean(time), size = mean(size)) %>%
+    summarise(mean_read_time = mean(read_time), size = mean(size)) %>%
+    ungroup() %>%
+ggplot() + 
+    geom_line(aes(x = level, y = (max(size) / 1e6) / mean_read_time, color = filter, group = filter)) +
+    ylab("MB/s") +
+    facet_wrap("shuffle")
+
+all_data %>%
+    mutate(compression_ratio = max(size) / size ) %>%
+    group_by(filter, level, shuffle) %>%
+    summarise(mean_write_time = mean(write_time), compression_ratio = max(compression_ratio), size = max(size)) %>% 
+    ungroup() %>%
+    mutate(speed = (max(size) / 1e6) / mean_write_time) %>%
+ggplot() + 
+    geom_point(aes(x = compression_ratio, y = speed, color = filter, shape = shuffle), size = 5) 
+
+
+all_data %>%
+    mutate(compression_ratio = max(size) / size ) %>%
+    group_by(filter, level, shuffle) %>%
+    summarise(mean_read_time = mean(read_time), compression_ratio = max(compression_ratio), size = max(size)) %>% 
+    ungroup() %>%
+    mutate(speed = (max(size) / 1e6) / mean_read_time) %>%
+ggplot() + 
+    geom_point(aes(x = compression_ratio, y = speed, color = filter, shape = shuffle), size = 5) 
+
+
+all_data %>%
+    group_by(filter, level, shuffle) %>%
+    summarise(mean_write_time = mean(write_time), size = mean(size)) %>%
     ggplot() + 
-        geom_point(aes(x = mean_time, y = size, color = filter))
+        geom_point(aes(x = mean_write_time, y = size, color = filter))
+
+all_data %>%
+    group_by(filter, level, shuffle) %>%
+    summarise(mean_read_time = mean(read_time), size = mean(size)) %>%
+    ggplot() + 
+        geom_point(aes(x = mean_read_time, y = size, color = filter))
 ```
 
