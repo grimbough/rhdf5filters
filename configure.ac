@@ -19,9 +19,11 @@ CXX=`"${R_HOME}/bin/R" CMD config CXX`
 CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
 CXXPICFLAGS=`"${R_HOME}/bin/R" CMD config CXXPICFLAGS`
 MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
-AR=`"${R_HOME}/bin/R" CMD config AR`
 RANLIB=`"${R_HOME}/bin/R" CMD config RANLIB`
 
+## seems unreliable as to whether this information is available
+AR=`"${R_HOME}/bin/R" CMD config AR`
+AS_IF([test "x$AR" = "xERROR: no information for variable 'AR'"], [AC_PATH_PROG([AR], [ar])], [])
 
 # determine the location of the Rhdf5lib versions of the HDF5 library
 RHDF5_LIBS=`echo 'Rhdf5lib::pkgconfig("PKG_C_LIBS")'|\
