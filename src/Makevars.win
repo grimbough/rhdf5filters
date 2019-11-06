@@ -1,11 +1,27 @@
-#expose headers in installed package include folder
+
 USER_LIB_DIR = ${R_PACKAGE_DIR}/lib${R_ARCH}/
 
-all: copying $(SHLIB)
+export CC=`R CMD config CC`
+export CFLAGS=`R CMD config CFLAGS`
+export CXX=`R CMD config CXX`
+export CXXFLAGS=`R CMD config CXXFLAGS`
+export AR=`R CMD config AR`
+export RANLIB=`R CMD config RANLIB`
+export MAKE=`R CMD config MAKE`
 
-#copy hdf5 library headers to package include
-copying:
+RHDF5_INCLUDE=$(shell echo 'cat(system.file("include", package="Rhdf5lib"))'|\
+    "${R_HOME}/bin/R" --vanilla --slave)
+export PKG_CPPFLAGS = -lpthread -I"$(RHDF5_INCLUDE)"
+
+all: copying
+
+copying: blosc/libH5Zblosc.dll
 	mkdir -p "${USER_LIB_DIR}"
-	cp winlib$(R_ARCH)/libh5blosc.dll "${USER_LIB_DIR}"
-  cp winlib$(R_ARCH)/liblzf_filter.dll "${USER_LIB_DIR}"
+	cp blosc/libH5Zblosc.dll "${USER_LIB_DIR}"
   
+blosc/libH5Zblosc.dll:
+	$(MAKE) -C blosc
+	
+clean:
+	rm -f blosc/libH5Zblosc.dll
+	$(MAKE) -C blosc clean
