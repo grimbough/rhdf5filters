@@ -15,13 +15,13 @@
 #SHELL=/bin/sh
 
 # To assist in cross-compiling
-CC=gcc
-AR=ar
-RANLIB=ranlib
-LDFLAGS=
+#CC=gcc
+#AR=ar
+#RANLIB=ranlib
+#LDFLAGS=
 
 BIGFILES=-D_FILE_OFFSET_BITS=64
-CFLAGS=-Wall -Winline -fPIC -O2 -g $(BIGFILES)
+FLAGS=$(CFLAGS) $(CPICFLAGS) $(BIGFILES)
 
 
 OBJS= blocksort.o  \
@@ -47,21 +47,21 @@ clean:
 	rm -f *.o libbz2.a 
 
 blocksort.o: blocksort.c
-	$(CC) $(CFLAGS) -c blocksort.c
+	$(CC) $(FLAGS) -c blocksort.c
 huffman.o: huffman.c
-	$(CC) $(CFLAGS) -c huffman.c
+	$(CC) $(FLAGS) -c huffman.c
 crctable.o: crctable.c
-	$(CC) $(CFLAGS) -c crctable.c
+	$(CC) $(FLAGS) -c crctable.c
 randtable.o: randtable.c
-	$(CC) $(CFLAGS) -c randtable.c
+	$(CC) $(FLAGS) -c randtable.c
 compress.o: compress.c
-	$(CC) $(CFLAGS) -c compress.c
+	$(CC) $(FLAGS) -c compress.c
 decompress.o: decompress.c
-	$(CC) $(CFLAGS) -c decompress.c
+	$(CC) $(FLAGS) -c decompress.c
 bzlib.o: bzlib.c
-	$(CC) $(CFLAGS) -c bzlib.c
+	$(CC) $(FLAGS) -c bzlib.c
 bzip2.o: bzip2.c
-	$(CC) $(CFLAGS) -c bzip2.c
+	$(CC) $(FLAGS) -c bzip2.c
 bzip2recover.o: bzip2recover.c
-	$(CC) $(CFLAGS) -c bzip2recover.c
+	$(CC) $(FLAGS) -c bzip2recover.c
 

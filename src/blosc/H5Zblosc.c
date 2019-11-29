@@ -94,6 +94,10 @@ static size_t H5Z_filter_blosc(unsigned flags, size_t cd_nelmts,
     const char *compname = NULL;
     const char *complist;
     char errmsg[256];
+    
+    //int nthreads = 4;
+    //int pnthreads = blosc_set_nthreads(nthreads);
+    //printf("Using %d threads (previously using %d)\n", nthreads, pnthreads);
 
     /* Filter params that are always set */
     typesize = cd_values[2];      /* The datatype size */
@@ -108,16 +112,14 @@ static size_t H5Z_filter_blosc(unsigned flags, size_t cd_nelmts,
     if (cd_nelmts >= 7) {
         compcode = cd_values[6];     /* The Blosc compressor used */
 	/* Check that we actually have support for the compressor code */
-    complist = blosc_list_compressors();
-    //printf("complist: %s\n", complist);
-	code = blosc_compcode_to_compname(compcode, &compname);
-    //printf("code: %d, %d, %s\n", code, compcode, compname);
-	if (code == -1) {
-	    fprintf(stderr, "blosc filter: this Blosc library does not have support for "
-             "the '%s' compressor, but only for: %s\n",
-		    compname, complist);
-            goto failed;
-	}
+        complist = blosc_list_compressors();
+    	code = blosc_compcode_to_compname(compcode, &compname);
+    	if (code == -1) {
+    	    fprintf(stderr, "blosc filter: this Blosc library does not have support for "
+                 "the '%s' compressor, but only for: %s\n",
+    		    compname, complist);
+                goto failed;
+    	}
     }   
 
     /* We're compressing */

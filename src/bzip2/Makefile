@@ -2,7 +2,7 @@
 all: libH5Zbz2.so
 
 libH5Zbz2.so:	bzip2-1.0.8/libbz2.a
-	${CC} ${CFLAGS} ${CPICFLAGS} -shared H5Zbzip2.c -I$RHDF5_INCLUDE \
+	${CC} ${CFLAGS} ${CPICFLAGS} -shared H5Zbzip2.c $(PKG_CPPFLAGS) \
 	-I./bzip2-1.0.8/ ./bzip2-1.0.8/libbz2.a -o libH5Zbz2.so
 
 bzip2-1.0.8/libbz2.a:

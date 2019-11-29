@@ -26,12 +26,6 @@ blosc/libH5Zblosc.so:
 bzip2/libH5Zbz2.so:
 	$(MAKE) -C bzip2
 	
-#cd src/bzip2/bzip2-1.0.8;
-#$MAKE
-#cd ../
-#${CC} ${CFLAGS} ${CPICFLAGS} -shared H5Zbzip2.c -I$RHDF5_INCLUDE -I./bzip2-1.0.8/ ./bzip2-1.0.8/libbz2.a -o libH5Zbz2.so
-#cd ../../
-	
 clean:
 	rm -f blosc/libH5Zblosc.dll
 	$(MAKE) -C blosc clean

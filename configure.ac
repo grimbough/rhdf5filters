@@ -12,54 +12,35 @@ if test -z "${R_HOME}"; then
   exit 1
 fi
 
-CC=`"${R_HOME}/bin/R" CMD config CC`
-CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
-CPICFLAGS=`"${R_HOME}/bin/R" CMD config CPICFLAGS`
-CXX=`"${R_HOME}/bin/R" CMD config CXX`
-CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
-CXXPICFLAGS=`"${R_HOME}/bin/R" CMD config CXXPICFLAGS`
-MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
-RANLIB=`"${R_HOME}/bin/R" CMD config RANLIB`
+AC_SUBST(CC, `"${R_HOME}/bin/R" CMD config CC`)
+AC_SUBST(CFLAGS, `"${R_HOME}/bin/R" CMD config CFLAGS`)
+AC_SUBST(CPICFLAGS, `"${R_HOME}/bin/R" CMD config CPICFLAGS`)
+AC_SUBST(CXX, `"${R_HOME}/bin/R" CMD config CXX`)
+AC_SUBST(CXXFLAGS, `"${R_HOME}/bin/R" CMD config CXXFLAGS`)
+AC_SUBST(CXXPICFLAGS, `"${R_HOME}/bin/R" CMD config CXXPICFLAGS`)
+AC_SUBST(MAKE, `"${R_HOME}/bin/R" CMD config MAKE`)
+AC_SUBST(RANLIB, `"${R_HOME}/bin/R" CMD config RANLIB`)
 
 ## seems unreliable as to whether this information is available
 AR=`"${R_HOME}/bin/R" CMD config AR`
 AS_IF([test "x$AR" = "xERROR: no information for variable 'AR'"], [AC_PATH_PROG([AR], [ar])], [])
+AC_SUBST(AR)
 
 # determine the location of the Rhdf5lib versions of the HDF5 library
-RHDF5_LIBS=`echo 'Rhdf5lib::pkgconfig("PKG_C_LIBS")'|\
-    "${R_HOME}/bin/R" --vanilla --slave`
 RHDF5_INCLUDE=`echo 'cat(system.file("include", package="Rhdf5lib"))'|\
     "${R_HOME}/bin/R" --vanilla --slave`
+AC_SUBST(RHDF5_INCLUDE)
     
-echo "building BZIP2 filter..."
-cd src/bzip2/bzip2-1.0.8;
-$MAKE
-cd ../
-${CC} ${CFLAGS} ${CPICFLAGS} -shared H5Zbzip2.c -I$RHDF5_INCLUDE -I./bzip2-1.0.8/ ./bzip2-1.0.8/libbz2.a -o libH5Zbz2.so
-cd ../../
-
-echo "building the BLOSC filter...";
-cd src/blosc/
-$MAKE CC="${CC}" CFLAGS="${CFLAGS}" CPICFLAGS="${CPICFLAGS}" CXX="${CXX}" CXXFLAGS="${CXXFLAGS}" CXXPICFLAGS="${CXXPICFLAGS}" CPPFLAGS="-I${RHDF5_INCLUDE}" AR="${AR}" MAKE="${MAKE}"
-cd ../../
-
-
-#cd src/blosc/lib/lz4-1.8.3
-#${CC} ${CFLAGS} -fPIC -c *.c
-#cd ../snappy-1.1.1
-#${CXX} ${CXXFLAGS} -fPIC -c *.cc
-#cd ../zstd-1.3.8
-#$MAKE CFLAGS="${CFLAGS} -fPIC" ZSTD_LEGACY_SUPPORT=0
-#cd ../blosc-1.16.3
-#${CC} ${CFLAGS} -fPIC -c *.c
+#echo "building BZIP2 filter..."
+#cd src/bzip2/bzip2-1.0.8;
+#$MAKE
+#cd ../
+#${CC} ${CFLAGS} ${CPICFLAGS} -shared H5Zbzip2.c -I$RHDF5_INCLUDE -I./bzip2-1.0.8/ ./bzip2-1.0.8/libbz2.a -o #libH5Zbz2.so
 #cd ../../
-#${CC} ${CFLAGS} -fPIC -msse2 -mavx -c H5Zblosc.c -I${RHDF5_INCLUDE} -I./lib/blosc-1.16.3/ 
-## Linking step
-#${CC} ${CFLAGS} -fPIC -shared \
-#    -o libH5Zblosc.so \
-#    H5Zblosc.o ./lib/blosc-1.16.3/*.o ./lib/lz4-1.8.3/*.o ./lib/snappy-1.1.1/*.o \
-#    ./lib/zstd-1.3.8/compress/*.o ./lib/zstd-1.3.8/decompress/*.o ./lib/zstd-1.3.8/common/*.o \
-#    -lz -lpthread
+
+#echo "building the BLOSC filter...";
+#cd src/blosc/
+#$MAKE CC="${CC}" CFLAGS="${CFLAGS}" CPICFLAGS="${CPICFLAGS}" CXX="${CXX}" CXXFLAGS="${CXXFLAGS}" CXXPICFLAGS#="${CXXPICFLAGS}" CPPFLAGS="-I${RHDF5_INCLUDE}" AR="${AR}" MAKE="${MAKE}"
 #cd ../../
 
 

@@ -1,13 +1,34 @@
 BZIP2_LIB=@BZIP2_LIB@
 BLOSC_LIB=@BLOSC_LIB@
 
-#expose headers in installed package include folder
-USER_LIB_DIR = ${R_PACKAGE_DIR}/lib${R_ARCH}/
+# location to copy the shared objects to
+USER_LIB_DIR = ${R_PACKAGE_DIR}/lib/
+
+export CC=@CC@
+export CFLAGS=@CFLAGS@
+export CPICFLAGS=@CPICFLAGS@
+export CXX=@CXX@
+export CXXFLAGS=@CXXFLAGS@
+export CXXPICFLAGS=@CXXPICFLAGS@
+export RANLIB=@RANLIB@
+export MAKE=@MAKE@
+export AR=@AR@
+export PKG_CPPFLAGS=-lpthread -I"@RHDF5_INCLUDE@"
 
 all: copying $(SHLIB)
 
 #copy hdf5 library headers to package include
-copying:
+copying: blosc/libH5Zblosc.so bzip2/libH5Zbz2.so
 	mkdir -p "${USER_LIB_DIR}"
 	cp ${BZIP2_LIB} ${USER_LIB_DIR}
 	cp ${BLOSC_LIB} ${USER_LIB_DIR}
+
+blosc/libH5Zblosc.so:
+	$(MAKE) -C blosc
+	
+bzip2/libH5Zbz2.so:
+	$(MAKE) -C bzip2
+	
+clean:
+	$(MAKE) -C blosc clean
+	$(MAKE) -C bzip2 clean

@@ -1,13 +1,3 @@
-#SHELL=/bin/sh
-
-export CC
-export CFLAGS
-export CPICFLAGS
-export CXX
-export CXXFLAGS
-export CXXPICFLAGS
-export MAKE
-export AR
 
 BLOSC_OBJS=	lib/blosc-1.16.3/bitshuffle-avx2.o \
 			lib/blosc-1.16.3/blosc.o \
