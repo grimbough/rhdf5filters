@@ -1,8 +1,5 @@
-#!/bin/sh
-
 rm -f src/bzip2/bzip2-1.0.8/*.o 
-rm -f src/bzip2/bzip2-1.0.8/libbz2.a
-rm -f src/blosc/libH5Zbz2.so
+rm -f src/bzip2/bzip2-1.0.8/libbz2.a  
 
 rm -f src/blosc/*.o
 rm -f src/blosc/*.so
@@ -13,4 +10,4 @@ rm -f src/blosc/lib/lz4-*/*.o
 cd src/blosc/lib/zstd-1.3.8/
 make clean
 
-rm -f src/blosc/libH5Zblosc.so
+rm -f src/blosc/libH5Zblosc.dll

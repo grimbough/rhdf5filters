@@ -1,4 +1,4 @@
-SHELL=/bin/sh
+#SHELL=/bin/sh
 
 FLAGS = $(CFLAGS) $(CPICFLAGS)
 

@@ -1,12 +1,11 @@
-SHELL=/bin/sh
+#SHELL=/bin/sh
 
 export CC
 export CFLAGS
 export CPICFLAGS
 export CXX
 export CXXFLAGS
-export CXXPICFLAGS	
-export CPPFLAGS
+export CXXPICFLAGS
 export MAKE
 export AR
 
@@ -40,18 +39,14 @@ all: libH5Zblosc.so
 
 libH5Zblosc.so:	libblosc.a
 	$(CXX) $(CXXFLAGS) $(CPICFLAGS) -shared -o libH5Zblosc.so H5Zblosc.c \
-			$(CPPFLAGS) -I./lib/blosc-1.16.3 \
+			$(PKG_CPPFLAGS) -I./lib/blosc-1.16.3 \
 			libblosc.a \
-			-lpthread -lz
+		  -lz
 
 libblosc.a:  blosc
 	rm -f libblosc.a
 	$(AR) cq libblosc.a $(BLOSC_OBJS) $(SNAPPY_OBJS) $(LZ4_OBJS) $(ZSTD_OBJS)
-	@if ( test -f $(RANLIB) -o -f /usr/bin/ranlib -o \
-		-f /bin/ranlib -o -f /usr/ccs/bin/ranlib ) ; then \
-		echo $(RANLIB) libblosc.a ; \
-		$(RANLIB) libblosc.a ; \
-	fi
+	$(RANLIB) libblosc.a
 
 .PHONY: blosc
 

@@ -12,7 +12,7 @@
 # in the file LICENSE.
 # ------------------------------------------------------------------
 
-SHELL=/bin/sh
+#SHELL=/bin/sh
 
 # To assist in cross-compiling
 CC=gcc
