@@ -9,25 +9,26 @@ BLOSC_OBJS  := $(patsubst %.c,%.o,$(BLOSC_FILES))
 all: $(BLOSC_OBJS)
 
 bitshuffle-avx2.o: bitshuffle-avx2.c
-	$(CC) $(FLAGS) -mavx2 -c bitshuffle-avx2.c
-blosc.o: blosc.c
-	$(CC) $(FLAGS) -c blosc.c
-shuffle-avx2.o: shuffle-avx2.c
-	$(CC) $(FLAGS) -mavx2 -c shuffle-avx2.c
-shuffle-sse2.o: shuffle-sse2.c
-	$(CC) $(FLAGS) -msse2 -c shuffle-sse2.c
+	$(CC) $(FLAGS) -c bitshuffle-avx2.c
+bitshuffle-sse2.o: bitshuffle-sse2.c
+	$(CC) $(FLAGS) -c bitshuffle-sse2.c
 bitshuffle-generic.o: bitshuffle-generic.c
 	$(CC) $(FLAGS) -c bitshuffle-generic.c
-blosclz.o: blosclz.c
-	$(CC) $(FLAGS) -c blosclz.c
-shuffle.o: shuffle.c
-	$(CC) $(FLAGS) -DSHUFFLE_AVX2_ENABLED -c shuffle.c
-bitshuffle-sse2.o: bitshuffle-sse2.c
-	$(CC) $(FLAGS) -msse2 -c bitshuffle-sse2.c
-fastcopy.o: fastcopy.c
-	$(CC) $(FLAGS) -c fastcopy.c
+shuffle-avx2.o: shuffle-avx2.c
+	$(CC) $(FLAGS) -c shuffle-avx2.c
+shuffle-sse2.o: shuffle-sse2.c
+	$(CC) $(FLAGS) -c shuffle-sse2.c
 shuffle-generic.o: shuffle-generic.c
 	$(CC) $(FLAGS) -c shuffle-generic.c
-			
+shuffle.o: shuffle.c
+	$(CC) $(FLAGS) -DSHUFFLE_SSE2_ENABLED -DSHUFFLE_AVX2_ENABLED -c shuffle.c
+blosclz.o: blosclz.c
+	$(CC) $(FLAGS) -c blosclz.c
+blosc.o: blosc.c
+	$(CC) $(FLAGS) -c blosc.c
+fastcopy.o: fastcopy.c
+	$(CC) $(FLAGS) -c fastcopy.c
+
+
 clean:
 	rm -f *.o

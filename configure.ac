@@ -5,7 +5,8 @@ AC_PREREQ([2.65])
 AC_INIT([hdf5Filters], [0.0.1], [grimbough@gmail.com])
 AC_CONFIG_SRCDIR([src])
 
-# Check the compiler configured with R
+m4_include([m4/ax_gcc_x86_cpu_supports.m4])
+
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
   echo "could not determine R_HOME"
@@ -30,19 +31,15 @@ AC_SUBST(AR)
 RHDF5_INCLUDE=`echo 'cat(system.file("include", package="Rhdf5lib"))'|\
     "${R_HOME}/bin/R" --vanilla --slave`
 AC_SUBST(RHDF5_INCLUDE)
-    
-#echo "building BZIP2 filter..."
-#cd src/bzip2/bzip2-1.0.8;
-#$MAKE
-#cd ../
-#${CC} ${CFLAGS} ${CPICFLAGS} -shared H5Zbzip2.c -I$RHDF5_INCLUDE -I./bzip2-1.0.8/ ./bzip2-1.0.8/libbz2.a -o #libH5Zbz2.so
-#cd ../../
 
-#echo "building the BLOSC filter...";
-#cd src/blosc/
-#$MAKE CC="${CC}" CFLAGS="${CFLAGS}" CPICFLAGS="${CPICFLAGS}" CXX="${CXX}" CXXFLAGS="${CXXFLAGS}" CXXPICFLAGS#="${CXXPICFLAGS}" CPPFLAGS="-I${RHDF5_INCLUDE}" AR="${AR}" MAKE="${MAKE}"
-#cd ../../
 
+echo "configuring the BLOSC filter...";
+AX_GCC_X86_CPU_SUPPORTS(sse2, [SSE2="-DSHUFFLE_SSE2_ENABLED"], [SSE2=""])
+AX_GCC_X86_CPU_SUPPORTS(avx2, [AVX2="-DSHUFFLE_AVX2_ENABLED"], [AVX2=""])
+AC_SUBST(SSE2)
+AC_SUBST(AVX2)
+AC_CONFIG_FILES([src/blosc/lib/blosc-1.16.3/Makefile])
+AC_OUTPUT
 
 #update variables in Makevars
 HDF5_INCLUDE="${BASEPBNAME}/src"
