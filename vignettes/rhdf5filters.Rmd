@@ -1,0 +1,23 @@
+---
+title: "HDF5 Compression Filters"
+author:
+- name: Mike L. Smith
+  affiliation: de.NBI & EMBL Heidelberg
+package: rhdf5filters
+output:
+  BiocStyle::html_document
+vignette: |
+  %\VignetteIndexEntry{HDF5 Compression Filters}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+# Motivation
+
+Here is some placeholder text.
+
+
+# Session info {.unnumbered}
+
+```{r sessionInfo, echo=FALSE}
+sessionInfo()
+```

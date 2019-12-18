@@ -1,10 +1,10 @@
-#' hdf5Filters: Filters etc
+#' rhdf5filters: Filters etc
 #' 
 #' This package provides compiled versions of various HDF5 filters
 #'
 #' @docType package
-#' @name hdf5Filters
+#' @name rhdf5filters
 #'
-#' @useDynLib hdf5Filters
+#' @useDynLib rhdf5filters
 #'
 NULL

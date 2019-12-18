@@ -8,6 +8,7 @@ rm -f src/blosc/*.o
 rm -f src/blosc/libblosc.a
 rm -f src/blosc/libH5Zblosc.so
 rm -f src/blosc/lib/blosc-*/*.o
+rm -f src/blosc/lib/blosc-*/Makefile
 rm -f src/blosc/lib/snappy-*/*.o
 rm -f src/blosc/lib/lz4-*/*.o
 rm -f src/blosc/lib/zstd-*/*.o 

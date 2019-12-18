@@ -1,27 +1,24 @@
-
-#' LZF Filter
-H5Pset_lzf <- function( h5plist ) {
-    
-    if(!is.loaded('_H5Pset_lzf', PACKAGE = 'rhdf5'))
-        stop('LZF filter not found.  Please reinstall rhdf5.')
-    
-    rhdf5:::h5checktypeAndPLC(h5plist, "H5P_DATASET_CREATE")
-    res <- .Call("_H5Pset_lzf", h5plist@ID, PACKAGE='rhdf5')
-    invisible(res)
-}
-
-## LZ4 Filter
-H5Pset_lz4 <- function( h5plist ) {
-    
-    if(!is.loaded('_H5Pset_lz4', PACKAGE = 'rhdf5'))
-        stop('LZ4 filter not found.  Please reinstall rhdf5.')
-    
-    rhdf5:::h5checktypeAndPLC(h5plist, "H5P_DATASET_CREATE")
-    res <- .Call("_H5Pset_lz4", h5plist@ID, PACKAGE='rhdf5')
-    invisible(res)
-}
+#' Set HDF5 compression filters
+#' 
+#' Set compressions filters when working with dataset creation property lists.
+#' 
+#' These functions can be used to set the compression filter when working
+#' with dataset creation property lists directly.
+#'
+#' @param h5plist HDF5 dataset creation property list
+#' @param h5tid HDF5 type ID
+#' @param level Compression level to use
+#' @param method When using the BLOSC filter, defines which compression tool 
+#' should be used.
+#' @param shuffle Logical value determining whether byte shuffling should be
+#' applied before compression is applied. This only applies to the BLOSC 
+#' filter (see details below).
+#' 
+#' @name filters
+NULL
 
 ## BZIP2 Filter
+#' @rdname filters
 #' @export
 H5Pset_bzip2 <- function( h5plist, level = 2L ) {
     
@@ -34,10 +31,7 @@ H5Pset_bzip2 <- function( h5plist, level = 2L ) {
 }
 
 ## BLOSC Filter
-## Filter from https://github.com/nexusformat/HDF5-External-Filter-Plugins/
-## contains a call to blosc_set_local() which determines chunk size & blosc
-## parameters. This requires calls to HDF5 functions and doesn't play well
-## with our static linking.  We move this setup code into the function below.
+#' @rdname filters
 #' @export
 H5Pset_blosc <- function( h5plist, h5tid, method = 1L, level = 6L, shuffle = TRUE ) {
     
@@ -46,10 +40,14 @@ H5Pset_blosc <- function( h5plist, h5tid, method = 1L, level = 6L, shuffle = TRU
     
     if(!method %in% 1:6) {
         method <- 1L
-        warning('Invalid method selected.  Using blosclz')
+        warning('Invalid method selected.  Using BLOSC_LZ')
     }
 
     ## START: simplified reimplementation of C code from H5Zblosc.c
+    ## Filter from https://github.com/nexusformat/HDF5-External-Filter-Plugins/
+    ## contains a call to blosc_set_local() which determines chunk size & blosc
+    ## parameters. This requires calls to HDF5 functions and doesn't play well
+    ## with our static linking.  We move this setup code into R code below.
     chunkdims <- H5Pget_chunk(h5plist)
     typesize <- rhdf5:::H5Tget_size(h5tid)
     if(typesize > 255) { typesize <- 1 }

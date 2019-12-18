@@ -3,4 +3,4 @@
 export(H5Pset_blosc)
 export(H5Pset_bzip2)
 export(pkgconfig)
-useDynLib(hdf5Filters)
+useDynLib(rhdf5filters)
