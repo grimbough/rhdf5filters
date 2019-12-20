@@ -16,7 +16,7 @@ if(requireNamespace("rhdf5")) {
         expect_silent( dcpl <- H5Pcreate("H5P_DATASET_CREATE") )
         expect_silent( H5Pset_fill_time( dcpl, "H5D_FILL_TIME_ALLOC" ) )
         expect_silent( H5Pset_chunk( dcpl, 200000) )
-        expect_silent( hdf5Filters::H5Pset_bzip2(dcpl) )
+        expect_silent( rhdf5:::H5Pset_bzip2(dcpl) )
         expect_silent( did <- H5Dcreate(fid, "bzip2", tid, sid, dcpl = dcpl) )
         expect_silent( H5Dwrite(buf = 1:200000, h5dataset = did) )
         expect_silent( H5Dclose(did) )

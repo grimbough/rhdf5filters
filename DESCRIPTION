@@ -7,7 +7,7 @@ Description: This package provides a collection of filters for use with HDF5.
 License: Artistic-2.0
 LazyLoad: true
 VignetteBuilder: knitr
-Suggests: BiocStyle, knitr, rmarkdown
+Suggests: BiocStyle, knitr, rmarkdown, rhdf5, testthat
 SystemRequirements: GNU make
 URL: https://github.com/grimbough/rhdf5filters
 BugReports: https://github.com/grimbough/rhdf5filters
