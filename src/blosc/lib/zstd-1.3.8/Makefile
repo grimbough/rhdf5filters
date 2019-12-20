@@ -1,7 +1,7 @@
 #SHELL=/bin/sh
 
 EXTRA_FLAGS=-I. -I./common -DXXH_NAMESPACE=ZSTD_
-FLAGS=$(CFLAGS) $(CPICFLAGS) $(EXTRA_FLAGS)
+FLAGS=$(PKG_CFLAGS) $(PKG_CPICFLAGS) $(EXTRA_FLAGS)
 
 ZSTDCOMMON_FILES := $(sort $(wildcard common/*.c))
 ZSTDCOMP_FILES := $(sort $(wildcard compress/*.c))

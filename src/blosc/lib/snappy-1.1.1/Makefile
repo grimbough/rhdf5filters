@@ -1,6 +1,6 @@
 #SHELL=/bin/sh
 
-FLAGS = $(CXXFLAGS) $(CXXPICFLAGS) $(CPPFLAGS)
+FLAGS = $(PKG_CXXFLAGS) $(PKG_CXXPICFLAGS) $(PKG_CPPFLAGS)
 
 SNAPPY_OBJS=snappy.o \
 			snappy-c.o \
