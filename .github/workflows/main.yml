@@ -38,7 +38,7 @@ jobs:
       - name: Install dependencies
         run: |
           Rscript -e "install.packages(c('BiocManager'))"
-          Rscript -e "BiocMananger::install(c('rcmdcheck', 'covr', 'rmarkdown', 'knitr', 'Rhdf5lib'))"
+          Rscript -e "BiocManager::install(c('rcmdcheck', 'covr', 'rmarkdown', 'knitr', 'Rhdf5lib'))"
 
       - name: Check
         run: Rscript -e "rcmdcheck::rcmdcheck(args = '--no-manual', error_on = 'warning', check_dir = 'check')"
