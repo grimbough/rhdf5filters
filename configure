@@ -2905,10 +2905,6 @@ else
 fi
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: ${SSE2}" >&5
-$as_echo "$as_me: ${SSE2}" >&6;}
-{ $as_echo "$as_me:${as_lineno-$LINENO}: ${AVX2}" >&5
-$as_echo "$as_me: ${AVX2}" >&6;}
 
 
 ac_config_files="$ac_config_files src/blosc/lib/blosc-1.16.3/Makefile"
