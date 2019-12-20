@@ -16,4 +16,4 @@ rm -f src/blosc/lib/zstd-*/common/*.o
 rm -f src/blosc/lib/zstd-*/compress/*.o 
 rm -f src/blosc/lib/zstd-*/decompress/*.o 
 
-rm -f Makevars
+rm -f src/Makevars

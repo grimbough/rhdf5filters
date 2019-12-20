@@ -2,20 +2,13 @@
 % Please edit documentation in R/set_filters.R
 \name{filters}
 \alias{filters}
-\alias{H5Pset_bzip2}
-\alias{H5Pset_blosc}
 \title{Set HDF5 compression filters}
-\usage{
-H5Pset_bzip2(h5plist, level = 2L)
-
-H5Pset_blosc(h5plist, h5tid, method = 1L, level = 6L, shuffle = TRUE)
-}
 \arguments{
 \item{h5plist}{HDF5 dataset creation property list}
 
-\item{level}{Compression level to use}
-
 \item{h5tid}{HDF5 type ID}
+
+\item{level}{Compression level to use}
 
 \item{method}{When using the BLOSC filter, defines which compression tool 
 should be used.}
