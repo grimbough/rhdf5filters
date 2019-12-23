@@ -5,7 +5,7 @@ AC_PREREQ([2.65])
 AC_INIT([hdf5Filters], [0.0.1], [grimbough@gmail.com])
 AC_CONFIG_SRCDIR([src])
 
-m4_include([m4/ax_gcc_x86_cpu_supports.m4])
+m4_include([tools/ax_gcc_x86_cpu_supports.m4])
 
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
@@ -35,9 +35,10 @@ AC_SUBST(RHDF5_INCLUDE)
 
 echo "configuring the BLOSC filter...";
 AX_GCC_X86_CPU_SUPPORTS(sse2, [SSE2="-DSHUFFLE_SSE2_ENABLED"], [SSE2=""])
-AX_GCC_X86_CPU_SUPPORTS(avx2, [AVX2="-DSHUFFLE_AVX2_ENABLED"], [AVX2=""])
+AX_GCC_X86_CPU_SUPPORTS(avx2, [AVX2="-DSHUFFLE_AVX2_ENABLED"; MAVX2="-mavx2"], [AVX2=""; MAVX2=""])
 AC_SUBST(SSE2)
 AC_SUBST(AVX2)
+AC_SUBST(MAVX2)
 AC_CONFIG_FILES([src/blosc/lib/blosc-1.16.3/Makefile])
 AC_OUTPUT
 
