@@ -1,0 +1,5 @@
+#!/bin/sh
+
+## use R to remove AVX2 references from BLOSC Makefile
+"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e 'lines <- gsub("@AVX2@", "", readLines("src/blosc/lib/blosc-1.16.3/Makefile.in")); 
+            writeLines(lines, con = "src/blosc/lib/blosc-1.16.3/Makefile")'

@@ -29,6 +29,5 @@ blosc.o: blosc.c
 fastcopy.o: fastcopy.c
 	$(CC) $(FLAGS) -c fastcopy.c
 
-
 clean:
 	rm -f *.o
