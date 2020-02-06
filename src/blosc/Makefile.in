@@ -1,7 +1,7 @@
 
 BLOSC_OBJS=	@AVX2_OBJ_PATH@@AVX2_BITSHUFFLE_OBJ@ \
 			lib/blosc-1.16.3/blosc.o \
-			@A_OBJ_PATH@@AVX2_SHUFFLE_OBJ@ \
+			@AVX2_OBJ_PATH@@AVX2_SHUFFLE_OBJ@ \
 			lib/blosc-1.16.3/shuffle-sse2.o \
 			lib/blosc-1.16.3/bitshuffle-generic.o \
 			lib/blosc-1.16.3/blosclz.o \
