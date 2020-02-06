@@ -1,21 +1,21 @@
-SHELL=/bin/sh
+#SHELL=/bin/sh
 
 EXTRA_FLAGS+=-I../lz4-1.8.3 -I../snappy-1.1.1 -I../zstd-1.3.8 @MAVX2@
 FLAGS=$(PKG_CFLAGS) $(PKG_CPICFLAGS) $(PKG_CPPFLAGS) $(EXTRA_FLAGS)
 
 BLOSC_FILES := $(sort $(wildcard *.c))
-BLOSC_OBJS  := $(patsubst %.c,%.o,$(BLOSC_FILES))
+#BLOSC_OBJS  := $(patsubst %.c,%.o,$(BLOSC_FILES))
+
+BLOSC_OBJS=	@AVX2_BITSHUFFLE_OBJ@ @AVX2_SHUFFLE_OBJ@ bitshuffle-sse2.o bitshuffle-generic.o shuffle-sse2.o shuffle-generic.o shuffle.o blosclz.o blosc.o fastcopy.o
 
 all: $(BLOSC_OBJS)
 
-bitshuffle-avx2.o: bitshuffle-avx2.c
-	$(CC) $(FLAGS) -c bitshuffle-avx2.c
+@AVX2_BITSHUFFLE@
+@AVX2_SHUFFLE@
 bitshuffle-sse2.o: bitshuffle-sse2.c
 	$(CC) $(FLAGS) -c bitshuffle-sse2.c
 bitshuffle-generic.o: bitshuffle-generic.c
 	$(CC) $(FLAGS) -c bitshuffle-generic.c
-shuffle-avx2.o: shuffle-avx2.c
-	$(CC) $(FLAGS) -c shuffle-avx2.c
 shuffle-sse2.o: shuffle-sse2.c
 	$(CC) $(FLAGS) -c shuffle-sse2.c
 shuffle-generic.o: shuffle-generic.c
