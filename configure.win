@@ -6,5 +6,5 @@
             lines <- gsub("@SSE2@", "-DSHUFFLE_SSE2_ENABLED", lines);
             writeLines(lines, con = "src/blosc/lib/blosc-1.16.3/Makefile");
             lines <- gsub("@M?AVX2[A-Z_]*@", "", readLines("src/blosc/Makefile.in"));
-            lines <- gsub("@SSE2@", "-DSHUFFLE_SSE2_ENABLED", lines));
+            lines <- gsub("@SSE2@", "-DSHUFFLE_SSE2_ENABLED", lines);
             writeLines(lines, con = "src/blosc/Makefile");'

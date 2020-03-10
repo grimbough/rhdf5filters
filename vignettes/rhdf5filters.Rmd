@@ -11,10 +11,50 @@ vignette: |
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
 # Motivation
 
-Here is some placeholder text.
+On of the advantages of using HDF5 is that data stored on disk can be compressed, reducing both the space required to store them and the time needed to read those data.  This data compression is applied as part of the HDF5 "filter pipeline" that modifies data during I/O operations.  HDF5 includes several filter algorithms as standard, and the version of the HDF5 library found in `r Biocpkg("Rhdf5lib")` is additionally compiled with support for the *deflate* and *szip* compression filters which rely on third-party compression libraries.  Collectively HDF5 refer to these as the "internal" filters.  It is possible to use any combination of these (including none) when writing data using `r Biocpkg("Rhdf5lib")`.  The default filter pipeline is shown in Figure \@ref(fig:filter-pipeline).
 
+```{r filter-pipeline, echo = FALSE, fig.cap="The default compression pipeline used by rhdf5"}
+knitr::include_graphics("filter_pipeline.png")
+```
+
+This pipeline approach has been designed so that filters can be chained together (as in the diagram above) or easily substituted for alternative filters.  In order to achieve this HDF5 is able to use dynamically load filters, which are compiled independently from the HDF5 library, but are available to an application at run time.  This allows applications to make use of "external" filters, which are not part of the standard HDF5 distribtion.
+
+This package current distributes HDF5 filters employing [**bzip2**](https://sourceware.org/bzip2/) and the [**Blosc**](https://blosc.org/) meta-compressor.  In total `r Biocpkg("rhdf5filters")` provides access to seven ^[zlib compression is almost always available in a standard HDF5 installation, but is also available via Blosc.] compression filters than can be applied to HDF5 datasets.  The full list of filters currently provided by the package is:
+
+- bzip2
+- blosclz
+- lz4
+- lz4hc
+- snappy
+- zstd
+- zlib 
+
+# Usage
+
+## With rhdf5
+
+`r Biocpkg("rhdf5filters")` is principally designed to be used via the `r Biocpkg("rhdf5")` package.  The functions described below are also documented in the `r Biocpkg("rhdf5")` vignette.
+
+### Writing data
+
+The function `h5createDataset()` within `r Biocpkg("rhdf5")` takes the argument `filter` which specifies which compression filter should be used when a new dataset is created.
+
+Also available in `r Biocpkg("rhdf5")` are the functions `H5Pset_bzip2()` and `H5Pset_blosc()`, which are modelled on the standard `H5Pset_deflate()` function and allow access to 
+
+### Reading data
+
+As long as `r Biocpkg("rhdf5filters")` is installed, rhdf5 will be able to transparently read data compressed using any of the filters available in the package without requring any action on your part.
+
+## With external applications
+
+The dynamic loading design of the HDF5 compression filters means that you can use the versions distributed with `r Biocpkg("rhdf5filters")` with other applications, including other R packages that interface HDF5 as well as external applications not written in R e.g. HDFVIEW.  The function `hdf5_plugin_path()` will return the location of in your packages library where the compiled plugins are stored.  You can the set the environment variable `HDF5_PLUGIN_PATH` and other applications will be able to dynamically load the compression plugins found there if needed.
+
+```{r, plugin-path, eval = TRUE}
+rhdf5filters::hdf5_plugin_path()
+```
 
 # Session info {.unnumbered}
 
