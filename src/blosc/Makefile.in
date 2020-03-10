@@ -1,4 +1,3 @@
-
 BLOSC_OBJS=	@AVX2_OBJ_PATH@@AVX2_BITSHUFFLE_OBJ@ \
 			lib/blosc-1.16.3/blosc.o \
 			@AVX2_OBJ_PATH@@AVX2_SHUFFLE_OBJ@ \
@@ -28,7 +27,7 @@ ZSTD_OBJS   := $(patsubst %.c,%.o,$(ZSTD_FILES))
 all: libH5Zblosc.so
 
 libH5Zblosc.so:	libblosc.a
-	$(CXX) $(PKG_CXXFLAGS) $(PKG_CPICFLAGS) -shared -o libH5Zblosc.so H5Zblosc.c \
+	$(CC) $(PKG_CFLAGS) $(PKG_CPICFLAGS) -shared -o libH5Zblosc.so H5Zblosc.c \
 			$(PKG_CPPFLAGS) -I./lib/blosc-1.16.3 \
 			libblosc.a \
 		  -lz
