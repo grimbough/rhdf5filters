@@ -1,9 +1,9 @@
 Package: rhdf5filters
 Type: Package
-Title: Collection of filters to use with HDF5
+Title: HDF5 Compression Filters 
 Version: 0.0.2
 Authors@R: c(person("Mike", "Smith", role=c("aut", "cre"), email = "grimbough@gmail.com"))
-Description: This package provides a collection of filters for use with HDF5. 
+Description: Provides a collection of compression filters for use with HDF5 datasets. 
 License: Artistic-2.0
 LazyLoad: true
 VignetteBuilder: knitr

@@ -38,14 +38,14 @@ jobs:
       - name: Install dependencies
         run: |
           Rscript -e "install.packages(c('BiocManager'))"
-          Rscript -e "BiocManager::install(c('rcmdcheck', 'covr', 'rmarkdown', 'knitr', 'Rhdf5lib', 'testthat', 'BiocStyle', 'rhdf5'))"
+          Rscript -e "BiocManager::install(c('rcmdcheck', 'covr', 'rmarkdown', 'knitr', 'Rhdf5lib', 'testthat', 'BiocStyle'))"
 
       - name: Check
-        run: Rscript -e "rcmdcheck::rcmdcheck(args = c('--as-cran', '--no-manual'), error_on = 'warning', check_dir = 'check')"
+        run: Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual'), error_on = 'warning', check_dir = 'check')"
 
-      - name: Upload check results
-        if: failure()
-        uses: actions/upload-artifact@master
-        with:
-          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
-          path: check
+      #- name: Upload check results
+      #  if: failure()
+      #  uses: actions/upload-artifact@master
+      #  with:
+      #    name: ${{ runner.os }}-r${{ matrix.config.r }}-results
+      #    path: check
