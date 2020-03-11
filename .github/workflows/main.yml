@@ -41,7 +41,7 @@ jobs:
           Rscript -e "BiocManager::install(c('rcmdcheck', 'covr', 'rmarkdown', 'knitr', 'Rhdf5lib', 'testthat', 'BiocStyle', 'rhdf5'))"
 
       - name: Check
-        run: Rscript -e "rcmdcheck::rcmdcheck(args = '--as-cran --no-manual', error_on = 'warning', check_dir = 'check')"
+        run: Rscript -e "rcmdcheck::rcmdcheck(args = c('--as-cran', '--no-manual'), error_on = 'warning', check_dir = 'check')"
 
       - name: Upload check results
         if: failure()
