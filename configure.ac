@@ -37,10 +37,10 @@ echo "configuring the BLOSC filter...";
 AX_GCC_X86_CPU_SUPPORTS(sse2,
     [SSE2="-DSHUFFLE_SSE2_ENABLED";
     SSE2_BITSHUFFLE='bitshuffle-sse2.o: bitshuffle-sse2.c
-    $(CC) $(FLAGS) -c bitshuffle-sse2.c';
+	$(CC) $(FLAGS) -c bitshuffle-sse2.c';
     SSE2_BITSHUFFLE_OBJ='bitshuffle-sse2.o';
     SSE2_SHUFFLE='shuffle-sse2.o: shuffle-sse2.c
-    $(CC) $(FLAGS) -c shuffle-sse2.c';
+	$(CC) $(FLAGS) -c shuffle-sse2.c';
     SSE2_SHUFFLE_OBJ='shuffle-sse2.o';
     SSE2_OBJ_PATH='lib/blosc-1.16.3/';],
     [SSE2="";
@@ -51,10 +51,10 @@ AX_GCC_X86_CPU_SUPPORTS(sse2,
 AX_GCC_X86_CPU_SUPPORTS(avx2,
     [AVX2="-DSHUFFLE_AVX2_ENABLED"; MAVX2="-mavx2";
     AVX2_BITSHUFFLE='bitshuffle-avx2.o: bitshuffle-avx2.c
-    $(CC) $(FLAGS) -c bitshuffle-avx2.c';
+	$(CC) $(FLAGS) -c bitshuffle-avx2.c';
     AVX2_BITSHUFFLE_OBJ='bitshuffle-avx2.o';
     AVX2_SHUFFLE='shuffle-avx2.o: shuffle-avx2.c
-    $(CC) $(FLAGS) -c shuffle-avx2.c';
+	$(CC) $(FLAGS) -c shuffle-avx2.c';
     AVX2_SHUFFLE_OBJ='shuffle-avx2.o';
     AVX2_OBJ_PATH='lib/blosc-1.16.3/';],
     [AVX2=""; MAVX2="";
