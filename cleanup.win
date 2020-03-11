@@ -1,3 +1,4 @@
+rm -f src/bzip2/*.so 
 rm -f src/bzip2/bzip2-1.0.8/*.o 
 rm -f src/bzip2/bzip2-1.0.8/libbz2.a  
 
