@@ -1,5 +1,5 @@
-# Process this file with autoconf to produce a configure script.
-# author: Mike Smith (mike.smith@embl.de)
+dnl Process this file with autoconf to produce a configure script.
+dnl author: Mike Smith (mike.smith@embl.de)
 
 AC_PREREQ([2.65])
 AC_INIT([hdf5Filters], [0.0.2], [grimbough@gmail.com])
@@ -22,47 +22,46 @@ AC_SUBST(CXXPICFLAGS, `"${R_HOME}/bin/R" CMD config CXXPICFLAGS`)
 AC_SUBST(MAKE, `"${R_HOME}/bin/R" CMD config MAKE`)
 AC_SUBST(RANLIB, `"${R_HOME}/bin/R" CMD config RANLIB`)
 
-## seems unreliable as to whether this information is available
+dnl seems unreliable as to whether this information is available
 AR=`"${R_HOME}/bin/R" CMD config AR`
 AS_IF([test "x$AR" = "xERROR: no information for variable 'AR'"], [AC_PATH_PROG([AR], [ar])], [])
 AC_SUBST(AR)
 
-# determine the location of the Rhdf5lib versions of the HDF5 library
+dnl determine the location of the Rhdf5lib versions of the HDF5 library
 RHDF5_INCLUDE=`echo 'cat(system.file("include", package="Rhdf5lib"))'|\
     "${R_HOME}/bin/R" --vanilla --slave`
 AC_SUBST(RHDF5_INCLUDE)
 
-
 echo "configuring the BLOSC filter...";
 
-AX_GCC_X86_CPU_SUPPORTS(sse2, 
+AX_GCC_X86_CPU_SUPPORTS(sse2,
     [SSE2="-DSHUFFLE_SSE2_ENABLED";
     SSE2_BITSHUFFLE='bitshuffle-sse2.o: bitshuffle-sse2.c
-	$(CC) $(FLAGS) -c bitshuffle-sse2.c';
-	SSE2_BITSHUFFLE_OBJ='bitshuffle-sse2.o';
-	SSE2_SHUFFLE='shuffle-sse2.o: shuffle-sse2.c
-	$(CC) $(FLAGS) -c shuffle-sse2.c';
-	SSE2_SHUFFLE_OBJ='shuffle-sse2.o';
-	SSE2_OBJ_PATH='lib/blosc-1.16.3/';], 
+    $(CC) $(FLAGS) -c bitshuffle-sse2.c';
+    SSE2_BITSHUFFLE_OBJ='bitshuffle-sse2.o';
+    SSE2_SHUFFLE='shuffle-sse2.o: shuffle-sse2.c
+    $(CC) $(FLAGS) -c shuffle-sse2.c';
+    SSE2_SHUFFLE_OBJ='shuffle-sse2.o';
+    SSE2_OBJ_PATH='lib/blosc-1.16.3/';],
     [SSE2="";
     SSE2_BITSHUFFLE=""; SSE2_SHUFFLE="";
-	SSE2_BITSHUFFLE_OBJ=""; SSE2_SHUFFLE_OBJ="";
-	SSE2_OBJ_PATH="";])
-	
-AX_GCC_X86_CPU_SUPPORTS(avx2, 
-    [AVX2="-DSHUFFLE_AVX2_ENABLED"; MAVX2="-mavx2"; 
+    SSE2_BITSHUFFLE_OBJ=""; SSE2_SHUFFLE_OBJ="";
+    SSE2_OBJ_PATH="";])
+
+AX_GCC_X86_CPU_SUPPORTS(avx2,
+    [AVX2="-DSHUFFLE_AVX2_ENABLED"; MAVX2="-mavx2";
     AVX2_BITSHUFFLE='bitshuffle-avx2.o: bitshuffle-avx2.c
-	$(CC) $(FLAGS) -c bitshuffle-avx2.c';
-	AVX2_BITSHUFFLE_OBJ='bitshuffle-avx2.o';
-	AVX2_SHUFFLE='shuffle-avx2.o: shuffle-avx2.c
-	$(CC) $(FLAGS) -c shuffle-avx2.c';
-	AVX2_SHUFFLE_OBJ='shuffle-avx2.o';
-	AVX2_OBJ_PATH='lib/blosc-1.16.3/';], 
-	[AVX2=""; MAVX2=""; 
-	AVX2_BITSHUFFLE=""; AVX2_SHUFFLE="";
-	AVX2_BITSHUFFLE_OBJ=""; AVX2_SHUFFLE_OBJ="";
-	AVX2_OBJ_PATH="";])
-	
+    $(CC) $(FLAGS) -c bitshuffle-avx2.c';
+    AVX2_BITSHUFFLE_OBJ='bitshuffle-avx2.o';
+    AVX2_SHUFFLE='shuffle-avx2.o: shuffle-avx2.c
+    $(CC) $(FLAGS) -c shuffle-avx2.c';
+    AVX2_SHUFFLE_OBJ='shuffle-avx2.o';
+    AVX2_OBJ_PATH='lib/blosc-1.16.3/';],
+    [AVX2=""; MAVX2="";
+    AVX2_BITSHUFFLE=""; AVX2_SHUFFLE="";
+    AVX2_BITSHUFFLE_OBJ=""; AVX2_SHUFFLE_OBJ="";
+    AVX2_OBJ_PATH="";])
+
 AC_SUBST(SSE2)
 AC_SUBST(SSE2_BITSHUFFLE)
 AC_SUBST(SSE2_SHUFFLE)
@@ -81,7 +80,7 @@ AC_SUBST(AVX2_OBJ_PATH)
 AC_CONFIG_FILES([src/blosc/lib/blosc-1.16.3/Makefile src/blosc/Makefile])
 AC_OUTPUT
 
-#update variables in Makevars
+dnl update variables in Makevars
 HDF5_INCLUDE="${BASEPBNAME}/src"
 AC_SUBST(HDF5_INCLUDE)
 AC_MSG_NOTICE([   HDF5_INCLUDE=${HDF5_INCLUDE}])
