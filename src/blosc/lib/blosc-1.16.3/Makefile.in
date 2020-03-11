@@ -3,18 +3,17 @@ FLAGS=$(PKG_CFLAGS) $(PKG_CPICFLAGS) $(PKG_CPPFLAGS) $(EXTRA_FLAGS)
 
 BLOSC_FILES := $(sort $(wildcard *.c))
 
-BLOSC_OBJS=	@AVX2_BITSHUFFLE_OBJ@ @AVX2_SHUFFLE_OBJ@ bitshuffle-sse2.o bitshuffle-generic.o shuffle-sse2.o shuffle-generic.o shuffle.o blosclz.o blosc.o fastcopy.o
+BLOSC_OBJS=	@AVX2_BITSHUFFLE_OBJ@ @AVX2_SHUFFLE_OBJ@ @SSE2_BITSHUFFLE_OBJ@ @SSE2_SHUFFLE_OBJ@ bitshuffle-generic.o shuffle-generic.o shuffle.o blosclz.o blosc.o fastcopy.o
+
 
 all: $(BLOSC_OBJS)
 
 @AVX2_BITSHUFFLE@
 @AVX2_SHUFFLE@
-bitshuffle-sse2.o: bitshuffle-sse2.c
-	$(CC) $(FLAGS) -c bitshuffle-sse2.c
+@SSE2_BITSHUFFLE@
+@SSE2_SHUFFLE@
 bitshuffle-generic.o: bitshuffle-generic.c
 	$(CC) $(FLAGS) -c bitshuffle-generic.c
-shuffle-sse2.o: shuffle-sse2.c
-	$(CC) $(FLAGS) -c shuffle-sse2.c
 shuffle-generic.o: shuffle-generic.c
 	$(CC) $(FLAGS) -c shuffle-generic.c
 shuffle.o: shuffle.c

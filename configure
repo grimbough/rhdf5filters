@@ -597,6 +597,11 @@ AVX2_SHUFFLE
 AVX2_BITSHUFFLE
 MAVX2
 AVX2
+SSE2_OBJ_PATH
+SSE2_SHUFFLE_OBJ
+SSE2_BITSHUFFLE_OBJ
+SSE2_SHUFFLE
+SSE2_BITSHUFFLE
 SSE2
 OBJEXT
 EXEEXT
@@ -632,6 +637,7 @@ infodir
 docdir
 oldincludedir
 includedir
+runstatedir
 localstatedir
 sharedstatedir
 sysconfdir
@@ -701,6 +707,7 @@ datadir='${datarootdir}'
 sysconfdir='${prefix}/etc'
 sharedstatedir='${prefix}/com'
 localstatedir='${prefix}/var'
+runstatedir='${localstatedir}/run'
 includedir='${prefix}/include'
 oldincludedir='/usr/include'
 docdir='${datarootdir}/doc/${PACKAGE_TARNAME}'
@@ -953,6 +960,15 @@ do
   | -silent | --silent | --silen | --sile | --sil)
     silent=yes ;;
 
+  -runstatedir | --runstatedir | --runstatedi | --runstated \
+  | --runstate | --runstat | --runsta | --runst | --runs \
+  | --run | --ru | --r)
+    ac_prev=runstatedir ;;
+  -runstatedir=* | --runstatedir=* | --runstatedi=* | --runstated=* \
+  | --runstate=* | --runstat=* | --runsta=* | --runst=* | --runs=* \
+  | --run=* | --ru=* | --r=*)
+    runstatedir=$ac_optarg ;;
+
   -sbindir | --sbindir | --sbindi | --sbind | --sbin | --sbi | --sb)
     ac_prev=sbindir ;;
   -sbindir=* | --sbindir=* | --sbindi=* | --sbind=* | --sbin=* \
@@ -1090,7 +1106,7 @@ fi
 for ac_var in	exec_prefix prefix bindir sbindir libexecdir datarootdir \
 		datadir sysconfdir sharedstatedir localstatedir includedir \
 		oldincludedir docdir infodir htmldir dvidir pdfdir psdir \
-		libdir localedir mandir
+		libdir localedir mandir runstatedir
 do
   eval ac_val=\$$ac_var
   # Remove trailing slashes.
@@ -1243,6 +1259,7 @@ Fine tuning of the installation directories:
   --sysconfdir=DIR        read-only single-machine data [PREFIX/etc]
   --sharedstatedir=DIR    modifiable architecture-independent data [PREFIX/com]
   --localstatedir=DIR     modifiable single-machine data [PREFIX/var]
+  --runstatedir=DIR       modifiable per-process data [LOCALSTATEDIR/run]
   --libdir=DIR            object code libraries [EPREFIX/lib]
   --includedir=DIR        C header files [PREFIX/include]
   --oldincludedir=DIR     C header files for non-gcc [/usr/include]
@@ -1932,6 +1949,7 @@ RHDF5_INCLUDE=`echo 'cat(system.file("include", package="Rhdf5lib"))'|\
 
 
 echo "configuring the BLOSC filter...";
+
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -2826,11 +2844,22 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 $as_echo "#define HAVE_SSE2_INSTRUCTIONS 1" >>confdefs.h
 
-          SSE2="-DSHUFFLE_SSE2_ENABLED"
+          SSE2="-DSHUFFLE_SSE2_ENABLED";
+    SSE2_BITSHUFFLE='bitshuffle-sse2.o: bitshuffle-sse2.c
+	$(CC) $(FLAGS) -c bitshuffle-sse2.c';
+	SSE2_BITSHUFFLE_OBJ='bitshuffle-sse2.o';
+	SSE2_SHUFFLE='shuffle-sse2.o: shuffle-sse2.c
+	$(CC) $(FLAGS) -c shuffle-sse2.c';
+	SSE2_SHUFFLE_OBJ='shuffle-sse2.o';
+	SSE2_OBJ_PATH='lib/blosc-1.16.3/';
 else
-  SSE2=""
+  SSE2="";
+    SSE2_BITSHUFFLE=""; SSE2_SHUFFLE="";
+	SSE2_BITSHUFFLE_OBJ=""; SSE2_SHUFFLE_OBJ="";
+	SSE2_OBJ_PATH="";
 
 fi
+
 
 
 
@@ -2907,6 +2936,14 @@ else
 	AVX2_OBJ_PATH="";
 
 fi
+
+
+
+
+
+
+
+
 
 
 

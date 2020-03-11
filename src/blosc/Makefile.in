@@ -1,11 +1,11 @@
 BLOSC_OBJS=	@AVX2_OBJ_PATH@@AVX2_BITSHUFFLE_OBJ@ \
 			lib/blosc-1.16.3/blosc.o \
 			@AVX2_OBJ_PATH@@AVX2_SHUFFLE_OBJ@ \
-			lib/blosc-1.16.3/shuffle-sse2.o \
+			@SSE2_OBJ_PATH@@SSE2_SHUFFLE_OBJ@ \
 			lib/blosc-1.16.3/bitshuffle-generic.o \
 			lib/blosc-1.16.3/blosclz.o \
 			lib/blosc-1.16.3/shuffle.o \
-			lib/blosc-1.16.3/bitshuffle-sse2.o \
+			@SSE2_OBJ_PATH@@SSE2_BITSHUFFLE_OBJ@ \
 			lib/blosc-1.16.3/fastcopy.o \
 			lib/blosc-1.16.3/shuffle-generic.o
 
