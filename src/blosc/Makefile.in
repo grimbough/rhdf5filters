@@ -28,12 +28,11 @@ all: libH5Zblosc.so
 
 libH5Zblosc.so:	H5Zblosc.o
 	$(CXX) $(PKG_CXXFLAGS) $(PKG_CXXPICFLAGS) -shared -o libH5Zblosc.so H5Zblosc.o \
-			$(PKG_CPPFLAGS) -I./lib/blosc-1.16.3 \
-			libblosc.a \
-		  -lz
+		   libblosc.a -lz
 		  
 H5Zblosc.o: libblosc.a
-	$(CC) $(PGK_CFLAGS) $(PKG_CPICFLAGS) -c -o H5Zblosc.o H5Zblosc.c $(PKG_CPPFLAGS)
+	$(CC) $(PGK_CFLAGS) $(PKG_CPICFLAGS) -c -o H5Zblosc.o H5Zblosc.c \
+	      $(PKG_CPPFLAGS) -I./lib/blosc-1.16.3
 
 libblosc.a:  blosc
 	rm -f libblosc.a
