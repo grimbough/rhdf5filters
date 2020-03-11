@@ -295,7 +295,7 @@ static blosc_cpu_features blosc_get_cpu_features(void) {
   #if defined(_MSC_VER)
   #pragma message("Hardware-acceleration detection not implemented for the target architecture. Only the generic shuffle/unshuffle routines will be available.")
   #else
-  #warning Hardware-acceleration detection not implemented for the target architecture. Only the generic shuffle/unshuffle routines will be available.
+  //#warning Hardware-acceleration detection not implemented for the target architecture. Only the generic shuffle/unshuffle routines will be available.
   #endif
 
 static blosc_cpu_features blosc_get_cpu_features(void) {
