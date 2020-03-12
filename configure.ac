@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl author: Mike Smith (msmith@embl.de)
+dnl author: Mike Smith (grimbough@gmail.com)
 
 AC_PREREQ([2.65])
 AC_INIT([hdf5Filters], [0.0.2], [grimbough@gmail.com])
