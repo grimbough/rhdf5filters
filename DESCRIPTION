@@ -7,7 +7,11 @@ Description: Provides a collection of compression filters for use with HDF5 data
 License: Artistic-2.0
 LazyLoad: true
 VignetteBuilder: knitr
-Suggests: BiocStyle, knitr, rmarkdown
+Suggests: 
+    BiocStyle,
+    knitr,
+    rmarkdown,
+    testthat (>= 2.1.0)
 SystemRequirements: GNU make
 URL: https://github.com/grimbough/rhdf5filters
 BugReports: https://github.com/grimbough/rhdf5filters

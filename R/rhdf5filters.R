@@ -1,6 +1,6 @@
-#' rhdf5filters: Filters etc
+#' rhdf5filters
 #' 
-#' This package provides compiled versions of various HDF5 filters
+#' This package provides compiled versions of several HDF5 compression filters
 #'
 #' @docType package
 #' @name rhdf5filters
