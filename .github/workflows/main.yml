@@ -27,6 +27,9 @@ jobs:
       CRAN: ${{ matrix.config.cran }}
 
     steps:
+      - name: Configure git
+        run: git config --global core.autocrlf false
+        
       - uses: actions/checkout@v1
 
       - uses: r-lib/actions/setup-r@master
