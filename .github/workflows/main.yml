@@ -43,9 +43,8 @@ jobs:
       - name: Check
         run: Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual'), error_on = 'warning', check_dir = 'check')"
 
-      #- name: Upload check results
-      #  if: failure()
-      #  uses: actions/upload-artifact@master
-      #  with:
-      #    name: ${{ runner.os }}-r${{ matrix.config.r }}-results
-      #    path: check
+      - name: Upload check results
+        uses: actions/upload-artifact@master
+        with:
+          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
+          path: check/rhdf5filters.Rcheck/00install.out
