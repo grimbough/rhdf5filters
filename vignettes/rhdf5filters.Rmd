@@ -14,15 +14,17 @@ vignette: |
 
 # Motivation
 
-On of the advantages of using HDF5 is that data stored on disk can be compressed, reducing both the space required to store them and the time needed to read those data.  This data compression is applied as part of the HDF5 "filter pipeline" that modifies data during I/O operations.  HDF5 includes several filter algorithms as standard, and the version of the HDF5 library found in `r Biocpkg("Rhdf5lib")` is additionally compiled with support for the *deflate* and *szip* compression filters which rely on third-party compression libraries.  Collectively HDF5 refer to these as the "internal" filters.  It is possible to use any combination of these (including none) when writing data using `r Biocpkg("Rhdf5lib")`.  The default filter pipeline is shown in Figure \@ref(fig:filter-pipeline).
+On of the advantages of using HDF5 is that data stored on disk can be compressed, reducing both the space required to store them and the time needed to read those data.  This data compression is applied as part of the HDF5 "filter pipeline" that modifies data during I/O operations.  HDF5 includes several filter algorithms as standard, and the version of the HDF5 library found in `r Biocpkg("Rhdf5lib")` is additionally compiled with support for the *deflate* and *szip* compression filters which rely on third-party compression libraries.  Collectively HDF5 refer to these as the "internal" filters.  It is possible to use any combination of these (including none) when writing data using `r Biocpkg("rhdf5")`.  The default filter pipeline is shown in Figure \@ref(fig:filter-pipeline).
 
 ```{r filter-pipeline, echo = FALSE, fig.cap="The default compression pipeline used by rhdf5"}
 knitr::include_graphics("filter_pipeline.png")
 ```
 
-This pipeline approach has been designed so that filters can be chained together (as in the diagram above) or easily substituted for alternative filters.  In order to achieve this HDF5 is able to use dynamically load filters, which are compiled independently from the HDF5 library, but are available to an application at run time.  This allows applications to make use of "external" filters, which are not part of the standard HDF5 distribtion.
+This pipeline approach has been designed so that filters can be chained together (as in the diagram above) or easily substituted for alternative filters.  This allows tailoring the compression approach to best suit the data or application.
 
-This package current distributes HDF5 filters employing [**bzip2**](https://sourceware.org/bzip2/) and the [**Blosc**](https://blosc.org/) meta-compressor.  In total `r Biocpkg("rhdf5filters")` provides access to seven ^[zlib compression is almost always available in a standard HDF5 installation, but is also available via Blosc.] compression filters than can be applied to HDF5 datasets.  The full list of filters currently provided by the package is:
+It may be case that for a specific usecase an alternative, third-party, compression algorithm would be the most appropriate to use.  Such filters, which are not part of the standard HDF5 distribution, are referred to as "external" filters.  In order to allow their use without requiring either the HDF5 library or applications to be built with support for all possible filters HDF5 is able to use dynamically loaded filters.  These are compiled independently from the HDF5 library, but are available to an application at run time.  
+
+This package currently distributes external HDF5 filters employing [**bzip2**](https://sourceware.org/bzip2/) and the [**Blosc**](https://blosc.org/) meta-compressor.  In total `r Biocpkg("rhdf5filters")` provides access to seven ^[zlib compression is almost always available in a standard HDF5 installation, but is also available via Blosc.] compression filters than can be applied to HDF5 datasets.  The full list of filters currently provided by the package is:
 
 - bzip2
 - blosclz
@@ -46,7 +48,7 @@ Also available in `r Biocpkg("rhdf5")` are the functions `H5Pset_bzip2()` and `H
 
 ### Reading data
 
-As long as `r Biocpkg("rhdf5filters")` is installed, rhdf5 will be able to transparently read data compressed using any of the filters available in the package without requring any action on your part.
+As long as `r Biocpkg("rhdf5filters")` is installed, `r Biocpkg("rhdf5")` will be able to transparently read data compressed using any of the filters available in the package without requiring any action on your part.
 
 ## With external applications
 
