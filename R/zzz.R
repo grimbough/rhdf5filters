@@ -14,7 +14,8 @@
 #' 
 #' @return A character string containing the path where the compiled filters
 #' are located.
-#' @example hdf5_plugin_path()
+#' @examples
+#' hdf5_plugin_path()
 #' 
 #' @export
 hdf5_plugin_path <- function() {
