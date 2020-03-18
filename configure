@@ -602,6 +602,7 @@ SSE2_SHUFFLE_OBJ
 SSE2_BITSHUFFLE_OBJ
 SSE2_SHUFFLE
 SSE2_BITSHUFFLE
+MSSE2
 SSE2
 OBJEXT
 EXEEXT
@@ -1872,6 +1873,45 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+# ===========================================================================
+#  https://www.gnu.org/software/autoconf-archive/ax_check_compile_flag.html
+# ===========================================================================
+#
+# SYNOPSIS
+#
+#   AX_CHECK_COMPILE_FLAG(FLAG, [ACTION-SUCCESS], [ACTION-FAILURE], [EXTRA-FLAGS], [INPUT])
+#
+# DESCRIPTION
+#
+#   Check whether the given FLAG works with the current language's compiler
+#   or gives an error.  (Warnings, however, are ignored)
+#
+#   ACTION-SUCCESS/ACTION-FAILURE are shell commands to execute on
+#   success/failure.
+#
+#   If EXTRA-FLAGS is defined, it is added to the current language's default
+#   flags (e.g. CFLAGS) when the check is done.  The check is thus made with
+#   the flags: "CFLAGS EXTRA-FLAGS FLAG".  This can for example be used to
+#   force the compiler to issue an error when a bad flag is given.
+#
+#   INPUT gives an alternative input source to AC_COMPILE_IFELSE.
+#
+#   NOTE: Implementation based on AX_CFLAGS_GCC_OPTION. Please keep this
+#   macro in sync with AX_CHECK_{PREPROC,LINK}_FLAG.
+#
+# LICENSE
+#
+#   Copyright (c) 2008 Guido U. Draheim <guidod@gmx.de>
+#   Copyright (c) 2011 Maarten Bosmans <mkbosmans@gmail.com>
+#
+#   Copying and distribution of this file, with or without modification, are
+#   permitted in any medium without royalty provided the copyright notice
+#   and this notice are preserved.  This file is offered as-is, without any
+#   warranty.
+
+#serial 6
+
+
 
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
@@ -1896,6 +1936,7 @@ MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
 RANLIB=`"${R_HOME}/bin/R" CMD config RANLIB`
 
 
+## seems unreliable as to whether this information is available
 AR=`"${R_HOME}/bin/R" CMD config AR`
 if test "x$AR" = "xERROR: no information for variable 'AR'"; then :
   # Extract the first word of "ar", so it can be a program name with args.
@@ -1941,12 +1982,14 @@ fi
 fi
 
 
+## determine the location of the Rhdf5lib versions of the HDF5 library
 RHDF5_INCLUDE=`echo 'cat(system.file("include", package="Rhdf5lib"))'|\
     "${R_HOME}/bin/R" --vanilla --slave`
 
 
 echo "configuring the BLOSC filter...";
 
+## see if -msse2 is a supported flag
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -2737,6 +2780,42 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -msse2" >&5
+$as_echo_n "checking whether C compiler accepts -msse2... " >&6; }
+if ${ax_cv_check_cflags___msse2+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$CFLAGS
+  CFLAGS="$CFLAGS  -msse2"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ax_cv_check_cflags___msse2=yes
+else
+  ax_cv_check_cflags___msse2=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___msse2" >&5
+$as_echo "$ax_cv_check_cflags___msse2" >&6; }
+if test "x$ax_cv_check_cflags___msse2" = xyes; then :
+  MSSE2=true
+else
+  MSSE2=false
+fi
+
+## check CPU supports sse2
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -2841,24 +2920,71 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 $as_echo "#define HAVE_SSE2_INSTRUCTIONS 1" >>confdefs.h
 
-          SSE2="-DSHUFFLE_SSE2_ENABLED";
-    SSE2_BITSHUFFLE='bitshuffle-sse2.o: bitshuffle-sse2.c
-	$(CC) $(FLAGS) -c bitshuffle-sse2.c';
-    SSE2_BITSHUFFLE_OBJ='bitshuffle-sse2.o';
-    SSE2_SHUFFLE='shuffle-sse2.o: shuffle-sse2.c
-	$(CC) $(FLAGS) -c shuffle-sse2.c';
-    SSE2_SHUFFLE_OBJ='shuffle-sse2.o';
-    SSE2_OBJ_PATH='lib/blosc-1.16.3/';
+          SSE2_SUPPORTED=true
 else
-  SSE2="";
-    SSE2_BITSHUFFLE=""; SSE2_SHUFFLE="";
-    SSE2_BITSHUFFLE_OBJ=""; SSE2_SHUFFLE_OBJ="";
-    SSE2_OBJ_PATH="";
+  SSE2_SUPPORTED=false
 
 fi
 
 
 
+if  "$MSSE2" = true  &&  "$SSE2_SUPPORTED" = true  ; then
+  SSE2="-DSHUFFLE_SSE2_ENABLED";
+  MSSE2="-msse2";
+  SSE2_BITSHUFFLE='bitshuffle-sse2.o: bitshuffle-sse2.c
+	$(CC) $(FLAGS) -c bitshuffle-sse2.c';
+  SSE2_BITSHUFFLE_OBJ='bitshuffle-sse2.o';
+  SSE2_SHUFFLE='shuffle-sse2.o: shuffle-sse2.c
+	$(CC) $(FLAGS) -c shuffle-sse2.c';
+  SSE2_SHUFFLE_OBJ='shuffle-sse2.o';
+  SSE2_OBJ_PATH='lib/blosc-1.16.3/';
+else
+  SSE2="";
+  MSSE2="";
+  SSE2_BITSHUFFLE="";
+  SSE2_SHUFFLE="";
+  SSE2_BITSHUFFLE_OBJ="";
+  SSE2_SHUFFLE_OBJ="";
+  SSE2_OBJ_PATH="";
+fi
+
+## see if -mavx2 is a supported flag
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -mavx2" >&5
+$as_echo_n "checking whether C compiler accepts -mavx2... " >&6; }
+if ${ax_cv_check_cflags___mavx2+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$CFLAGS
+  CFLAGS="$CFLAGS  -mavx2"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ax_cv_check_cflags___mavx2=yes
+else
+  ax_cv_check_cflags___mavx2=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___mavx2" >&5
+$as_echo "$ax_cv_check_cflags___mavx2" >&6; }
+if test "x$ax_cv_check_cflags___mavx2" = xyes; then :
+  MAVX2=true
+else
+  MAVX2=false
+fi
+
+## check CPU supports avx2
 
 
    ac_ext=c
@@ -2918,22 +3044,33 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 $as_echo "#define HAVE_AVX2_INSTRUCTIONS 1" >>confdefs.h
 
-          AVX2="-DSHUFFLE_AVX2_ENABLED"; MAVX2="-mavx2";
-    AVX2_BITSHUFFLE='bitshuffle-avx2.o: bitshuffle-avx2.c
-	$(CC) $(FLAGS) -c bitshuffle-avx2.c';
-    AVX2_BITSHUFFLE_OBJ='bitshuffle-avx2.o';
-    AVX2_SHUFFLE='shuffle-avx2.o: shuffle-avx2.c
-	$(CC) $(FLAGS) -c shuffle-avx2.c';
-    AVX2_SHUFFLE_OBJ='shuffle-avx2.o';
-    AVX2_OBJ_PATH='lib/blosc-1.16.3/';
+          AVX2_SUPPORTED=true
 else
-  AVX2=""; MAVX2="";
-    AVX2_BITSHUFFLE=""; AVX2_SHUFFLE="";
-    AVX2_BITSHUFFLE_OBJ=""; AVX2_SHUFFLE_OBJ="";
-    AVX2_OBJ_PATH="";
+  AVX2_SUPPORTED=false
 
 fi
 
+
+
+if  "$MAVX2" = true  &&  "$AVX2_SUPPORTED" = true  ; then
+  AVX2="-DSHUFFLE_AVX2_ENABLED";
+  MAVX2="-mavx2";
+  AVX2_BITSHUFFLE='bitshuffle-avx2.o: bitshuffle-avx2.c
+	$(CC) $(FLAGS) -c bitshuffle-avx2.c';
+  AVX2_BITSHUFFLE_OBJ='bitshuffle-avx2.o';
+  AVX2_SHUFFLE='shuffle-avx2.o: shuffle-avx2.c
+	$(CC) $(FLAGS) -c shuffle-avx2.c';
+  AVX2_SHUFFLE_OBJ='shuffle-avx2.o';
+  AVX2_OBJ_PATH='lib/blosc-1.16.3/';
+else
+  AVX2="";
+  MAVX2="";
+  AVX2_BITSHUFFLE="";
+  AVX2_SHUFFLE="";
+  AVX2_BITSHUFFLE_OBJ="";
+  AVX2_SHUFFLE_OBJ="";
+  AVX2_OBJ_PATH="";
+fi
 
 
 
