@@ -12,6 +12,10 @@
 #' other applications that require the the filters to use the versions
 #' distributed with this package.
 #' 
+#' @return A character string containing the path where the compiled filters
+#' are located.
+#' @example hdf5_plugin_path()
+#' 
 #' @export
 hdf5_plugin_path <- function() {
     

@@ -6,6 +6,10 @@
 \usage{
 hdf5_plugin_path()
 }
+\value{
+A character string containing the path where the compiled filters
+are located.
+}
 \description{
 This function can be used to find the location of the installed filters.
 Setting the environment variable HDF5_PLUGIN_PATH to this value will allow
