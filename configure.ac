@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 dnl author: Mike Smith (grimbough@gmail.com)
 
 AC_PREREQ([2.65])
-AC_INIT([hdf5Filters], [0.0.2], [grimbough@gmail.com])
+AC_INIT([hdf5Filters], [0.99.1], [grimbough@gmail.com])
 AC_CONFIG_SRCDIR([src])
 
 m4_include([tools/ax_gcc_x86_cpu_supports.m4])
