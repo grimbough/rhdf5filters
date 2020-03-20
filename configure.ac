@@ -33,9 +33,6 @@ RHDF5_INCLUDE=`echo 'cat(system.file("include", package="Rhdf5lib"))'|\
     "${R_HOME}/bin/R" --vanilla --slave`
 AC_SUBST(RHDF5_INCLUDE)
 
-## hack so we don't have any newline tabs in this file
-SPACER=`echo -e '\n\t'`
-
 echo "configuring the BLOSC filter..."
 
 ## see if -msse2 is a supported flag
@@ -46,9 +43,11 @@ AX_GCC_X86_CPU_SUPPORTS(sse2, [SSE2_SUPPORTED=true], [SSE2_SUPPORTED=false])
 if [ "$MSSE2" = true ] && [ "$SSE2_SUPPORTED" = true ] ; then
   SSE2="-DSHUFFLE_SSE2_ENABLED"
   MSSE2="-msse2"
-  SSE2_BITSHUFFLE="bitshuffle-sse2.o: bitshuffle-sse2.c${SPACER}"'$(CC) $(FLAGS)'" -c bitshuffle-sse2.c"
+  SSE2_BITSHUFFLE='bitshuffle-sse2.o: bitshuffle-sse2.c
+	$(CC) $(FLAGS) -c bitshuffle-sse2.c'
   SSE2_BITSHUFFLE_OBJ='bitshuffle-sse2.o'
-  SSE2_SHUFFLE="shuffle-sse2.o: shuffle-sse2.c${SPACER}"'$(CC) $(FLAGS)'" -c shuffle-sse2.c"
+  SSE2_SHUFFLE='shuffle-sse2.o: shuffle-sse2.c
+	$(CC) $(FLAGS) -c shuffle-sse2.c'
   SSE2_SHUFFLE_OBJ='shuffle-sse2.o'
   SSE2_OBJ_PATH='lib/blosc-1.16.3/'
 else
@@ -77,9 +76,11 @@ AX_GCC_X86_CPU_SUPPORTS(avx2, [AVX2_SUPPORTED=true], [AVX2_SUPPORTED=false])
 if [ "$MAVX2" = true ] && [ "$AVX2_SUPPORTED" = true ] ; then
   AVX2="-DSHUFFLE_AVX2_ENABLED"
   MAVX2="-mavx2"
-  AVX2_BITSHUFFLE="bitshuffle-avx2.o: bitshuffle-avx2.c${SPACER}"'$(CC) $(FLAGS)'" -c bitshuffle-avx2.c"
+  AVX2_BITSHUFFLE='bitshuffle-avx2.o: bitshuffle-avx2.c
+	$(CC) $(FLAGS) -c bitshuffle-avx2.c'
   AVX2_BITSHUFFLE_OBJ='bitshuffle-avx2.o'
-  AVX2_SHUFFLE="shuffle-avx2.o: shuffle-avx2.c${SPACER}"'$(CC) $(FLAGS)'" -c shuffle-avx2.c"
+  AVX2_SHUFFLE='shuffle-avx2.o: shuffle-avx2.c
+	$(CC) $(FLAGS) -c shuffle-avx2.c'
   AVX2_SHUFFLE_OBJ='shuffle-avx2.o'
   AVX2_OBJ_PATH='lib/blosc-1.16.3/'
 else
