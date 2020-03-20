@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 dnl author: Mike Smith (grimbough@gmail.com)
 
 AC_PREREQ([2.65])
-AC_INIT([hdf5Filters], [0.99.1], [grimbough@gmail.com])
+AC_INIT([hdf5Filters], [0.99.3], [grimbough@gmail.com])
 AC_CONFIG_SRCDIR([src])
 
 m4_include([tools/ax_gcc_x86_cpu_supports.m4])
@@ -33,7 +33,10 @@ RHDF5_INCLUDE=`echo 'cat(system.file("include", package="Rhdf5lib"))'|\
     "${R_HOME}/bin/R" --vanilla --slave`
 AC_SUBST(RHDF5_INCLUDE)
 
-echo "configuring the BLOSC filter...";
+## hack so we don't have any newline tabs in this file
+SPACER=`echo -e '\n\t'`
+
+echo "configuring the BLOSC filter..."
 
 ## see if -msse2 is a supported flag
 AX_CHECK_COMPILE_FLAG([-msse2], [MSSE2=true], [MSSE2=false])
@@ -41,48 +44,21 @@ AX_CHECK_COMPILE_FLAG([-msse2], [MSSE2=true], [MSSE2=false])
 AX_GCC_X86_CPU_SUPPORTS(sse2, [SSE2_SUPPORTED=true], [SSE2_SUPPORTED=false])
 
 if [ "$MSSE2" = true ] && [ "$SSE2_SUPPORTED" = true ] ; then
-  SSE2="-DSHUFFLE_SSE2_ENABLED";
-  MSSE2="-msse2";
-  SSE2_BITSHUFFLE='bitshuffle-sse2.o: bitshuffle-sse2.c
-	$(CC) $(FLAGS) -c bitshuffle-sse2.c';
-  SSE2_BITSHUFFLE_OBJ='bitshuffle-sse2.o';
-  SSE2_SHUFFLE='shuffle-sse2.o: shuffle-sse2.c
-	$(CC) $(FLAGS) -c shuffle-sse2.c';
-  SSE2_SHUFFLE_OBJ='shuffle-sse2.o';
-  SSE2_OBJ_PATH='lib/blosc-1.16.3/';
+  SSE2="-DSHUFFLE_SSE2_ENABLED"
+  MSSE2="-msse2"
+  SSE2_BITSHUFFLE="bitshuffle-sse2.o: bitshuffle-sse2.c${SPACER}"'$(CC) $(FLAGS)'" -c bitshuffle-sse2.c"
+  SSE2_BITSHUFFLE_OBJ='bitshuffle-sse2.o'
+  SSE2_SHUFFLE="shuffle-sse2.o: shuffle-sse2.c${SPACER}"'$(CC) $(FLAGS)'" -c shuffle-sse2.c"
+  SSE2_SHUFFLE_OBJ='shuffle-sse2.o'
+  SSE2_OBJ_PATH='lib/blosc-1.16.3/'
 else
-  SSE2="";
-  MSSE2="";
-  SSE2_BITSHUFFLE=""; 
-  SSE2_SHUFFLE="";
-  SSE2_BITSHUFFLE_OBJ=""; 
-  SSE2_SHUFFLE_OBJ="";
-  SSE2_OBJ_PATH="";
-fi
-
-## see if -mavx2 is a supported flag
-AX_CHECK_COMPILE_FLAG([-mavx2], [MAVX2=true], [MAVX2=false])
-## check CPU supports avx2
-AX_GCC_X86_CPU_SUPPORTS(avx2, [AVX2_SUPPORTED=true], [AVX2_SUPPORTED=false])
-
-if [ "$MAVX2" = true ] && [ "$AVX2_SUPPORTED" = true ] ; then
-  AVX2="-DSHUFFLE_AVX2_ENABLED"; 
-  MAVX2="-mavx2";
-  AVX2_BITSHUFFLE='bitshuffle-avx2.o: bitshuffle-avx2.c
-	$(CC) $(FLAGS) -c bitshuffle-avx2.c';
-  AVX2_BITSHUFFLE_OBJ='bitshuffle-avx2.o';
-  AVX2_SHUFFLE='shuffle-avx2.o: shuffle-avx2.c
-	$(CC) $(FLAGS) -c shuffle-avx2.c';
-  AVX2_SHUFFLE_OBJ='shuffle-avx2.o';
-  AVX2_OBJ_PATH='lib/blosc-1.16.3/';
-else
-  AVX2=""; 
-  MAVX2="";
-  AVX2_BITSHUFFLE=""; 
-  AVX2_SHUFFLE="";
-  AVX2_BITSHUFFLE_OBJ=""; 
-  AVX2_SHUFFLE_OBJ="";
-  AVX2_OBJ_PATH="";
+  SSE2=""
+  MSSE2=""
+  SSE2_BITSHUFFLE=""
+  SSE2_SHUFFLE=""
+  SSE2_BITSHUFFLE_OBJ=""
+  SSE2_SHUFFLE_OBJ=""
+  SSE2_OBJ_PATH=""
 fi
 
 AC_SUBST(SSE2)
@@ -92,6 +68,29 @@ AC_SUBST(SSE2_SHUFFLE)
 AC_SUBST(SSE2_BITSHUFFLE_OBJ)
 AC_SUBST(SSE2_SHUFFLE_OBJ)
 AC_SUBST(SSE2_OBJ_PATH)
+
+## see if -mavx2 is a supported flag
+AX_CHECK_COMPILE_FLAG([-mavx2], [MAVX2=true], [MAVX2=false])
+## check CPU supports avx2
+AX_GCC_X86_CPU_SUPPORTS(avx2, [AVX2_SUPPORTED=true], [AVX2_SUPPORTED=false])
+
+if [ "$MAVX2" = true ] && [ "$AVX2_SUPPORTED" = true ] ; then
+  AVX2="-DSHUFFLE_AVX2_ENABLED"
+  MAVX2="-mavx2"
+  AVX2_BITSHUFFLE="bitshuffle-avx2.o: bitshuffle-avx2.c${SPACER}"'$(CC) $(FLAGS)'" -c bitshuffle-avx2.c"
+  AVX2_BITSHUFFLE_OBJ='bitshuffle-avx2.o'
+  AVX2_SHUFFLE="shuffle-avx2.o: shuffle-avx2.c${SPACER}"'$(CC) $(FLAGS)'" -c shuffle-avx2.c"
+  AVX2_SHUFFLE_OBJ='shuffle-avx2.o'
+  AVX2_OBJ_PATH='lib/blosc-1.16.3/'
+else
+  AVX2=""
+  MAVX2=""
+  AVX2_BITSHUFFLE=""
+  AVX2_SHUFFLE=""
+  AVX2_BITSHUFFLE_OBJ=""
+  AVX2_SHUFFLE_OBJ=""
+  AVX2_OBJ_PATH=""
+fi
 
 AC_SUBST(AVX2)
 AC_SUBST(MAVX2)
