@@ -29,8 +29,7 @@ AS_IF([test "x$AR" = "xERROR: no information for variable 'AR'"], [AC_PATH_PROG(
 AC_SUBST(AR)
 
 ## determine the location of the Rhdf5lib versions of the HDF5 library
-RHDF5_INCLUDE=`echo 'cat(system.file("include", package="Rhdf5lib"))'|\
-    "${R_HOME}/bin/R" --vanilla --slave`
+RHDF5_INCLUDE=`"${R_HOME}/bin${R_ARCH_BIN}/Rscript" -e 'cat(system.file("include", package="Rhdf5lib"))'`
 AC_SUBST(RHDF5_INCLUDE)
 
 echo "configuring the BLOSC filter..."
