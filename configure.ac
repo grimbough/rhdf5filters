@@ -22,6 +22,7 @@ AC_SUBST(CXXFLAGS, `"${R_HOME}/bin/R" CMD config CXXFLAGS`)
 AC_SUBST(CXXPICFLAGS, `"${R_HOME}/bin/R" CMD config CXXPICFLAGS`)
 AC_SUBST(MAKE, `"${R_HOME}/bin/R" CMD config MAKE`)
 AC_SUBST(RANLIB, `"${R_HOME}/bin/R" CMD config RANLIB`)
+AC_SUBST(LDFLAGS, `"${R_HOME}/bin/R" CMD config LDFLAGS`)
 
 ## seems unreliable as to whether this information is available
 AR=`"${R_HOME}/bin/R" CMD config AR`

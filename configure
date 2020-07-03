@@ -608,9 +608,9 @@ OBJEXT
 EXEEXT
 ac_ct_CC
 CPPFLAGS
-LDFLAGS
 RHDF5_INCLUDE
 AR
+LDFLAGS
 RANLIB
 MAKE
 CXXPICFLAGS
@@ -1934,6 +1934,8 @@ CXXPICFLAGS=`"${R_HOME}/bin/R" CMD config CXXPICFLAGS`
 MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
 
 RANLIB=`"${R_HOME}/bin/R" CMD config RANLIB`
+
+LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
 
 
 ## seems unreliable as to whether this information is available
