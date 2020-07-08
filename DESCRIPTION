@@ -1,8 +1,12 @@
 Package: rhdf5filters
 Type: Package
 Title: HDF5 Compression Filters 
-Version: 1.1.1-1
-Authors@R: c(person("Mike", "Smith", role=c("aut", "cre"), email = "grimbough@gmail.com"))
+Version: 1.1.2
+Authors@R: c(person("Mike", "Smith", 
+                role=c("aut", "cre"), 
+                email = "grimbough@gmail.com",
+                comment = c(ORCID = "0000-0002-7800-3848"))
+            )
 Description: Provides a collection of compression filters for use with HDF5 datasets. 
 License: BSD_2_clause + file LICENSE
 LazyLoad: true
