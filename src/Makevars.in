@@ -14,6 +14,7 @@ export RANLIB=@RANLIB@
 export MAKE=@MAKE@
 export AR=@AR@
 export PKG_CPPFLAGS=-I"@RHDF5_INCLUDE@"
+export PKG_LDFLAGS=@LDFLAGS@
 
 all: copying $(SHLIB)
 

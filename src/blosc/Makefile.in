@@ -27,7 +27,7 @@ ZSTD_OBJS   := $(patsubst %.c,%.o,$(ZSTD_FILES))
 all: libH5Zblosc.so
 
 libH5Zblosc.so:	H5Zblosc.o
-	$(CXX) $(PKG_CXXFLAGS) $(PKG_CXXPICFLAGS) -shared -o libH5Zblosc.so H5Zblosc.o \
+	$(CXX) $(PKG_CXXFLAGS) $(PKG_CXXPICFLAGS) $(PKG_LDFLAGS) -shared -o libH5Zblosc.so H5Zblosc.o \
 		   libblosc.a -lz
 		  
 H5Zblosc.o: libblosc.a
