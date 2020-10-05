@@ -1187,6 +1187,9 @@ static int write_compression_header(struct blosc_context* context, int clevel, i
   {
     const char *compname;
     compname = clibcode_to_clibname(compformat);
+    if (compname == NULL) {
+      compname = "(null)";
+    }
     fprintf(stderr, "Blosc has not been compiled with '%s' ", compname);
     fprintf(stderr, "compression support.  Please use one having it.");
     return -5;    /* signals no compression support */
