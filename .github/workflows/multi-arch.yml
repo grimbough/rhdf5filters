@@ -1,0 +1,28 @@
+on:
+  push:
+    branches:
+      - master
+      - arch-checks
+  pull_request:
+    branches:
+      - master
+
+name: ARM64 R-CMD-check 
+
+jobs:
+  R-CMD-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Set up QEMU
+        id: qemu
+        uses: docker/setup-qemu-action@v1
+        with:
+          image: tonistiigi/binfmt:latest
+          platforms: arm64
+          
+      - name: Run R
+        uses: docker://arm64v8/r-base:latest
+        run: R -e 'Sys.info()'
