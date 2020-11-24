@@ -36,10 +36,34 @@ AC_SUBST(RHDF5_INCLUDE)
 
 echo "configuring the BLOSC filter..."
 
+## check if we have an x86 CPU
+machine=`uname -m`
+AS_CASE([$machine],
+  [*86*], [x86_CPU=true],
+  [x86_CPU=false]
+)
+echo x86_CPU="$x86_CPU"
+
 ## see if -msse2 is a supported flag
 AX_CHECK_COMPILE_FLAG([-msse2], [MSSE2=true], [MSSE2=false])
-## check CPU supports sse2
-AX_GCC_X86_CPU_SUPPORTS(sse2, [SSE2_SUPPORTED=true], [SSE2_SUPPORTED=false])
+## see if -mavx2 is a supported flag
+AX_CHECK_COMPILE_FLAG([-mavx2], [MAVX2=true], [MAVX2=false])
+
+AC_RUN_IFELSE(
+      [AC_LANG_PROGRAM([#include <stdlib.h>],
+        [__builtin_cpu_init ();])
+      ],
+      [ax_cv_gcc_check_x86_cpu_init=true],
+      [ax_cv_gcc_check_x86_cpu_init=false])
+
+## check CPU supports sse2 and avx2
+if [ "$x86_CPU" == true ] && [ "$ax_cv_gcc_check_x86_cpu_init" == true ]; then
+    AX_GCC_X86_CPU_SUPPORTS(sse2, [SSE2_SUPPORTED=true], [SSE2_SUPPORTED=false])
+    AX_GCC_X86_CPU_SUPPORTS(avx2, [AVX2_SUPPORTED=true], [AVX2_SUPPORTED=false])
+else
+    SSE2_SUPPORTED=false
+    AVX2_SUPPORTED=false
+fi
 
 if [ "$MSSE2" = true ] && [ "$SSE2_SUPPORTED" = true ] ; then
   SSE2="-DSHUFFLE_SSE2_ENABLED"
@@ -68,11 +92,6 @@ AC_SUBST(SSE2_SHUFFLE)
 AC_SUBST(SSE2_BITSHUFFLE_OBJ)
 AC_SUBST(SSE2_SHUFFLE_OBJ)
 AC_SUBST(SSE2_OBJ_PATH)
-
-## see if -mavx2 is a supported flag
-AX_CHECK_COMPILE_FLAG([-mavx2], [MAVX2=true], [MAVX2=false])
-## check CPU supports avx2
-AX_GCC_X86_CPU_SUPPORTS(avx2, [AVX2_SUPPORTED=true], [AVX2_SUPPORTED=false])
 
 if [ "$MAVX2" = true ] && [ "$AVX2_SUPPORTED" = true ] ; then
   AVX2="-DSHUFFLE_AVX2_ENABLED"

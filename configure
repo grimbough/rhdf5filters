@@ -1992,6 +1992,17 @@ RHDF5_INCLUDE=`"${R_HOME}/bin${R_ARCH_BIN}/Rscript" -e 'cat(system.file("include
 
 echo "configuring the BLOSC filter..."
 
+## check if we have an x86 CPU
+machine=`uname -m`
+case $machine in #(
+  *86*) :
+    x86_CPU=true ;; #(
+  *) :
+    x86_CPU=false
+ ;;
+esac
+echo x86_CPU="$x86_CPU"
+
 ## see if -msse2 is a supported flag
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
@@ -2818,8 +2829,74 @@ else
   MSSE2=false
 fi
 
-## check CPU supports sse2
-ac_ext=c
+## see if -mavx2 is a supported flag
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -mavx2" >&5
+$as_echo_n "checking whether C compiler accepts -mavx2... " >&6; }
+if ${ax_cv_check_cflags___mavx2+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$CFLAGS
+  CFLAGS="$CFLAGS  -mavx2"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ax_cv_check_cflags___mavx2=yes
+else
+  ax_cv_check_cflags___mavx2=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___mavx2" >&5
+$as_echo "$ax_cv_check_cflags___mavx2" >&6; }
+if test "x$ax_cv_check_cflags___mavx2" = xyes; then :
+  MAVX2=true
+else
+  MAVX2=false
+fi
+
+
+if test "$cross_compiling" = yes; then :
+  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "cannot run test program while cross compiling
+See \`config.log' for more details" "$LINENO" 5; }
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <stdlib.h>
+int
+main ()
+{
+__builtin_cpu_init ();
+  ;
+  return 0;
+}
+
+_ACEOF
+if ac_fn_c_try_run "$LINENO"; then :
+  ax_cv_gcc_check_x86_cpu_init=true
+else
+  ax_cv_gcc_check_x86_cpu_init=false
+fi
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+
+
+## check CPU supports sse2 and avx2
+if  "$x86_CPU" == true  &&  "$ax_cv_gcc_check_x86_cpu_init" == true ; then
+    ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
@@ -2931,72 +3008,6 @@ fi
 
 
 
-if  "$MSSE2" = true  &&  "$SSE2_SUPPORTED" = true  ; then
-  SSE2="-DSHUFFLE_SSE2_ENABLED"
-  MSSE2="-msse2"
-  SSE2_BITSHUFFLE='bitshuffle-sse2.o: bitshuffle-sse2.c
-	$(CC) $(FLAGS) -c bitshuffle-sse2.c'
-  SSE2_BITSHUFFLE_OBJ='bitshuffle-sse2.o'
-  SSE2_SHUFFLE='shuffle-sse2.o: shuffle-sse2.c
-	$(CC) $(FLAGS) -c shuffle-sse2.c'
-  SSE2_SHUFFLE_OBJ='shuffle-sse2.o'
-  SSE2_OBJ_PATH='lib/blosc-1.16.3/'
-else
-  SSE2=""
-  MSSE2=""
-  SSE2_BITSHUFFLE=""
-  SSE2_SHUFFLE=""
-  SSE2_BITSHUFFLE_OBJ=""
-  SSE2_SHUFFLE_OBJ=""
-  SSE2_OBJ_PATH=""
-fi
-
-
-
-
-
-
-
-
-
-## see if -mavx2 is a supported flag
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -mavx2" >&5
-$as_echo_n "checking whether C compiler accepts -mavx2... " >&6; }
-if ${ax_cv_check_cflags___mavx2+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-  ax_check_save_flags=$CFLAGS
-  CFLAGS="$CFLAGS  -mavx2"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ax_cv_check_cflags___mavx2=yes
-else
-  ax_cv_check_cflags___mavx2=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-  CFLAGS=$ax_check_save_flags
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___mavx2" >&5
-$as_echo "$ax_cv_check_cflags___mavx2" >&6; }
-if test "x$ax_cv_check_cflags___mavx2" = xyes; then :
-  MAVX2=true
-else
-  MAVX2=false
-fi
-
-## check CPU supports avx2
-
 
    ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
@@ -3060,6 +3071,38 @@ else
   AVX2_SUPPORTED=false
 
 fi
+
+
+else
+    SSE2_SUPPORTED=false
+    AVX2_SUPPORTED=false
+fi
+
+if  "$MSSE2" = true  &&  "$SSE2_SUPPORTED" = true  ; then
+  SSE2="-DSHUFFLE_SSE2_ENABLED"
+  MSSE2="-msse2"
+  SSE2_BITSHUFFLE='bitshuffle-sse2.o: bitshuffle-sse2.c
+	$(CC) $(FLAGS) -c bitshuffle-sse2.c'
+  SSE2_BITSHUFFLE_OBJ='bitshuffle-sse2.o'
+  SSE2_SHUFFLE='shuffle-sse2.o: shuffle-sse2.c
+	$(CC) $(FLAGS) -c shuffle-sse2.c'
+  SSE2_SHUFFLE_OBJ='shuffle-sse2.o'
+  SSE2_OBJ_PATH='lib/blosc-1.16.3/'
+else
+  SSE2=""
+  MSSE2=""
+  SSE2_BITSHUFFLE=""
+  SSE2_SHUFFLE=""
+  SSE2_BITSHUFFLE_OBJ=""
+  SSE2_SHUFFLE_OBJ=""
+  SSE2_OBJ_PATH=""
+fi
+
+
+
+
+
+
 
 
 
