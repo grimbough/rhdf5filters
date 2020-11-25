@@ -11,7 +11,7 @@ name: ARM64 R-CMD-check
 
 jobs:
   R-CMD-check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -30,12 +30,20 @@ jobs:
         uses: docker://arm64v8/r-base:latest
         with:
           args: >
-            Rscript -e ".libPaths('/github/home/r_library')" -e "install.packages(c('BiocManager', 'remotes'))"
+            Rscript -e ".libPaths('/github/home/r_library')" -e "install.packages(c('BiocManager', 'remotes', 'rcmdcheck'))"
             
-      - name: List R packages
+      - name: Install dependencies
         uses: docker://arm64v8/r-base:latest
         with:
           args: >
-            Rscript -e ".libPaths('/github/home/r_library')" -e "as.vector(installed.packages()[,'Package'])"
+            Rscript -e ".libPaths('/github/home/r_library')" \
+                    -e "toInstall <- remotes::dev_package_deps(dependencies = TRUE)[,'package']" \
+                    -e "BiocManager::install(toInstall, ask = FALSE)"
+            
+      - name: Check package
+        uses: docker://arm64v8/r-base:latest
+        with:
+          args: >
+            Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual'), error_on = 'warning', check_dir = 'check')"     
 
             
