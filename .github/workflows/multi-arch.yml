@@ -26,4 +26,8 @@ jobs:
       - name: Run R
         uses: docker://arm64v8/r-base:latest
         with:
-          args: 'bash -c "RScript -e \"Sys.info()\""'
+          args: >
+            bash -c 
+            "uname -m && 
+            Rscript -e \"Sys.info()\""
+            
