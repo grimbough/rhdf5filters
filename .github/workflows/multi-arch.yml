@@ -37,22 +37,34 @@ jobs:
           path: ${HOME}/r_library
           key: arm64-build-${{ env.cache-name }}
           
-      - name: Install R packages
+      - name: test
         uses: docker://arm64v8/r-base:latest
         with:
           args: >
-            Rscript -e "install.packages(c('BiocManager', 'remotes', 'rcmdcheck'))" -e "BiocManager::install(upgrade = TRUE, ask = FALSE)"
-            
-      - name: Install dependencies
+            bash -c "ls ~"
+          
+      - name: test 2
         uses: docker://arm64v8/r-base:latest
         with:
           args: >
-            Rscript -e "toInstall <- remotes::dev_package_deps(dependencies = TRUE)[,'package']" -e  "toInstall <- setdiff(toInstall, installed.packages()[,'Package'])" -e "if(length(toInstall)) { BiocManager::install(toInstall, ask = FALSE) }"
-            
-      - name: Check package
-        uses: docker://arm64v8/r-base:latest
-        with:
-          args: >
-            Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual'), error_on = 'warning', check_dir = 'check')"     
+            Rscript -e ".libPaths()"
 
-            
+      # - name: Install R packages
+      #   uses: docker://arm64v8/r-base:latest
+      #   with:
+      #     args: >
+      #       Rscript -e "install.packages(c('BiocManager', 'remotes', 'rcmdcheck'))" -e "BiocManager::install(upgrade = TRUE, ask = FALSE)"
+      #       
+      # - name: Install dependencies
+      #   uses: docker://arm64v8/r-base:latest
+      #   with:
+      #     args: >
+      #       Rscript -e "toInstall <- remotes::dev_package_deps(dependencies = TRUE)[,'package']" -e  "toInstall <- setdiff(toInstall, installed.packages()[,'Package'])" -e "if(length(toInstall)) { BiocManager::install(toInstall, ask = FALSE) }"
+      #       
+      # - name: Check package
+      #   uses: docker://arm64v8/r-base:latest
+      #   with:
+      #     args: >
+      #       Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual'), error_on = 'warning', check_dir = 'check')"     
+      # 
+      #       
