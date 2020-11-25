@@ -22,9 +22,14 @@ jobs:
         with:
           image: tonistiigi/binfmt:latest
           platforms: arm64
-          
-      - name: Make library
-        run: mkdir -p /home/runner/work/_temp/_github_home/r_library
+        
+      - name: Cache R packages
+        uses: actions/cache@v2
+        env:
+          cache-name: RELEASE_3_12_packages
+        with:
+          path: /home/runner/work/_temp/_github_home/r_library
+          key: arm64-build-${{ env.cache-name }}
           
       - name: Install R packages
         uses: docker://arm64v8/r-base:latest
@@ -36,14 +41,12 @@ jobs:
         uses: docker://arm64v8/r-base:latest
         with:
           args: >
-            Rscript -e ".libPaths('/github/home/r_library')" \
-                    -e "toInstall <- remotes::dev_package_deps(dependencies = TRUE)[,'package']" \
-                    -e "BiocManager::install(toInstall, ask = FALSE)"
+            Rscript -e ".libPaths('/github/home/r_library')" -e "toInstall <- remotes::dev_package_deps(dependencies = TRUE)[,'package']" -e "BiocManager::install(toInstall, ask = FALSE)"
             
       - name: Check package
         uses: docker://arm64v8/r-base:latest
         with:
           args: >
-            Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual'), error_on = 'warning', check_dir = 'check')"     
+            Rscript -e ".libPaths('/github/home/r_library')" -e "rcmdcheck::rcmdcheck(args = c('--no-manual'), error_on = 'warning', check_dir = 'check')"     
 
             
