@@ -25,23 +25,23 @@ jobs:
           
       - name: Set R options and make default library location
         run: |
-          echo "options(Ncpus = 2)" > ${HOME}/.Rprofile
-          mkdir -p ${HOME}/r_library
-          echo "R_LIBS=\${HOME}/r_library:\${R_LIBS}" > ${HOME}/.Renviron
+          echo "options(Ncpus = 2)" > /home/runner/work/_temp/_github_home/.Rprofile
+          mkdir -p /home/runner/work/_temp/_github_home/r_library
+          echo "R_LIBS=\${HOME}/r_library:\${R_LIBS}" > /home/runner/work/_temp/_github_home/.Renviron
         
       - name: Cache R packages
         uses: actions/cache@v2
         env:
           cache-name: RELEASE_3_12_packages
         with:
-          path: ${HOME}/r_library
+          path: /home/runner/work/_temp/_github_home/r_library
           key: arm64-build-${{ env.cache-name }}
           
       - name: test
         uses: docker://arm64v8/r-base:latest
         with:
           args: >
-            bash -c "ls ~"
+            bash -c "echo $HOME && ls /github/home/"
           
       - name: test 2
         uses: docker://arm64v8/r-base:latest
