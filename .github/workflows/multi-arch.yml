@@ -25,8 +25,8 @@ jobs:
           
       - name: Set R options and make default library location
         run: |
-          echo "options(Ncpus = 2)" > /home/runner/work/_temp/_github_home/.Rprofile
           mkdir -p /home/runner/work/_temp/_github_home/r_library
+          echo "options(Ncpus = 2)" > /home/runner/work/_temp/_github_home/.Rprofile
           echo "R_LIBS=\${HOME}/r_library:\${R_LIBS}" > /home/runner/work/_temp/_github_home/.Renviron
         
       - name: Cache R packages
