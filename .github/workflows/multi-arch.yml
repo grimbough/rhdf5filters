@@ -33,6 +33,6 @@ jobs:
         uses: docker://arm64v8/r-base:latest
         with:
           args: >
-            bash -c "Rscript -e \"as.vector(installed.packages()[,'Package'])\""
+            Rscript -e "as.vector(installed.packages()[,'Package'])"
 
             
