@@ -23,16 +23,19 @@ jobs:
           image: tonistiigi/binfmt:latest
           platforms: arm64
           
+      - name: Make library
+        run: mkdir -p /home/runner/work/_temp/_github_home/r_library
+          
       - name: Install R packages
         uses: docker://arm64v8/r-base:latest
         with:
           args: >
-            bash -c "Rscript -e \"install.packages(c('BiocManager', 'remotes'))\""
+            Rscript -e ".libPaths('/home/github/r_library')" -e "install.packages(c('BiocManager', 'remotes'))"
             
       - name: List R packages
         uses: docker://arm64v8/r-base:latest
         with:
           args: >
-            Rscript -e "as.vector(installed.packages()[,'Package'])"
+            Rscript -e ".libPaths('/home/github/r_library')" -e "as.vector(installed.packages()[,'Package'])"
 
             
