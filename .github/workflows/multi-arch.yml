@@ -12,8 +12,6 @@ name: ARM64 R-CMD-check
 jobs:
   R-CMD-check:
     runs-on: ubuntu-20.04
-    container: arm64v8/r-base:latest
-    
     steps:
       - name: Set up QEMU
         id: qemu
@@ -24,15 +22,6 @@ jobs:
           
       - name: Checkout
         uses: actions/checkout@v2
-        
-      - name: test
-        run: | 
-          echo `uname -m` 
-          echo $HOME
-          ls /github/home/
-                    
-      - name: test 2
-        run: Rscript -e "Sys.info()"
         
       - name: Set R options and make default library location
         run: |
@@ -60,9 +49,9 @@ jobs:
           args: >
             Rscript -e "toInstall <- remotes::dev_package_deps(dependencies = TRUE)[,'package']" -e  "toInstall <- setdiff(toInstall, installed.packages()[,'Package'])" -e "if(length(toInstall)) { BiocManager::install(toInstall, ask = FALSE) }"
             
-      - name: Check package
-        uses: docker://arm64v8/r-base:latest
-        with:
-          args: >
-            Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual'), error_on = 'warning', check_dir = 'check')"     
+      # - name: Check package
+      #   uses: docker://arm64v8/r-base:latest
+      #   with:
+      #     args: >
+      #       Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual'), error_on = 'warning', check_dir = 'check')"     
        
