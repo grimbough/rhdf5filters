@@ -15,6 +15,7 @@ jobs:
     env: 
       RUNNER_R_LIB_PATH: ${HOME}/r_library
       CONTAINER_R_LIB_PATH: /home/runner/work/_temp/_github_home/r_library
+      CONTAINER_HOME_PATH: /home/runner/work/_temp/_github_home
     steps:
       - name: Set up QEMU
         id: qemu
@@ -26,11 +27,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         
+      - name: Set R options and copy library to share between docker instances
+        run: |
+          mkdir -p ${RUNNER_R_LIB_PATH} ${CONTAINER_R_LIB_PATH} 
+          cp -r ${RUNNER_R_LIB_PATH} ${CONTAINER_R_LIB_PATH}
+          echo "options(Ncpus = 2)" > ${CONTAINER_HOME_PATH}/.Rprofile
+          echo "R_LIBS=\${HOME}/r_library:\${R_LIBS}" > ${CONTAINER_HOME_PATH}/.Renviron
+        
       - name: Query dependencies
         uses: docker://arm64v8/r-base:latest
         with:
           args: >
-            Rscript -e "install.packages('remotes')" -e "saveRDS(remotes::dev_package_deps(dependencies = TRUE), '~/depends.Rds', version = 2)"
+            Rscript -e "install.packages('remotes')" -e "saveRDS(remotes::dev_package_deps(dependencies = TRUE), '/github/home/depends.Rds', version = 2)"
           
       - name: Cache R packages
         uses: actions/cache@v2
@@ -40,18 +48,17 @@ jobs:
           path: ${{ env.RUNNER_R_LIB_PATH }}
           key: arm64-build-${{ env.cache-name }}-${{ hashFiles('/home/runner/work/_temp/_github_home/depends.Rds') }}
 
-      - name: Set R options and copy library to share between docker instances
-        run: |
-          mkdir -p ${RUNNER_R_LIB_PATH} ${CONTAINER_R_LIB_PATH} 
-          cp -r ${RUNNER_R_LIB_PATH} ${CONTAINER_R_LIB_PATH}
-          echo "options(Ncpus = 2)" > /home/runner/work/_temp/_github_home/.Rprofile
-          echo "R_LIBS=\${HOME}/r_library:\${R_LIBS}" > /home/runner/work/_temp/_github_home/.Renviron
-        
       - name: Install dev packages
         uses: docker://arm64v8/r-base:latest
         with:
           args: >
             Rscript -e "install.packages(c('BiocManager', 'remotes'))" -e "BiocManager::install(upgrade = TRUE, ask = FALSE)"
+            
+      - name: Install dependencies
+        uses: docker://arm64v8/r-base:latest
+        with:
+          args: >
+            Rscript -e "toInstall <- 'BiocStyle'" -e  "toInstall <- setdiff(toInstall, installed.packages()[,'Package'])" -e "if(length(toInstall)) { BiocManager::install(toInstall, ask = FALSE) }"
             
       # - name: Install dependencies
       #   uses: docker://arm64v8/r-base:latest
