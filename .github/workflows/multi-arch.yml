@@ -23,7 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         
-      - name: Set R options and make default library location
+      - name: Set R options and make default library location shared between docker instances
         run: |
           mkdir -p /home/runner/work/_temp/_github_home/r_library
           echo "options(Ncpus = 2)" > /home/runner/work/_temp/_github_home/.Rprofile
@@ -37,7 +37,7 @@ jobs:
           path: /home/runner/work/_temp/_github_home/r_library
           key: arm64-build-${{ env.cache-name }}
 
-      - name: Install R packages
+      - name: Install dev packages
         uses: docker://arm64v8/r-base:latest
         with:
           args: >
@@ -49,9 +49,15 @@ jobs:
           args: >
             Rscript -e "toInstall <- remotes::dev_package_deps(dependencies = TRUE)[,'package']" -e  "toInstall <- setdiff(toInstall, installed.packages()[,'Package'])" -e "if(length(toInstall)) { BiocManager::install(toInstall, ask = FALSE) }"
             
-      # - name: Check package
-      #   uses: docker://arm64v8/r-base:latest
-      #   with:
-      #     args: >
-      #       Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual'), error_on = 'warning', check_dir = 'check')"     
+      - name: Check package
+        uses: docker://arm64v8/r-base:latest
+        with:
+          args: >
+            Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual', '--no-build-vignettes'), build_args = c('--no-build-vignettes'), error_on = 'warning', check_dir = Sys.getenv("HOME"))"
+            
+      - name: Upload check results
+        uses: actions/upload-artifact@v2
+        with:
+          name: Check_results
+          path: /home/runner/work/_temp/_github_home/rhdf5filters.Rcheck
        
