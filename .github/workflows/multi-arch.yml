@@ -25,6 +25,12 @@ jobs:
           
       - name: Checkout
         uses: actions/checkout@v2
+        
+      - name: Query dependencies
+        uses: docker://arm64v8/r-base:latest
+        with:
+          args: >
+            Rscript -e "install.packages('remotes')" -e "saveRDS(remotes::dev_package_deps(dependencies = TRUE), '~/depends.Rds', version = 2)"
           
       - name: Cache R packages
         uses: actions/cache@v2
@@ -32,8 +38,8 @@ jobs:
           cache-name: RELEASE_3_12_packages
         with:
           path: ${{ env.RUNNER_R_LIB_PATH }}
-          key: arm64-build-${{ env.cache-name }}
-        
+          key: arm64-build-${{ env.cache-name }}-${{ hashFiles('/home/runner/work/_temp/_github_home/depends.Rds') }}
+
       - name: Set R options and copy library to share between docker instances
         run: |
           mkdir -p ${RUNNER_R_LIB_PATH} ${CONTAINER_R_LIB_PATH} 
