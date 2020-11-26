@@ -12,6 +12,9 @@ name: ARM64 R-CMD-check
 jobs:
   R-CMD-check:
     runs-on: ubuntu-20.04
+    env: 
+      RUNNER_R_LIB: /ci/r_library
+      CONTAINER_R_LIB: /home/runner/work/_temp/_github_home/r_library
     steps:
       - name: Set up QEMU
         id: qemu
@@ -22,38 +25,42 @@ jobs:
           
       - name: Checkout
         uses: actions/checkout@v2
-        
-      - name: Set R options and make default library location shared between docker instances
-        run: |
-          mkdir -p /home/runner/work/_temp/_github_home/r_library
-          echo "options(Ncpus = 2)" > /home/runner/work/_temp/_github_home/.Rprofile
-          echo "R_LIBS=\${HOME}/r_library:\${R_LIBS}" > /home/runner/work/_temp/_github_home/.Renviron
-        
+          
       - name: Cache R packages
         uses: actions/cache@v2
         env:
           cache-name: RELEASE_3_12_packages
         with:
-          path: /home/runner/work/_temp/_github_home/r_library
+          path: ${{ env.RUNNER_R_LIB }}
           key: arm64-build-${{ env.cache-name }}
-
+        
+      - name: Set R options and copy library to share between docker instances
+        run: |
+          mkdir -p ${RUNNER_R_LIB} && cp -r ${RUNNER_R_LIB} ${CONTAINER_R_LIB}
+          echo "options(Ncpus = 2)" > /home/runner/work/_temp/_github_home/.Rprofile
+          echo "R_LIBS=\${HOME}/r_library:\${R_LIBS}" > /home/runner/work/_temp/_github_home/.Renviron
+        
       - name: Install dev packages
         uses: docker://arm64v8/r-base:latest
         with:
           args: >
-            Rscript -e "install.packages(c('BiocManager', 'remotes', 'rcmdcheck'))" -e "BiocManager::install(upgrade = TRUE, ask = FALSE)"
+            Rscript -e "install.packages(c('BiocManager', 'remotes'))" -e "BiocManager::install(upgrade = TRUE, ask = FALSE)"
             
-      - name: Install dependencies
-        uses: docker://arm64v8/r-base:latest
-        with:
-          args: >
-            Rscript -e "toInstall <- remotes::dev_package_deps(dependencies = TRUE)[,'package']" -e  "toInstall <- setdiff(toInstall, installed.packages()[,'Package'])" -e "if(length(toInstall)) { BiocManager::install(toInstall, ask = FALSE) }"
+      # - name: Install dependencies
+      #   uses: docker://arm64v8/r-base:latest
+      #   with:
+      #     args: >
+      #       Rscript -e "toInstall <- remotes::dev_package_deps(dependencies = TRUE)[,'package']" -e  "toInstall <- setdiff(toInstall, installed.packages()[,'Package'])" -e "if(length(toInstall)) { BiocManager::install(toInstall, ask = FALSE) }"
+      #       
+      # - name: Check package
+      #   uses: docker://arm64v8/r-base:latest
+      #   with:
+      #     args: >
+      #       Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual', '--no-build-vignettes'), build_args = c('--no-build-vignettes'), error_on = 'warning', check_dir = Sys.getenv("HOME"))"
             
-      - name: Check package
-        uses: docker://arm64v8/r-base:latest
-        with:
-          args: >
-            Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual', '--no-build-vignettes'), build_args = c('--no-build-vignettes'), error_on = 'warning', check_dir = Sys.getenv("HOME"))"
+      - name: Copy library back
+        run: |
+          cp -r ${CONTAINER_R_LIB}/* ${RUNNER_R_LIB}
             
       - name: Upload check results
         uses: actions/upload-artifact@v2
