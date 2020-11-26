@@ -10,8 +10,10 @@ on:
 name: ARM64 R-CMD-check 
 
 jobs:
-  setup-qemu:
+  R-CMD-check:
     runs-on: ubuntu-20.04
+    container: arm64v8/r-base:latest
+    
     steps:
       - name: Set up QEMU
         id: qemu
@@ -20,12 +22,6 @@ jobs:
           image: tonistiigi/binfmt:latest
           platforms: arm64
           
-  R-CMD-check:
-    runs-on: ubuntu-20.04
-    needs: setup-qemu
-    container: arm64v8/r-base:latest
-    
-    steps:
       - name: Checkout
         uses: actions/checkout@v2
         
