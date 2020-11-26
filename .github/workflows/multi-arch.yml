@@ -10,12 +10,9 @@ on:
 name: ARM64 R-CMD-check 
 
 jobs:
-  R-CMD-check:
+  setup-qemu:
     runs-on: ubuntu-20.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        
       - name: Set up QEMU
         id: qemu
         uses: docker/setup-qemu-action@v1
@@ -23,6 +20,25 @@ jobs:
           image: tonistiigi/binfmt:latest
           platforms: arm64
           
+  R-CMD-check:
+    runs-on: ubuntu-20.04
+    needs: setup-qemu
+    container: arm64v8/r-base:latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: test
+        with:
+          args: >
+            bash -c "echo `uname -m` && echo $HOME && ls /github/home/"
+          
+      - name: test 2
+        with:
+          args: >
+            Rscript -e ".libPaths()"
+        
       - name: Set R options and make default library location
         run: |
           mkdir -p /home/runner/work/_temp/_github_home/r_library
@@ -36,18 +52,6 @@ jobs:
         with:
           path: /home/runner/work/_temp/_github_home/r_library
           key: arm64-build-${{ env.cache-name }}
-          
-      - name: test
-        uses: docker://arm64v8/r-base:latest
-        with:
-          args: >
-            bash -c "echo $HOME && ls /github/home/"
-          
-      - name: test 2
-        uses: docker://arm64v8/r-base:latest
-        with:
-          args: >
-            Rscript -e ".libPaths()"
 
       - name: Install R packages
         uses: docker://arm64v8/r-base:latest
