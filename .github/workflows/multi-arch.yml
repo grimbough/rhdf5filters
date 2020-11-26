@@ -36,7 +36,8 @@ jobs:
         
       - name: Set R options and copy library to share between docker instances
         run: |
-          mkdir -p ${RUNNER_R_LIB_PATH} && cp -r ${RUNNER_R_LIB_PATH} ${CONTAINER_R_LIB_PATH}
+          mkdir -p ${RUNNER_R_LIB_PATH} ${CONTAINER_R_LIB_PATH} 
+          cp -r ${RUNNER_R_LIB_PATH} ${CONTAINER_R_LIB_PATH}
           echo "options(Ncpus = 2)" > /home/runner/work/_temp/_github_home/.Rprofile
           echo "R_LIBS=\${HOME}/r_library:\${R_LIBS}" > /home/runner/work/_temp/_github_home/.Renviron
         
