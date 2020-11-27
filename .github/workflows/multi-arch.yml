@@ -65,7 +65,7 @@ jobs:
         uses: docker://arm64v8/r-base:latest
         with:
           args: >
-            Rscript -e "toInstall <- setdiff(c('BiocManager', 'remotes'), installed.packages()[,'Package'])" -e "if(length(toInstall)) { install.packages(toInstall) }" -e "BiocManager::install(upgrade = TRUE, ask = FALSE)"
+            Rscript -e "toInstall <- setdiff(c('BiocManager', 'remotes', 'rcmdcheck'), installed.packages()[,'Package'])" -e "if(length(toInstall)) { install.packages(toInstall) }" -e "BiocManager::install(upgrade = TRUE, ask = FALSE)"
             
       - name: Install dependencies
         uses: docker://arm64v8/r-base:latest
