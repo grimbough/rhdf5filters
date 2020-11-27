@@ -74,7 +74,7 @@ if [ "$MSSE2" = true ] && [ "$SSE2_SUPPORTED" = true ] ; then
   SSE2_SHUFFLE='shuffle-sse2.o: shuffle-sse2.c
 	$(CC) $(FLAGS) -c shuffle-sse2.c'
   SSE2_SHUFFLE_OBJ='shuffle-sse2.o'
-  SSE2_OBJ_PATH='lib/blosc-1.16.3/'
+  SSE2_OBJ_PATH='lib/blosc-1.20.1/'
 else
   SSE2=""
   MSSE2=""
@@ -102,7 +102,7 @@ if [ "$MAVX2" = true ] && [ "$AVX2_SUPPORTED" = true ] ; then
   AVX2_SHUFFLE='shuffle-avx2.o: shuffle-avx2.c
 	$(CC) $(FLAGS) -c shuffle-avx2.c'
   AVX2_SHUFFLE_OBJ='shuffle-avx2.o'
-  AVX2_OBJ_PATH='lib/blosc-1.16.3/'
+  AVX2_OBJ_PATH='lib/blosc-1.20.1/'
 else
   AVX2=""
   MAVX2=""
@@ -121,7 +121,7 @@ AC_SUBST(AVX2_BITSHUFFLE_OBJ)
 AC_SUBST(AVX2_SHUFFLE_OBJ)
 AC_SUBST(AVX2_OBJ_PATH)
 
-AC_CONFIG_FILES([src/blosc/lib/blosc-1.16.3/Makefile src/blosc/Makefile])
+AC_CONFIG_FILES([src/blosc/lib/blosc-1.20.1/Makefile src/blosc/Makefile])
 AC_OUTPUT
 
 dnl update variables in Makevars
