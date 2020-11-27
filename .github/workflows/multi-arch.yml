@@ -27,10 +27,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         
-      - name: Set R options and copy library to share between docker instances
+      - name: Set R options
         run: |
-          mkdir -p ${RUNNER_R_LIB_PATH} ${CONTAINER_R_LIB_PATH} 
-          cp -r ${RUNNER_R_LIB_PATH} ${CONTAINER_R_LIB_PATH}
           echo "options(Ncpus = 2)" > ${CONTAINER_HOME_PATH}/.Rprofile
           echo "R_LIBS=\${HOME}/r_library:\${R_LIBS}" > ${CONTAINER_HOME_PATH}/.Renviron
         
@@ -47,6 +45,11 @@ jobs:
         with:
           path: ${{ env.RUNNER_R_LIB_PATH }}
           key: arm64-build-${{ env.cache-name }}-v3-${{ hashFiles('.github/depends.Rds') }}
+          
+      - name: Copy library to share between docker instances
+        run: |
+          mkdir -p ${RUNNER_R_LIB_PATH} ${CONTAINER_R_LIB_PATH} 
+          cp -r ${RUNNER_R_LIB_PATH}/* ${CONTAINER_R_LIB_PATH}
           
       - name: test 
         uses: docker://arm64v8/r-base:latest
