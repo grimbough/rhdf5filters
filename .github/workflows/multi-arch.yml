@@ -13,7 +13,7 @@ jobs:
   R-CMD-check:
     runs-on: ubuntu-20.04
     env: 
-      RUNNER_R_LIB_PATH: ${HOME}/r_library
+      RUNNER_R_LIB_PATH: ${{ env.$HOME }}/r_library
       CONTAINER_R_LIB_PATH: /home/runner/work/_temp/_github_home/r_library
       CONTAINER_HOME_PATH: /home/runner/work/_temp/_github_home
     steps:
@@ -46,7 +46,7 @@ jobs:
           cache-name: RELEASE_3_12_packages
         with:
           path: ${{ env.RUNNER_R_LIB_PATH }}
-          key: arm64-build-${{ env.cache-name }}-v2-${{ hashFiles('.github/depends.Rds') }}
+          key: arm64-build-${{ env.cache-name }}-v3-${{ hashFiles('.github/depends.Rds') }}
           
       - name: test 
         uses: docker://arm64v8/r-base:latest
@@ -64,7 +64,7 @@ jobs:
         uses: docker://arm64v8/r-base:latest
         with:
           args: >
-            Rscript -e "toInstall <- 'BiocStyle'" -e  "toInstall <- setdiff(toInstall, installed.packages()[,'Package'])" -e "if(length(toInstall)) { BiocManager::install(toInstall, ask = FALSE) }"
+            Rscript -e "toInstall <- 'yaml'" -e  "toInstall <- setdiff(toInstall, installed.packages()[,'Package'])" -e "if(length(toInstall)) { BiocManager::install(toInstall, ask = FALSE) }"
             
       # - name: Install dependencies
       #   uses: docker://arm64v8/r-base:latest
