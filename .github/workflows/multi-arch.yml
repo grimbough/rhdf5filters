@@ -44,7 +44,7 @@ jobs:
         env:
           cache-name: RELEASE_3_12_packages
         with:
-          path: ${{ env.RUNNER_R_LIB_PATH }}
+          path: ${{ env.CONTAINER_R_LIB_PATH }}
           key: arm64-build-${{ env.cache-name }}-v4-${{ hashFiles('.github/depends.Rds') }}
           restore-keys: |
             arm64-build-${{ env.cache-name }}-v4-
@@ -52,16 +52,11 @@ jobs:
           
       - name: Copy library to share between docker instances
         run: |
-          mkdir -p ${RUNNER_R_LIB_PATH} ${CONTAINER_R_LIB_PATH} 
-          cp -r ${RUNNER_R_LIB_PATH}/* ${CONTAINER_R_LIB_PATH}
+          mkdir -p ${CONTAINER_R_LIB_PATH} 
+#          mkdir -p ${RUNNER_R_LIB_PATH} ${CONTAINER_R_LIB_PATH} 
+#          cp -r ${RUNNER_R_LIB_PATH}/* ${CONTAINER_R_LIB_PATH}
           
-      - name: test 
-        uses: docker://arm64v8/r-base:latest
-        with:
-          args: >
-            Rscript -e "installed.packages()[,'Package']"
-
-      - name: Install developer packages
+      - name: Install developer tools packages
         uses: docker://arm64v8/r-base:latest
         with:
           args: >
@@ -79,10 +74,10 @@ jobs:
           args: >
             Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual', '--no-build-vignettes'), build_args = c('--no-build-vignettes'), error_on = 'error', check_dir = Sys.getenv('HOME'))"
 
-      - name: Copy library back
-        run: |
-          cp -r ${CONTAINER_R_LIB_PATH}/* ${RUNNER_R_LIB_PATH}
-          ls -l ${CONTAINER_R_LIB_PATH}
+      # - name: Copy library back
+      #   run: |
+      #     cp -r ${CONTAINER_R_LIB_PATH}/* ${RUNNER_R_LIB_PATH}
+      #     ls -l ${CONTAINER_R_LIB_PATH}
             
       - name: Upload check results
         uses: actions/upload-artifact@v2
