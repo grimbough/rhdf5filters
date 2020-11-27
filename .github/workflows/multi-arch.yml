@@ -1,0 +1,81 @@
+on:
+  push:
+    branches:
+      - master
+      - arch-checks
+  pull_request:
+    branches:
+      - master
+
+name: ARM64 R-CMD-check 
+
+jobs:
+  R-CMD-check:
+    runs-on: ubuntu-20.04
+    env: 
+      CONTAINER_R_LIB_PATH: /home/runner/work/_temp/_github_home/r_library
+      CONTAINER_HOME_PATH: /home/runner/work/_temp/_github_home
+    steps:
+      - name: Set up QEMU
+        id: qemu
+        uses: docker/setup-qemu-action@v1
+        with:
+          image: tonistiigi/binfmt:latest
+          platforms: arm64
+          
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Set R options
+        run: |
+          mkdir -p ${CONTAINER_HOME_PATH}
+          echo "options(Ncpus = 2)" > ${CONTAINER_HOME_PATH}/.Rprofile
+          echo "R_LIBS=\${HOME}/r_library:\${R_LIBS}" > ${CONTAINER_HOME_PATH}/.Renviron
+        
+      - name: Query dependencies
+        uses: docker://arm64v8/r-base:latest
+        with:
+          args: >
+            Rscript -e "install.packages('remotes')" -e "saveRDS(remotes::dev_package_deps(dependencies = TRUE), '.github/depends.Rds', version = 2)" -e "list.files('.github')"
+      
+      - name: Cache R packages
+        uses: actions/cache@v2
+        id: cache
+        env:
+          cache-name: RELEASE_3_12_packages
+        with:
+          path: ${{ env.CONTAINER_R_LIB_PATH }}
+          key: arm64-build-${{ env.cache-name }}-v4-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: |
+            arm64-build-${{ env.cache-name }}-v4-
+            arm64-build-${{ env.cache-name }}-
+          
+      - name: Create library location if not restored from cache
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ${CONTAINER_R_LIB_PATH} 
+
+      - name: Install developer tools packages
+        uses: docker://arm64v8/r-base:latest
+        with:
+          args: >
+            Rscript -e "toInstall <- setdiff(c('BiocManager', 'remotes', 'rcmdcheck'), installed.packages()[,'Package'])" -e "if(length(toInstall)) { install.packages(toInstall) }" -e "BiocManager::install(upgrade = TRUE, ask = FALSE)"
+            
+      - name: Install dependencies
+        uses: docker://arm64v8/r-base:latest
+        with:
+          args: >
+            Rscript -e "toInstall <- remotes::dev_package_deps(dependencies = TRUE)[,'package']" -e  "toInstall <- setdiff(toInstall, installed.packages()[,'Package'])" -e "if(length(toInstall)) { BiocManager::install(toInstall, ask = FALSE) }"
+
+      - name: Check package
+        uses: docker://arm64v8/r-base:latest
+        with:
+          args: >
+            Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual', '--no-build-vignettes'), build_args = c('--no-build-vignettes'), error_on = 'error', check_dir = Sys.getenv('HOME'))"
+
+      - name: Upload check results
+        uses: actions/upload-artifact@v2
+        with:
+          name: Check_results
+          path: /home/runner/work/_temp/_github_home/*.Rcheck
+       
