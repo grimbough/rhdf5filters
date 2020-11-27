@@ -13,7 +13,7 @@ jobs:
   R-CMD-check:
     runs-on: ubuntu-20.04
     env: 
-      RUNNER_R_LIB_PATH: ${{ env.HOME }}/r_library
+      RUNNER_R_LIB_PATH: /home/runner/r_library
       CONTAINER_R_LIB_PATH: /home/runner/work/_temp/_github_home/r_library
       CONTAINER_HOME_PATH: /home/runner/work/_temp/_github_home
     steps:
