@@ -38,8 +38,12 @@ jobs:
         uses: docker://arm64v8/r-base:latest
         with:
           args: >
-            Rscript -e "install.packages('remotes')" -e "saveRDS(remotes::dev_package_deps(dependencies = TRUE), '/github/home/depends.Rds', version = 2)"
-          
+            Rscript -e "install.packages('remotes')" -e "saveRDS(remotes::dev_package_deps(dependencies = TRUE), '/github/home/depends.Rds', version = 2)" -e "list.files('/github/home/')"
+      
+      
+      - name: test 
+        run: ls ${CONTAINER_HOME_PATH}
+        
       - name: Cache R packages
         uses: actions/cache@v2
         env:
