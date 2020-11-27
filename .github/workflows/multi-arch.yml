@@ -13,7 +13,6 @@ jobs:
   R-CMD-check:
     runs-on: ubuntu-20.04
     env: 
-      RUNNER_R_LIB_PATH: /home/runner/r_library
       CONTAINER_R_LIB_PATH: /home/runner/work/_temp/_github_home/r_library
       CONTAINER_HOME_PATH: /home/runner/work/_temp/_github_home
     steps:
@@ -41,6 +40,7 @@ jobs:
       
       - name: Cache R packages
         uses: actions/cache@v2
+        id: cache
         env:
           cache-name: RELEASE_3_12_packages
         with:
@@ -50,12 +50,11 @@ jobs:
             arm64-build-${{ env.cache-name }}-v4-
             arm64-build-${{ env.cache-name }}-
           
-      - name: Copy library to share between docker instances
+      - name: Create library location if not restored from cache
+        if: steps.cache.outputs.cache-hit != 'true'
         run: |
           mkdir -p ${CONTAINER_R_LIB_PATH} 
-#          mkdir -p ${RUNNER_R_LIB_PATH} ${CONTAINER_R_LIB_PATH} 
-#          cp -r ${RUNNER_R_LIB_PATH}/* ${CONTAINER_R_LIB_PATH}
-          
+
       - name: Install developer tools packages
         uses: docker://arm64v8/r-base:latest
         with:
@@ -74,14 +73,9 @@ jobs:
           args: >
             Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual', '--no-build-vignettes'), build_args = c('--no-build-vignettes'), error_on = 'error', check_dir = Sys.getenv('HOME'))"
 
-      # - name: Copy library back
-      #   run: |
-      #     cp -r ${CONTAINER_R_LIB_PATH}/* ${RUNNER_R_LIB_PATH}
-      #     ls -l ${CONTAINER_R_LIB_PATH}
-            
       - name: Upload check results
         uses: actions/upload-artifact@v2
         with:
           name: Check_results
-          path: /home/runner/work/_temp/_github_home/rhdf5filters.Rcheck
+          path: /home/runner/work/_temp/_github_home/*.Rcheck
        
