@@ -40,9 +40,6 @@ jobs:
           args: >
             Rscript -e "install.packages('remotes')" -e "saveRDS(remotes::dev_package_deps(dependencies = TRUE), '.github/depends.Rds', version = 2)" -e "list.files('.github')"
       
-      - name: test 
-        run: ls ${GITHUB_WORKSPACE}
-        
       - name: Cache R packages
         uses: actions/cache@v2
         env:
@@ -50,12 +47,18 @@ jobs:
         with:
           path: ${{ env.RUNNER_R_LIB_PATH }}
           key: arm64-build-${{ env.cache-name }}-${{ hashFiles('.github/depends.Rds') }}
-
-      - name: Install dev packages
+          
+      - name: test 
         uses: docker://arm64v8/r-base:latest
         with:
           args: >
-            Rscript -e "install.packages(c('BiocManager', 'remotes'))" -e "BiocManager::install(upgrade = TRUE, ask = FALSE)"
+            Rscript -e "installed.packages()[,'Package']"
+
+      - name: Install developer packages
+        uses: docker://arm64v8/r-base:latest
+        with:
+          args: >
+            Rscript -e "toInstall <- setdiff(c('BiocManager', 'remotes'), installed.packages()[,'Package'])" -e "if(length(toInstall)) { install.packages(toInstall) }" -e "BiocManager::install(upgrade = TRUE, ask = FALSE)"
             
       - name: Install dependencies
         uses: docker://arm64v8/r-base:latest
@@ -78,6 +81,7 @@ jobs:
       - name: Copy library back
         run: |
           cp -r ${CONTAINER_R_LIB_PATH}/* ${RUNNER_R_LIB_PATH}
+          ls -l ${CONTAINER_R_LIB_PATH}
             
       - name: Upload check results
         uses: actions/upload-artifact@v2
