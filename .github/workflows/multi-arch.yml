@@ -46,7 +46,7 @@ jobs:
           cache-name: RELEASE_3_12_packages
         with:
           path: ${{ env.RUNNER_R_LIB_PATH }}
-          key: arm64-build-${{ env.cache-name }}-${{ hashFiles('.github/depends.Rds') }}
+          key: arm64-build-${{ env.cache-name }}-v2-${{ hashFiles('.github/depends.Rds') }}
           
       - name: test 
         uses: docker://arm64v8/r-base:latest
