@@ -77,7 +77,7 @@ jobs:
         uses: docker://arm64v8/r-base:latest
         with:
           args: >
-            Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual', '--no-build-vignettes'), build_args = c('--no-build-vignettes'), error_on = 'warning', check_dir = Sys.getenv('HOME'))"
+            Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual', '--no-build-vignettes'), build_args = c('--no-build-vignettes'), error_on = 'error', check_dir = Sys.getenv('HOME'))"
 
       - name: Copy library back
         run: |
