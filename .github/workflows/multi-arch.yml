@@ -29,6 +29,7 @@ jobs:
         
       - name: Set R options
         run: |
+          mkdir -p ${CONTAINER_HOME_PATH}
           echo "options(Ncpus = 2)" > ${CONTAINER_HOME_PATH}/.Rprofile
           echo "R_LIBS=\${HOME}/r_library:\${R_LIBS}" > ${CONTAINER_HOME_PATH}/.Renviron
         
