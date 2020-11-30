@@ -1,4 +1,3 @@
-library(rhdf5filters)
 
 test_that("HDF5_PLUGIN_PATH environment variable is set", {
     expect_true( nchar(Sys.getenv("HDF5_PLUGIN_PATH")) > 0 )
