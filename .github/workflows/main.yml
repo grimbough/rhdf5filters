@@ -49,10 +49,13 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@master
 
+      - name: Install developer tools packages
+        run: |
+          Rscript -e "install.packages(c('BiocManager', 'remotes', 'rcmdcheck'))"
+
       - name: Install dependencies
         run: |
-          Rscript -e "install.packages(c('BiocManager'))"
-          Rscript -e "BiocManager::install(c('rcmdcheck', 'covr', 'rmarkdown', 'knitr', 'Rhdf5lib', 'testthat', 'BiocStyle'))"
+          Rscript -e "toInstall <- remotes::dev_package_deps(dependencies = TRUE)[,'package']" -e  "toInstall <- setdiff(toInstall, installed.packages()[,'Package'])" -e "if(length(toInstall)) { BiocManager::install(toInstall, ask = FALSE) }"
 
       - name: Check
         run: Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual'), error_on = 'warning', check_dir = 'check')"
