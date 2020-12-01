@@ -45,6 +45,12 @@ compress/hist.o: compress/hist.c
 	$(CC) $(FLAGS) -c compress/hist.c -o compress/hist.o
 compress/zstd_compress.o: compress/zstd_compress.c
 	$(CC) $(FLAGS) -c compress/zstd_compress.c -o compress/zstd_compress.o
+compress/zstd_compress_literals.o: compress/zstd_compress_literals.c	
+	$(CC) $(FLAGS) -c compress/zstd_compress_literals.c -o compress/zstd_compress_literals.o
+compress/zstd_compress_sequences.o: compress/zstd_compress_sequences.c	
+	$(CC) $(FLAGS) -c compress/zstd_compress_sequences.c -o compress/zstd_compress_sequences.o
+compress/zstd_compress_superblock.o: compress/zstd_compress_superblock.c	
+	$(CC) $(FLAGS) -c compress/zstd_compress_superblock.c -o zstd_compress_superblock.o
 compress/zstd_fast.o: compress/zstd_fast.c
 	$(CC) $(FLAGS) -c compress/zstd_fast.c -o compress/zstd_fast.o
 compress/zstd_ldm.o: compress/zstd_ldm.c
