@@ -56,13 +56,15 @@
   #include <inttypes.h>
 #endif  /* _WIN32 */
 
-/* Include the win32/pthread.h library for all the Windows builds. See #224. */
-#if defined(_WIN32)
-  #include "win32/pthread.h"
-  #include "win32/pthread.c"
-#else
+/* Include the win32/pthread.h library for all the Windows builds. See #224. 
+ * rhdf5filters: pthread is included in rtools, so we don't need the bundled
+ * version here.  If this is included we get a 'multiple definitions' error. */
+//#if defined(_WIN32)
+//  #include "win32/pthread.h"
+//  #include "win32/pthread.c"
+//#else
   #include <pthread.h>
-#endif
+//#endif
 
 
 /* Some useful units */
