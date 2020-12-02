@@ -1,5 +1,3 @@
-# rhdf5filters
-
 # rhdf5filters 1.4.0
 
 ## USER VISIBLE CHANGES
@@ -21,7 +19,7 @@
 
 ## BUG FIXES
 
-* Now passed `R CMD config LDFLAGS` to the compilation of the BLOSC filter.
+* Now passes `R CMD config LDFLAGS` to the compilation of the BLOSC filter.
   (https://github.com/grimbough/rhdf5filters/issues/2)
 
 # rhdf5filters 0.99.0
