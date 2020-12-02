@@ -2,7 +2,7 @@ on:
   push:
     branches:
       - master
-      - arch-checks
+      - blosc-update
   pull_request:
     branches:
       - master

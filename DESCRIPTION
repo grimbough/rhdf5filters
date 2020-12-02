@@ -15,7 +15,8 @@ Suggests:
     BiocStyle,
     knitr,
     rmarkdown,
-    testthat (>= 2.1.0)
+    testthat (>= 2.1.0),
+    rhdf5 (>= 2.34.0)
 SystemRequirements: GNU make
 URL: https://github.com/grimbough/rhdf5filters
 BugReports: https://github.com/grimbough/rhdf5filters
