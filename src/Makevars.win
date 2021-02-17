@@ -19,7 +19,7 @@ copying: blosc/libH5Zblosc.so bzip2/libH5Zbz2.so lzf/libH5Zlzf.so
 	mkdir -p "${USER_LIB_DIR}"
 	cp blosc/libH5Zblosc.so "${USER_LIB_DIR}/libH5Zblosc.dll"
 	cp bzip2/libH5Zbz2.so "${USER_LIB_DIR}/libH5Zbz2.dll"
-	cp bzip2/libH5Zlzf.so "${USER_LIB_DIR}/libH5Zlzf.dll"
+	cp lzf/libH5Zlzf.so "${USER_LIB_DIR}/libH5Zlzf.dll"
   
 blosc/libH5Zblosc.so:
 	$(MAKE) -C blosc
