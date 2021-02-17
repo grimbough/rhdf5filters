@@ -68,7 +68,7 @@ test_that("bzip2 IO works", {
 })
 
 test_that("lzf IO works", {
-    skip_if_not_installed("rhdf5", minimum_version = "2.34.0")
+    skip_if_not_installed("rhdf5", minimum_version = "2.35.2")
     
     for(k in c(TRUE, FALSE)) {
         expect_silent(
