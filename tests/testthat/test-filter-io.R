@@ -3,7 +3,8 @@
 writeTestDataset <- function(file, data, filter, compression_level, shuffle) {
     
     rhdf5::h5createFile(file = file)
-    rhdf5::h5createDataset(file, dataset = "test", dims = dim(data), filter = filter, storage.mode = "integer",
+    rhdf5::h5createDataset(file, dataset = "test", dims = dim(data), 
+                           filter = filter, storage.mode = "integer",
                            level = compression_level, shuffle = shuffle)
     rhdf5::h5write(obj = data, file = file, name = "test")
 }
@@ -25,16 +26,6 @@ writeTestDataset(file = tf, data = mat, filter = "BLOSC_BLOSCLZ",
                  compression_level = 0, shuffle = FALSE)
 max_file_size <- file.size(tf)
 file.remove(tf)
-
-# for(i in seq_along(settings)) {
-#     for(j in seq_along(settings[[i]])) {
-#         for(k in c(TRUE, FALSE)) {
-#             writeTestDataset(file = tf, data = mat, filter = names(settings)[i], compression_level = settings[[i]][j], shuffle = k)
-#             message(i, ":", j, ":", k, " ", file.size(tf))
-#             file.remove(tf)
-#         }
-#     }
-# }
 
 test_that("blosc IO works", {
     skip_if_not_installed("rhdf5", minimum_version = "2.34.0")
@@ -73,5 +64,21 @@ test_that("bzip2 IO works", {
             )
             file.remove(tf)
         }
+    }
+})
+
+test_that("lzf IO works", {
+    skip_if_not_installed("rhdf5", minimum_version = "2.34.0")
+    
+    for(k in c(TRUE, FALSE)) {
+        expect_silent(
+            writeTestDataset(file = tf, data = mat, filter = "LZF", 
+                             compression_level = 1, shuffle = k)
+        )
+        expect_true(file.size(tf) < max_file_size)
+        expect_identical(
+            rhdf5::h5read(tf, "test"), mat
+        )
+        file.remove(tf)
     }
 })

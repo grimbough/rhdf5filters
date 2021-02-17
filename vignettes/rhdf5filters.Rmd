@@ -24,7 +24,7 @@ This pipeline approach has been designed so that filters can be chained together
 
 It may be case that for a specific usecase an alternative, third-party, compression algorithm would be the most appropriate to use.  Such filters, which are not part of the standard HDF5 distribution, are referred to as "external" filters.  In order to allow their use without requiring either the HDF5 library or applications to be built with support for all possible filters HDF5 is able to use dynamically loaded filters.  These are compiled independently from the HDF5 library, but are available to an application at run time.  
 
-This package currently distributes external HDF5 filters employing [**bzip2**](https://sourceware.org/bzip2/) and the [**Blosc**](https://blosc.org/) meta-compressor.  In total `r Biocpkg("rhdf5filters")` provides access to seven^[zlib compression is almost always available in a standard HDF5 installation, but is also available via Blosc.] compression filters than can be applied to HDF5 datasets.  The full list of filters currently provided by the package is:
+This package currently distributes external HDF5 filters employing [**bzip2**](https://sourceware.org/bzip2/) and the [**Blosc**](https://blosc.org/) meta-compressor.  In total `r Biocpkg("rhdf5filters")` provides access to eight^[zlib compression is almost always available in a standard HDF5 installation, but is also available via Blosc.] compression filters than can be applied to HDF5 datasets.  The full list of filters currently provided by the package is:
 
 - bzip2
 - blosclz
@@ -32,7 +32,8 @@ This package currently distributes external HDF5 filters employing [**bzip2**](h
 - lz4hc
 - snappy
 - zstd
-- zlib 
+- zlib
+- lzf
 
 # Usage
 
@@ -44,7 +45,7 @@ This package currently distributes external HDF5 filters employing [**bzip2**](h
 
 The function `h5createDataset()` within `r Biocpkg("rhdf5")` takes the argument `filter` which specifies which compression filter should be used when a new dataset is created.
 
-Also available in `r Biocpkg("rhdf5")` are the functions `H5Pset_bzip2()` and `H5Pset_blosc()`.  There are not part of the standard HDF5 interface, but are modelled on the `H5Pset_deflate()` function and allow the *bzip2* and *blosc* filters to be set on dataset create property lists.
+Also available in `r Biocpkg("rhdf5")` are the functions `H5Pset_bzip2()`, ``H5Pset_lzf()` and `H5Pset_blosc()`.  These are not part of the standard HDF5 interface, but are modelled on the `H5Pset_deflate()` function and allow the *bzip2*, *lzf* and *blosc* filters to be set on dataset create property lists.
 
 ### Reading data
 

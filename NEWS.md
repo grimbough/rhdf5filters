@@ -7,6 +7,8 @@
   - lz4: 1.8.3 🠪 1.9.2
   - zstd: 1.3.8 🠪 1.4.5
   
+* Added LZF filter
+  
 ## BUG FIXES
 
 * Fixed some missing references to `CFLAGS`, `CPPFLAGS` & `LDFLAGS` in 
