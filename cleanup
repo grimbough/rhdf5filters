@@ -14,6 +14,10 @@ rm -f src/blosc/lib/lz4-*/*.o
 rm -f src/blosc/lib/zstd-*/*.o 
 rm -f src/blosc/lib/zstd-*/common/*.o 
 rm -f src/blosc/lib/zstd-*/compress/*.o 
-rm -f src/blosc/lib/zstd-*/decompress/*.o 
+rm -f src/blosc/lib/zstd-*/decompress/*.o
+
+rm -f src/lzf/lzf/*.o
+rm -f src/lzf/lzf/liblzf.a
+rm -f src/lzf/libH5Zlzf.so
 
 rm -f src/Makevars

@@ -8,7 +8,9 @@ rm -f src/blosc/lib/blosc-*/*.o
 rm -f src/blosc/lib/snappy-*/*.o
 rm -f src/blosc/lib/lz4-*/*.o
 
+rm -f src/lzf/lzf/*.o
+rm -f src/lzf/lzf/liblzf.a
+rm -f src/lzf/libH5Zlzf.so
+
 cd src/blosc/lib/zstd-1.4.5/
 make clean
-
-rm -f src/blosc/libH5Zblosc.dll
