@@ -10,7 +10,7 @@ export RANLIB=`R CMD config RANLIB`
 export MAKE=`R CMD config MAKE`
 
 RHDF5_INCLUDE=$(shell echo 'cat(system.file("include", package="Rhdf5lib"))'|\
-    "${R_HOME}/bin/R" --vanilla --slave)
+	"${R_HOME}/bin/R" --vanilla --slave)
 export PKG_CPPFLAGS = -lpthread -I"$(RHDF5_INCLUDE)"
 
 all: copying
@@ -20,16 +20,16 @@ copying: blosc/libH5Zblosc.so bzip2/libH5Zbz2.so lzf/libH5Zlzf.so
 	cp blosc/libH5Zblosc.so "${USER_LIB_DIR}/libH5Zblosc.dll"
 	cp bzip2/libH5Zbz2.so "${USER_LIB_DIR}/libH5Zbz2.dll"
 	cp lzf/libH5Zlzf.so "${USER_LIB_DIR}/libH5Zlzf.dll"
-  
+
 blosc/libH5Zblosc.so:
 	$(MAKE) -C blosc
 	
 bzip2/libH5Zbz2.so:
 	$(MAKE) -C bzip2
-	
+
 lzf/libH5Zlzf.so:
 	$(MAKE) -C lzf
-	
+
 clean:
 	rm -f blosc/libH5Zblosc.dll
 	$(MAKE) -C blosc clean

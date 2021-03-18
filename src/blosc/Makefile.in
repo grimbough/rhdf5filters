@@ -10,7 +10,7 @@ BLOSC_OBJS=	@AVX2_OBJ_PATH@@AVX2_BITSHUFFLE_OBJ@ \
 			lib/blosc-1.20.1/shuffle-generic.o
 
 LZ4_OBJS=	lib/lz4-1.9.2/lz4.o \
-		 	lib/lz4-1.9.2/lz4hc.o
+			lib/lz4-1.9.2/lz4hc.o
 
 SNAPPY_OBJS=lib/snappy-1.1.1/snappy.o \
 			lib/snappy-1.1.1/snappy-c.o \
@@ -21,18 +21,18 @@ ZSTDCOMMON_FILES := $(sort $(wildcard lib/zstd-1.4.5/common/*.c))
 ZSTDCOMP_FILES := $(sort $(wildcard lib/zstd-1.4.5/compress/*.c))
 ZSTDDECOMP_FILES := $(sort $(wildcard lib/zstd-1.4.5/decompress/*.c))
 ZSTD_FILES := $(ZSTDCOMMON_FILES) $(ZSTDCOMP_FILES) $(ZSTDDECOMP_FILES)
-ZSTD_OBJS   := $(patsubst %.c,%.o,$(ZSTD_FILES))
+ZSTD_OBJS := $(patsubst %.c,%.o,$(ZSTD_FILES))
 
 
 all: libH5Zblosc.so
 
 libH5Zblosc.so:	H5Zblosc.o
 	$(CXX) $(PKG_CXXFLAGS) $(PKG_CXXPICFLAGS) $(PKG_LDFLAGS) -shared -o libH5Zblosc.so H5Zblosc.o \
-		   libblosc.a -lz
-		  
+		libblosc.a -lz
+
 H5Zblosc.o: libblosc.a
 	$(CC) $(PKG_CFLAGS) $(PKG_CPICFLAGS) -c -o H5Zblosc.o H5Zblosc.c \
-	      $(PKG_CPPFLAGS) -I./lib/blosc-1.20.1
+	$(PKG_CPPFLAGS) -I./lib/blosc-1.20.1
 
 libblosc.a:  blosc
 	rm -f libblosc.a
