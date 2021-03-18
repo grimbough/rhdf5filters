@@ -28,13 +28,13 @@ copying: blosc/libH5Zblosc.so bzip2/libH5Zbz2.so lzf/libH5Zlzf.so
 
 blosc/libH5Zblosc.so:
 	$(MAKE) -C blosc
-	
+
 bzip2/libH5Zbz2.so:
 	$(MAKE) -C bzip2
 
 lzf/libH5Zlzf.so:
 	$(MAKE) -C lzf
-	
+
 clean:
 	$(MAKE) -C blosc clean
 	$(MAKE) -C bzip2 clean
