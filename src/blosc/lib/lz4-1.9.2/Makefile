@@ -1,7 +1,6 @@
-FLAGS = $(PKG_CFLAGS) $(PKG_CPICFLAGS)
+FLAGS=$(PKG_CFLAGS) $(PKG_CPICFLAGS)
 
-LZ4_OBJS=	lz4.o \
-		 	lz4hc.o
+LZ4_OBJS=lz4.o lz4hc.o
 
 all: $(LZ4_OBJS)
 

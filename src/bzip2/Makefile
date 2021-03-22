@@ -1,7 +1,7 @@
 
 all: libH5Zbz2.so
 
-libH5Zbz2.so:	bzip2-1.0.8/libbz2.a
+libH5Zbz2.so: bzip2-1.0.8/libbz2.a
 	${CC} ${PKG_CFLAGS} ${PKG_CPICFLAGS} -shared H5Zbzip2.c $(PKG_CPPFLAGS) \
 	-I./bzip2-1.0.8/ ./bzip2-1.0.8/libbz2.a ${PKG_LDFLAGS} -o libH5Zbz2.so
 

@@ -28,13 +28,13 @@ all: libH5Zblosc.so
 
 libH5Zblosc.so:	H5Zblosc.o
 	$(CXX) $(PKG_CXXFLAGS) $(PKG_CXXPICFLAGS) $(PKG_LDFLAGS) -shared -o libH5Zblosc.so H5Zblosc.o \
-		libblosc.a -lz
+	libblosc.a -lz
 
 H5Zblosc.o: libblosc.a
 	$(CC) $(PKG_CFLAGS) $(PKG_CPICFLAGS) -c -o H5Zblosc.o H5Zblosc.c \
 	$(PKG_CPPFLAGS) -I./lib/blosc-1.20.1
 
-libblosc.a:  blosc
+libblosc.a: blosc
 	rm -f libblosc.a
 	$(AR) cq libblosc.a $(BLOSC_OBJS) $(SNAPPY_OBJS) $(LZ4_OBJS) $(ZSTD_OBJS)
 	$(RANLIB) libblosc.a
@@ -44,14 +44,14 @@ libblosc.a:  blosc
 blosc: subdirs
 	$(MAKE) -C lib/blosc-1.20.1 all
 
-SUBDIRS = lib/snappy-1.1.1 lib/lz4-1.9.2 lib/zstd-1.4.5
+SUBDIRS=lib/snappy-1.1.1 lib/lz4-1.9.2 lib/zstd-1.4.5
 
 .PHONY: subdirs $(SUBDIRS)
 
 subdirs: $(SUBDIRS)
 
 $(SUBDIRS):
-		$(MAKE) -C $@
+	$(MAKE) -C $@
 
 clean:
 	rm -f libH5Zblosc.so
