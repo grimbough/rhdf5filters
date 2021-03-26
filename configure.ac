@@ -137,3 +137,7 @@ AC_MSG_NOTICE([   BLOSC_LIB=${BLOSC_LIB}])
 AC_MSG_NOTICE([   LZF_LIB=${LZF_LIB}])
 AC_CONFIG_FILES([src/Makevars])
 AC_OUTPUT
+
+echo "################################"
+cat -T src/Makevars
+echo "################################"
