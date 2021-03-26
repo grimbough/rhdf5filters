@@ -22,9 +22,9 @@ all: copying $(SHLIB)
 #copy hdf5 library headers to package include
 copying: blosc/libH5Zblosc.so bzip2/libH5Zbz2.so lzf/libH5Zlzf.so
 	mkdir -p "${USER_LIB_DIR}"
-	cp ${BZIP2_LIB} ${USER_LIB_DIR}
-	cp ${BLOSC_LIB} ${USER_LIB_DIR}
-	cp ${LZF_LIB} ${USER_LIB_DIR}
+	cp ${BZIP2_LIB} "${USER_LIB_DIR}"
+	cp ${BLOSC_LIB} "${USER_LIB_DIR}"
+	cp ${LZF_LIB} "${USER_LIB_DIR}"
 
 blosc/libH5Zblosc.so:
 	$(MAKE) -C blosc
