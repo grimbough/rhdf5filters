@@ -12,5 +12,5 @@ lzf_c.o: lzf_c.c
 lzf_d.o: lzf_d.c
 	$(CC) $(FLAGS) -c lzf_d.c
 
-clean: 
-	rm -f *.o liblzf.a 
+clean:
+	rm -f *.o liblzf.a
