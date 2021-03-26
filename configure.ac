@@ -125,10 +125,6 @@ AC_CONFIG_FILES([src/blosc/lib/blosc-1.20.1/Makefile src/blosc/Makefile])
 AC_OUTPUT
 
 dnl update variables in Makevars
-HDF5_INCLUDE="${BASEPBNAME}/src"
-AC_SUBST(HDF5_INCLUDE)
-AC_MSG_NOTICE([   HDF5_INCLUDE=${HDF5_INCLUDE}])
-
 BZIP2_LIB="bzip2/libH5Zbz2.so"
 BLOSC_LIB="blosc/libH5Zblosc.so"
 LZF_LIB="lzf/libH5Zlzf.so"
