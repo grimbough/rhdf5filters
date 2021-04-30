@@ -18,7 +18,7 @@
   (https://github.com/grimbough/rhdf5filters/issues/3)
 * Address issue in compilation where message printed while processing
   .Rprofile where added to `LDFLAGS`
-  (https://github.com/grimbough/rhdf5filters/issues/11)(#11)
+  (https://github.com/grimbough/rhdf5filters/issues/11) (#11)
 
 # rhdf5filters 1.2.0
 
