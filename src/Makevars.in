@@ -1,6 +1,9 @@
 BZIP2_LIB=@BZIP2_LIB@
 BLOSC_LIB=@BLOSC_LIB@
 LZF_LIB=@LZF_LIB@
+RLE_LIB=@RLE_LIB@
+LIP_LIB=@LIP_LIB@
+SIMDCOMP_LIB=@SIMDCOMP_LIB@
 
 # location to copy the shared objects to
 USER_LIB_DIR = ${R_PACKAGE_DIR}/lib/
@@ -20,11 +23,14 @@ export PKG_LDFLAGS=@LDFLAGS@
 all: copying $(SHLIB)
 
 #copy hdf5 library headers to package include
-copying: blosc/libH5Zblosc.so bzip2/libH5Zbz2.so lzf/libH5Zlzf.so
+copying: blosc/libH5Zblosc.so bzip2/libH5Zbz2.so lzf/libH5Zlzf.so rle/libH5Zrle.so bitpack/libH5Zlip.so bitpack/libH5Zsimdcomp.so
 	mkdir -p "${USER_LIB_DIR}"
 	cp ${BZIP2_LIB} "${USER_LIB_DIR}"
 	cp ${BLOSC_LIB} "${USER_LIB_DIR}"
 	cp ${LZF_LIB} "${USER_LIB_DIR}"
+	cp ${RLE_LIB} "${USER_LIB_DIR}"
+	cp ${LIP_LIB} "${USER_LIB_DIR}"
+	cp ${SIMDCOMP_LIB} "${USER_LIB_DIR}"
 
 blosc/libH5Zblosc.so:
 	$(MAKE) -C blosc
@@ -34,8 +40,19 @@ bzip2/libH5Zbz2.so:
 
 lzf/libH5Zlzf.so:
 	$(MAKE) -C lzf
+	
+rle/libH5Zrle.so:
+	$(MAKE) -C rle
+	
+bitpack/libH5Zlip.so:
+	$(MAKE) -C bitpack
+
+bitpack/libH5Zsimdcomp.so:
+	$(MAKE) -C bitpack
 
 clean:
 	$(MAKE) -C blosc clean
 	$(MAKE) -C bzip2 clean
 	$(MAKE) -C lzf clean
+	$(MAKE) -C rle clean
+	$(MAKE) -C bitpack clean

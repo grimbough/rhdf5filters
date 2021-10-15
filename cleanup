@@ -20,4 +20,14 @@ rm -f src/lzf/lzf/*.o
 rm -f src/lzf/lzf/liblzf.a
 rm -f src/lzf/libH5Zlzf.so
 
+rm -f src/rle/rle-0.0.1/*.o
+rm -f src/rle/rle-0.0.1/librle.a
+rm -f src/rle/libH5Zrle.so
+
+rm -f src/bitpack/*.so
+rm -f src/bitpack/LittleIntPacker/*.o
+rm -f src/bitpack/LittleIntPacker/liblip.a
+rm -f src/bitpack/simdcomp/*.o
+rm -f src/bitpack/simdcomp/libsimdcomp.a
+
 rm -f src/Makevars

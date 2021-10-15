@@ -585,7 +585,10 @@ PACKAGE_BUGREPORT='grimbough@gmail.com'
 PACKAGE_URL=''
 
 ac_unique_file="src"
-ac_subst_vars='LZF_LIB
+ac_subst_vars='SIMDCOMP_LIB
+LIP_LIB
+RLE_LIB
+LZF_LIB
 BLOSC_LIB
 BZIP2_LIB
 LTLIBOBJS
@@ -4297,6 +4300,12 @@ fi
 BZIP2_LIB="bzip2/libH5Zbz2.so"
 BLOSC_LIB="blosc/libH5Zblosc.so"
 LZF_LIB="lzf/libH5Zlzf.so"
+RLE_LIB="rle/libH5Zrle.so"
+LIP_LIB="bitpack/libH5Zlip.so"
+SIMDCOMP_LIB="bitpack/libH5Zsimdcomp.so"
+
+
+
 
 
 
@@ -4307,6 +4316,12 @@ $as_echo "$as_me:    BZIP2_LIB=${BZIP2_LIB}" >&6;}
 $as_echo "$as_me:    BLOSC_LIB=${BLOSC_LIB}" >&6;}
 { $as_echo "$as_me:${as_lineno-$LINENO}:    LZF_LIB=${LZF_LIB}" >&5
 $as_echo "$as_me:    LZF_LIB=${LZF_LIB}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:    RLE_LIB=${RLE_LIB}" >&5
+$as_echo "$as_me:    RLE_LIB=${RLE_LIB}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:    LIP_LIB=${LIP_LIB}" >&5
+$as_echo "$as_me:    LIP_LIB=${LIP_LIB}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:    SIMDCOMP_LIB=${SIMDCOMP_LIB}" >&5
+$as_echo "$as_me:    SIMDCOMP_LIB=${SIMDCOMP_LIB}" >&6;}
 ac_config_files="$ac_config_files src/Makevars"
 
 cat >confcache <<\_ACEOF
