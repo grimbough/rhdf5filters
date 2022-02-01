@@ -31,6 +31,7 @@ static size_t H5Z_filter_rle(unsigned int flags, size_t cd_nelmts,
 
   size_t j, outbuflen, outdatalen;
   int ret;
+  unsigned int bit32 = cd_values[0];
   uint8_t *outbuf;
 
   if (flags & H5Z_FLAG_REVERSE) {
@@ -46,7 +47,11 @@ static size_t H5Z_filter_rle(unsigned int flags, size_t cd_nelmts,
       goto cleanupAndFail;
     }
     
-    rle_decompress_8bit(*buf, nbytes, outbuf);
+    if(bit32) {
+        rle_decompress_32bit(*buf, nbytes, outbuf);
+    } else {
+        rle_decompress_8bit(*buf, nbytes, outbuf);
+    }
 
     outdatalen = outbuflen;
 
@@ -61,7 +66,11 @@ static size_t H5Z_filter_rle(unsigned int flags, size_t cd_nelmts,
       goto cleanupAndFail;
     }
     
-    outbuflen = rle_compress_8bit(*buf, nbytes, outbuf);
+    if(bit32) {
+        outbuflen = rle_compress_32bit(*buf, nbytes, outbuf);
+    } else {
+        outbuflen = rle_compress_8bit(*buf, nbytes, outbuf);
+    }
     
     //fprintf(stdout, "initial size: %lu, final size: %lu\n", nbytes + sizeof(size_t), outbuflen);
     
