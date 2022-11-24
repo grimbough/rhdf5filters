@@ -1,4 +1,4 @@
-FLAGS=$(PKG_CFLAGS) $(PKG_CPICFLAGS) -msse4.1 -mavx
+FLAGS=$(PKG_CFLAGS) $(PKG_CPICFLAGS) -msse4.1 -mavx2
 
 LIP_LIB=liblip.a
 
