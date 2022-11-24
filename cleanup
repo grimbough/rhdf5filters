@@ -22,7 +22,11 @@ rm -f src/lzf/libH5Zlzf.so
 
 rm -f src/rle/rle-0.0.1/*.o
 rm -f src/rle/rle-0.0.1/librle.a
-rm -f src/rle/libH5Zrle.so
+rm -f Turbo-Run-Length-Encoding/libtrle.a
+rm -f Turbo-Run-Length-Encoding/*.o
+rm -f rle8/*.o
+rm -f rle8/librle8.a
+rm -f src/rle/*.so
 
 rm -f src/bitpack/*.so
 rm -f src/bitpack/LittleIntPacker/*.o
