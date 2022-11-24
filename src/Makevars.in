@@ -2,6 +2,8 @@ BZIP2_LIB=@BZIP2_LIB@
 BLOSC_LIB=@BLOSC_LIB@
 LZF_LIB=@LZF_LIB@
 RLE_LIB=@RLE_LIB@
+RLE8_LIB=@RLE8_LIB@
+TURBORLE_LIB=@TURBORLE_LIB@
 LIP_LIB=@LIP_LIB@
 SIMDCOMP_LIB=@SIMDCOMP_LIB@
 
@@ -23,12 +25,14 @@ export PKG_LDFLAGS=@LDFLAGS@
 all: copying $(SHLIB)
 
 #copy hdf5 library headers to package include
-copying: blosc/libH5Zblosc.so bzip2/libH5Zbz2.so lzf/libH5Zlzf.so rle/libH5Zrle.so bitpack/libH5Zlip.so bitpack/libH5Zsimdcomp.so
+copying: blosc/libH5Zblosc.so bzip2/libH5Zbz2.so lzf/libH5Zlzf.so rle/libH5Zrle.so rle/libH5Zrle8.so rle/libH5Zturborle.so bitpack/libH5Zlip.so bitpack/libH5Zsimdcomp.so
 	mkdir -p "${USER_LIB_DIR}"
 	cp ${BZIP2_LIB} "${USER_LIB_DIR}"
 	cp ${BLOSC_LIB} "${USER_LIB_DIR}"
 	cp ${LZF_LIB} "${USER_LIB_DIR}"
 	cp ${RLE_LIB} "${USER_LIB_DIR}"
+	cp ${RLE8_LIB} "${USER_LIB_DIR}"
+	cp ${TURBORLE_LIB} "${USER_LIB_DIR}"
 	cp ${LIP_LIB} "${USER_LIB_DIR}"
 	cp ${SIMDCOMP_LIB} "${USER_LIB_DIR}"
 
@@ -42,6 +46,12 @@ lzf/libH5Zlzf.so:
 	$(MAKE) -C lzf
 	
 rle/libH5Zrle.so:
+	$(MAKE) -C rle
+	
+rle/libH5Zrle8.so:
+	$(MAKE) -C rle
+	
+rle/libH5Zturborle.so:
 	$(MAKE) -C rle
 	
 bitpack/libH5Zlip.so:

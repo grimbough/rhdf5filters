@@ -587,6 +587,8 @@ PACKAGE_URL=''
 ac_unique_file="src"
 ac_subst_vars='SIMDCOMP_LIB
 LIP_LIB
+TURBORLE_LIB
+RLE8_LIB
 RLE_LIB
 LZF_LIB
 BLOSC_LIB
@@ -4301,8 +4303,12 @@ BZIP2_LIB="bzip2/libH5Zbz2.so"
 BLOSC_LIB="blosc/libH5Zblosc.so"
 LZF_LIB="lzf/libH5Zlzf.so"
 RLE_LIB="rle/libH5Zrle.so"
+RLE8_LIB="rle/libH5Zrle8.so"
+TURBORLE_LIB="rle/libH5Zturborle.so"
 LIP_LIB="bitpack/libH5Zlip.so"
 SIMDCOMP_LIB="bitpack/libH5Zsimdcomp.so"
+
+
 
 
 
@@ -4318,6 +4324,10 @@ $as_echo "$as_me:    BLOSC_LIB=${BLOSC_LIB}" >&6;}
 $as_echo "$as_me:    LZF_LIB=${LZF_LIB}" >&6;}
 { $as_echo "$as_me:${as_lineno-$LINENO}:    RLE_LIB=${RLE_LIB}" >&5
 $as_echo "$as_me:    RLE_LIB=${RLE_LIB}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:    RLE8_LIB=${RLE8_LIB}" >&5
+$as_echo "$as_me:    RLE8_LIB=${RLE8_LIB}" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}:    TURBORLE_LIB=${TURBORLE_LIB}" >&5
+$as_echo "$as_me:    TURBORLE_LIB=${TURBORLE_LIB}" >&6;}
 { $as_echo "$as_me:${as_lineno-$LINENO}:    LIP_LIB=${LIP_LIB}" >&5
 $as_echo "$as_me:    LIP_LIB=${LIP_LIB}" >&6;}
 { $as_echo "$as_me:${as_lineno-$LINENO}:    SIMDCOMP_LIB=${SIMDCOMP_LIB}" >&5
