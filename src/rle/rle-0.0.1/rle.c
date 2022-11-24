@@ -18,7 +18,8 @@ size_t rle_compress_8bit(void *buffer, size_t buffer_size, uint8_t *output_buffe
     k = 0;
     // record current value
     output_buffer[j++] = buffer_ptr[i];
-    while( buffer_ptr[i] == output_buffer[j-1] &&
+    while( i < buffer_size &&
+            buffer_ptr[i] == output_buffer[j-1] &&
            k < MAX_REPEATS &&
            k < buffer_size ) {
       k++;
@@ -86,11 +87,12 @@ size_t rle_compress_32bit(void *buffer, size_t buffer_size, uint8_t *output_buff
     output_size = j;
     //printf("output_size: %lu\n", output_size);
     
+    /*
     j = sizeof(size_t);
     while(j < output_size) {
         printf("%u %u %u %u %u\n", output_buffer[j], output_buffer[j+1], output_buffer[j+2], output_buffer[j+3], output_buffer[j+4]);
         j += 5;
-    }
+    } */
     
     
     return(output_size);
