@@ -12,7 +12,7 @@ liblip.a: $(OBJECTS2)
 	$(AR) cq liblip.a $(OBJECTS2)
 
 bmipacking32.o: ./src/bmipacking32.c $(HEADERS)
-	$(CC) $(FLAGS) -c ./src/bmipacking32.c -Iinclude
+	$(CC) $(FLAGS) -mavx -c ./src/bmipacking32.c -Iinclude
 
 horizontalpacking32.o: ./src/horizontalpacking32.c $(HEADERS)
 	$(CC) $(FLAGS) -c ./src/horizontalpacking32.c -Iinclude
