@@ -1,3 +1,10 @@
+# rhdf5filters 1.12.0
+
+## USER VISIBLE CHANGES
+
+* Compression libraries updated:
+  - lz4: 1.9.2 🠪 1.9.4
+
 # rhdf5filters 1.4.0
 
 ## USER VISIBLE CHANGES
