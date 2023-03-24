@@ -4,6 +4,12 @@
 
 * Compression libraries updated:
   - lz4: 1.9.2 🠪 1.9.4
+  
+## BUG FIXES
+
+* Ensure ranlib is applied to the lzf library after it is compiled.  This 
+cause linking failures on some systems.  (Thanks to 
+Sergey Fedorov for the report https://github.com/grimbough/rhdf5filters/pull/18)
 
 # rhdf5filters 1.4.0
 
