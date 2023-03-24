@@ -6,7 +6,8 @@ all: liblzf.a
 liblzf.a: lzf_c.o lzf_d.o
 	rm -f liblzf.a
 	$(AR) cq liblzf.a lzf_c.o lzf_d.o
-
+	$(RANLIB) liblzf.a
+	
 lzf_c.o: lzf_c.c
 	$(CC) $(FLAGS) -c lzf_c.c
 lzf_d.o: lzf_d.c
