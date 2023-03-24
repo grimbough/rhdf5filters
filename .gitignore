@@ -2,7 +2,17 @@
 .Rhistory
 .RData
 .Ruserdata
+*.Rproj
+
+## file created during compilation
 src/**/*.o
 src/**/*.so
 src/**/*.dll
 src/**/*.a
+
+## files created during configure
+src/Makevars
+src/blosc/Makefile
+src/blosc/lib/blosc-1.20.1/Makefile
+config.log
+config.status
