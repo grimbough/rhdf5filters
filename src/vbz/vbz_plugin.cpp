@@ -1,9 +1,7 @@
-#include "vbz_hdf_plugin_export.h"
 #include "vbz_plugin.h"
 #include "vbz/vbz.h"
 
 #include "third_party/gsl/gsl-lite.hpp"
-//#include <hdf5_plugin_types.h>
 #include <H5PLextern.h>
 
 #include <array>
@@ -241,19 +239,19 @@ H5Z_class2_t const vbz_filter_struct = {
     vbz_filter          // filter
 };
 
-extern "C" VBZ_HDF_PLUGIN_EXPORT const void* vbz_plugin_info(void)
+extern "C" const void* vbz_plugin_info(void)
 {
     return &vbz_filter_struct;
 }
 
 // hdf plugin hooks
-extern "C" VBZ_HDF_PLUGIN_EXPORT H5PL_type_t H5PLget_plugin_type(void)
+extern "C" H5PL_type_t H5PLget_plugin_type(void)
 {
     return H5PL_TYPE_FILTER;
 }
 
 // hdf plugin hooks
-extern "C" VBZ_HDF_PLUGIN_EXPORT const void* H5PLget_plugin_info(void)
+extern "C" const void* H5PLget_plugin_info(void)
 {
 #if VBZ_DEBUG
     std::cout << "Registering vbz plugin" << std::endl;
