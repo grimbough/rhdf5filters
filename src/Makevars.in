@@ -27,6 +27,9 @@ copying: libH5Zblosc.so libH5Zbz2.so libH5Zlzf.so libH5Zvbz.so
 	cp ${BLOSC_LIB} "${USER_LIB_DIR}"
 	cp ${LZF_LIB} "${USER_LIB_DIR}"
 	cp ${VBZ_LIB} "${USER_LIB_DIR}"
+	
+libH5Zvbz.so: libH5Zblosc.so
+	$(MAKE) -C vbz
 
 libH5Zblosc.so:
 	$(MAKE) -C blosc
@@ -36,9 +39,6 @@ libH5Zbz2.so:
 
 libH5Zlzf.so:
 	$(MAKE) -C lzf
-
-libH5Zvbz.so:
-	$(MAKE) -C vbz
 
 clean:
 	$(MAKE) -C blosc clean

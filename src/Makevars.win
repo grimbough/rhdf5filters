@@ -15,11 +15,15 @@ export PKG_CPPFLAGS = -lpthread -I"$(RHDF5_INCLUDE)"
 
 all: copying
 
-copying: blosc/libH5Zblosc.so bzip2/libH5Zbz2.so lzf/libH5Zlzf.so
+copying: blosc/libH5Zblosc.so bzip2/libH5Zbz2.so lzf/libH5Zlzf.so vbz/libH5Zvbz.so
 	mkdir -p "${USER_LIB_DIR}"
 	cp blosc/libH5Zblosc.so "${USER_LIB_DIR}/libH5Zblosc.dll"
 	cp bzip2/libH5Zbz2.so "${USER_LIB_DIR}/libH5Zbz2.dll"
 	cp lzf/libH5Zlzf.so "${USER_LIB_DIR}/libH5Zlzf.dll"
+	cp vbz/libH5Zvbz.so "${USER_LIB_DIR}/libH5Zvbz.dll"
+	
+vbz/libH5Zvbz.so: blosc/libH5Zblosc.so
+	$(MAKE) -C vbz
 
 blosc/libH5Zblosc.so:
 	$(MAKE) -C blosc
@@ -33,3 +37,5 @@ lzf/libH5Zlzf.so:
 clean:
 	rm -f blosc/libH5Zblosc.dll
 	$(MAKE) -C blosc clean
+	rm -f vbz/libH5Zvbz.dll
+	$(MAKE) -C vbz clean
