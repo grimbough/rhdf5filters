@@ -2,67 +2,66 @@ on:
   push:
     branches:
       - master
-      - blosc-update
+      - vbz
   pull_request:
     branches:
       - master
 
 name: R-CMD-check
 
+env:
+  GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+  R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    name: ${{ matrix.config.os }} (${{ matrix.config.bioc-version }})
 
     strategy:
       fail-fast: false
       matrix:
         config:
-        - { os: windows-latest, r: '4.0'}
-        - { os: windows-latest, r: 'devel'}
-        - { os: macOS-latest, r: '4.0'}
-        - { os: ubuntu-16.04, r: '4.0', cran: "https://packagemanager.rstudio.com/all/__linux__/xenial/latest"}
-        - { os: ubuntu-18.04, r: '4.0', cran: "https://packagemanager.rstudio.com/all/__linux__/bionic/latest"}
-        - { os: ubuntu-20.04, r: '4.0', cran: "https://packagemanager.rstudio.com/all/__linux__/focal/latest"}
-        - { os: ubuntu-16.04, r: 'devel', cran: "https://packagemanager.rstudio.com/all/__linux__/xenial/latest"}
-        - { os: ubuntu-18.04, r: 'devel', cran: "https://packagemanager.rstudio.com/all/__linux__/bionic/latest"}
-        - { os: ubuntu-20.04, r: 'devel', cran: "https://packagemanager.rstudio.com/all/__linux__/focal/latest"}
-
-    env:
-      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      CRAN: ${{ matrix.config.cran }}
-
+        - { os: windows-2022, bioc-version: 'devel', bioc-mirror: 'https://ftp.gwdg.de/pub/misc/bioconductor'}
+        - { os: macOS-11,     bioc-version: 'devel', bioc-mirror: 'https://ftp.gwdg.de/pub/misc/bioconductor'}
+        - { os: ubuntu-20.04, bioc-version: 'devel', bioc-mirror: 'https://ftp.gwdg.de/pub/misc/bioconductor'}
+        - { os: ubuntu-20.04, bioc-version: 'release',  bioc-mirror: 'https://packagemanager.rstudio.com/bioconductor'}
     steps:
+    
+      ## R CMD check complains about Windows line endings without this
       - name: Configure git
-        run: git config --global core.autocrlf false
-        
-      - uses: actions/checkout@v1
-
-      - uses: r-lib/actions/setup-r@master
-        with:
-          r-version: ${{ matrix.config.r }}
+        run: |
+          git config --global core.autocrlf false
+    
+      - uses: actions/checkout@v3
           
-      - name: Install system libraries
-        if: ${{ runner.os == 'Linux'  }}
-        run: |
-          sudo apt-get install hdf5-tools
-
-      - uses: r-lib/actions/setup-pandoc@master
-
-      - name: Install developer tools packages
-        run: |
-          Rscript -e "install.packages(c('BiocManager', 'remotes', 'rcmdcheck'))"
-
-      - name: Install dependencies
-        run: |
-          Rscript -e "toInstall <- remotes::dev_package_deps(dependencies = TRUE)[,'package']" -e  "toInstall <- setdiff(toInstall, installed.packages()[,'Package'])" -e "if(length(toInstall)) { BiocManager::install(toInstall, ask = FALSE) }"
-
-      - name: Check
-        run: Rscript -e "rcmdcheck::rcmdcheck(args = c('--no-manual'), error_on = 'warning', check_dir = 'check')"
-
-      - name: Upload check results
-        uses: actions/upload-artifact@master
+      - name: Setup R and Bioconductor
+        uses: grimbough/bioc-actions/setup-bioc@v1
         with:
-          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
-          path: check/rhdf5filters.Rcheck/00install.out
+          bioc-version: ${{ matrix.config.bioc-version }}
+          bioc-mirror: ${{ matrix.config.bioc-mirror }}
+          
+      - uses: r-lib/actions/setup-pandoc@v2
+          
+      - name: Install dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: |
+            covr
+            rcmdcheck
+            
+      - name: Bioc - Build, Install, Check
+        uses: grimbough/bioc-actions/build-install-check@v1
+
+      - name: Run BiocCheck
+        uses: grimbough/bioc-actions/run-BiocCheck@v1
+        with:
+          error-on: 'never'
+          arguments: '--no-check-bioc-help' 
+
+      - name: Test coverage
+        if: runner.os == 'Windows'
+        run: |
+          covr::codecov()
+        shell: Rscript {0}
