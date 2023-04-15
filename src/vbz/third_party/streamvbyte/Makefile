@@ -1,0 +1,52 @@
+PROCESSOR:=$(shell uname -m)
+
+#ifeq ($(PROCESSOR), aarch64)
+# for 64-bit ARM processors
+#CFLAGS = -fPIC -std=c99 -O3 -Wall -Wextra -pedantic -Wshadow -D__ARM_NEON__
+#else ifeq ($(PROCESSOR), armv7l)
+# for 32-bit ARM processors
+#CFLAGS = -fPIC -std=c99 -O3 -Wall -Wextra -pedantic -Wshadow
+#else
+# Here we expect x64
+# Formally speaking, we only need SSE4, at best, but code checks for AVX
+# since MSVC only allows to check for AVX and nothing finer like just SSE4
+#CFLAGS = -fPIC -march=native -std=c99 -O3 -Wall -Wextra -pedantic -Wshadow
+#endif
+
+CFLAGS=$(PKG_CFLAGS) $(PKG_CPICFLAGS) -Iinclude
+
+HEADERS=./include/streamvbyte.h ./include/streamvbytedelta.h ./include/streamvbyte_zigzag.h
+
+OBJS= streamvbyte_decode.o streamvbyte_encode.o streamvbytedelta_decode.o streamvbytedelta_encode.o streamvbyte_0124_encode.o  streamvbyte_0124_decode.o streamvbyte_zigzag.o
+
+all: libstreamvbyte.a
+
+libstreamvbyte.a: $(OBJS)
+	rm -f libstreamvbyte.a
+	$(AR) cq libstreamvbyte.a $(OBJS)
+	ranlib libstreamvbyte.a 
+
+clean: 
+	rm -f *.o libstreamvbyte.a
+
+streamvbyte_zigzag.o: ./src/streamvbyte_zigzag.c $(HEADERS)
+	$(CC) $(CFLAGS) -c ./src/streamvbyte_zigzag.c
+
+streamvbytedelta_encode.o: ./src/streamvbytedelta_encode.c $(HEADERS)
+	$(CC) $(CFLAGS) -c ./src/streamvbytedelta_encode.c
+
+streamvbytedelta_decode.o: ./src/streamvbytedelta_decode.c $(HEADERS)
+	$(CC) $(CFLAGS) -c ./src/streamvbytedelta_decode.c
+
+streamvbyte_0124_encode.o: ./src/streamvbyte_0124_encode.c $(HEADERS)
+	$(CC) $(CFLAGS) -c ./src/streamvbyte_0124_encode.c
+
+streamvbyte_0124_decode.o: ./src/streamvbyte_0124_decode.c $(HEADERS)
+	$(CC) $(CFLAGS) -c ./src/streamvbyte_0124_decode.c
+
+streamvbyte_decode.o: ./src/streamvbyte_decode.c $(HEADERS)
+	$(CC) $(CFLAGS) -c ./src/streamvbyte_decode.c
+
+streamvbyte_encode.o: ./src/streamvbyte_encode.c $(HEADERS)
+	$(CC) $(CFLAGS) -c ./src/streamvbyte_encode.c
+
