@@ -27,8 +27,6 @@ writeTestDataset(file = tf, data = mat, filter = "BLOSC_BLOSCLZ",
 max_file_size <- file.size(tf)
 file.remove(tf)
 
-test_that("blosc IO works", {
-    skip_if_not_installed("rhdf5", minimum_version = "2.34.0")
 
     for(i in seq_along(settings)) {
         for(j in seq_along(settings[[i]])) {
@@ -47,11 +45,7 @@ test_that("blosc IO works", {
         }
     }
 
-})
 
-test_that("bzip2 IO works", {
-    skip_if_not_installed("rhdf5", minimum_version = "2.34.0")
-    
     for(j in seq_len(9)) {
         for(k in c(TRUE, FALSE)) {
             expect_silent(
@@ -65,10 +59,6 @@ test_that("bzip2 IO works", {
             file.remove(tf)
         }
     }
-})
-
-test_that("lzf IO works", {
-    skip_if_not_installed("rhdf5", minimum_version = "2.35.2")
     
     for(k in c(TRUE, FALSE)) {
         expect_silent(
@@ -81,4 +71,4 @@ test_that("lzf IO works", {
         )
         file.remove(tf)
     }
-})
+
