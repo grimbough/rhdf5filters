@@ -1,3 +1,3 @@
 if (requireNamespace("tinytest", quietly = TRUE)) {
-  tinytest::test_package("Rarr")
+  tinytest::test_package("rhdf5filters")
 }
