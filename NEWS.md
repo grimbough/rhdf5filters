@@ -4,6 +4,9 @@
 
 * Compression libraries updated:
   - lz4: 1.9.2 🠪 1.9.4
+* Added the standalone Zstandard filter.  The distributed version of Zstandard
+is now 1.5.5.
+* Added the VBZ filter.
   
 ## BUG FIXES
 
