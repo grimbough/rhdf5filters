@@ -2,6 +2,7 @@ BZIP2_LIB=@BZIP2_LIB@
 BLOSC_LIB=@BLOSC_LIB@
 LZF_LIB=@LZF_LIB@
 VBZ_LIB=@VBZ_LIB@
+ZSTD_LIB=@ZSTD_LIB@
 
 # location to copy the shared objects to
 USER_LIB_DIR = ${R_PACKAGE_DIR}/lib/
@@ -27,12 +28,16 @@ copying: libH5Zblosc.so libH5Zbz2.so libH5Zlzf.so libH5Zvbz.so
 	cp ${BLOSC_LIB} "${USER_LIB_DIR}"
 	cp ${LZF_LIB} "${USER_LIB_DIR}"
 	cp ${VBZ_LIB} "${USER_LIB_DIR}"
+	cp ${ZSTD_LIB} "${USER_LIB_DIR}"
 	
-libH5Zvbz.so: libH5Zblosc.so
+libH5Zvbz.so: libH5Zzstd.so
 	$(MAKE) -C vbz
 
-libH5Zblosc.so:
+libH5Zblosc.so: libH5Zzstd.so
 	$(MAKE) -C blosc
+	
+libH5Zzstd.so:
+	$(MAKE) -C zstd
 
 libH5Zbz2.so:
 	$(MAKE) -C bzip2
@@ -45,3 +50,4 @@ clean:
 	$(MAKE) -C bzip2 clean
 	$(MAKE) -C lzf clean
 	$(MAKE) -C vbz clean
+	$(MAKE) -C zstd clean

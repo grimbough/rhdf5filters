@@ -28,4 +28,9 @@ rm -f src/vbz/third_party/streamvbyte/*.a
 rm -f src/vbz/libvbz.a
 rm -f src/vbz/libH5Zvbz.so
 
+rm -f src/zstd/libzstd.a
+rm -f src/zstd/common/*.o 
+rm -f src/zstd/compress/*.o 
+rm -f src/zstd/decompress/*.o
+
 rm -f src/Makevars

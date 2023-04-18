@@ -10,7 +10,7 @@ all: libH5Zvbz.so
 
 libH5Zvbz.so: libvbz.a
 	$(CXX) $(PKG_CXXFLAGS) $(PKG_CXXPICFLAGS) $(PKG_CPPFLAGS) -shared vbz_plugin.cpp \
-	libvbz.a $(PKG_LDFLAGS) ../blosc/libblosc.a third_party/streamvbyte/libstreamvbyte.a -o libH5Zvbz.so
+	libvbz.a $(PKG_LDFLAGS) ../zstd/libzstd.a third_party/streamvbyte/libstreamvbyte.a -o libH5Zvbz.so
 
 libvbz.a: vbz
 	rm -f libvbz.a

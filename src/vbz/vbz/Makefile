@@ -1,4 +1,4 @@
-EXTRA_FLAGS+=-I../../blosc/lib/zstd-1.4.5/ -I../third_party/streamvbyte/include/ -I../third_party/
+EXTRA_FLAGS+=-I../third_party/streamvbyte/include/ -I../third_party/ -I../../zstd/
 FLAGS=$(PKG_CXXFLAGS) $(PKG_CXXPICFLAGS) $(PKG_CPPFLAGS) $(EXTRA_FLAGS)
 
 all: vbz.o v0/vbz_streamvbyte.o v1/vbz_streamvbyte.o

@@ -2,7 +2,7 @@
 #include "v1/vbz_streamvbyte.h"
 
 #include "../third_party/gsl/gsl-lite.hpp"
-#include "../../blosc/lib/zstd-1.4.5/zstd.h"
+#include <zstd.h>
 
 #include <cassert>
 #include <cstddef>
