@@ -7,7 +7,8 @@ filters <- c(
   "BLOSC",
   "BZIP",
   "LZF",
-  "VBZ"
+  "VBZ",
+  "ZSTD"
 )
 
 h5file <- file.path(tempdir(), "h5ex_filters.h5")
@@ -24,7 +25,8 @@ for(filter in filters) {
          "BLOSC" = rhdf5::H5Pset_blosc(dcpl, tid),
          "BZIP"  = rhdf5::H5Pset_bzip2(dcpl),
          "LZF"   = rhdf5::H5Pset_lzf(dcpl, tid),
-         "VBZ"   = rhdf5::H5Pset_filter(dcpl, as.integer(32020), TRUE, c(1L, 2L, 1L, 1L))
+         "VBZ"   = rhdf5::H5Pset_filter(dcpl, as.integer(32020), TRUE, c(1L, 2L, 1L, 1L)),
+         "ZSTD"  = rhdf5::H5Pset_filter(dcpl, as.integer(32015), TRUE, c(1L))
   )
   did <- H5Dcreate(h5loc = fid, name = filter, dcpl = dcpl, 
                    h5space = sid, dtype_id = tid)
