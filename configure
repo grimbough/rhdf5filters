@@ -625,7 +625,6 @@ PACKAGE_URL=''
 
 ac_unique_file="src"
 ac_subst_vars='ZSTD_LIB
-VBZ_LIB
 LZF_LIB
 BLOSC_LIB
 BZIP2_LIB
@@ -4886,13 +4885,13 @@ fi
 BZIP2_LIB="bzip2/libH5Zbz2.so"
 BLOSC_LIB="blosc/libH5Zblosc.so"
 LZF_LIB="lzf/libH5Zlzf.so"
-VBZ_LIB="vbz/libH5Zvbz.so"
+#VBZ_LIB="vbz/libH5Zvbz.so"
 ZSTD_LIB="zstd/libH5Zzstd.so"
 
 
 
 
-
+#AC_SUBST(VBZ_LIB)
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}:    BZIP2_LIB=${BZIP2_LIB}" >&5
 printf "%s\n" "$as_me:    BZIP2_LIB=${BZIP2_LIB}" >&6;}
@@ -4900,8 +4899,7 @@ printf "%s\n" "$as_me:    BZIP2_LIB=${BZIP2_LIB}" >&6;}
 printf "%s\n" "$as_me:    BLOSC_LIB=${BLOSC_LIB}" >&6;}
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}:    LZF_LIB=${LZF_LIB}" >&5
 printf "%s\n" "$as_me:    LZF_LIB=${LZF_LIB}" >&6;}
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}:    VBZ_LIB=${VBZ_LIB}" >&5
-printf "%s\n" "$as_me:    VBZ_LIB=${VBZ_LIB}" >&6;}
+#AC_MSG_NOTICE([   VBZ_LIB=${VBZ_LIB}])
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}:    ZSTD_LIB=${ZSTD_LIB}" >&5
 printf "%s\n" "$as_me:    ZSTD_LIB=${ZSTD_LIB}" >&6;}
 ac_config_files="$ac_config_files src/Makevars"

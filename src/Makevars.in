@@ -1,7 +1,7 @@
 BZIP2_LIB=@BZIP2_LIB@
 BLOSC_LIB=@BLOSC_LIB@
 LZF_LIB=@LZF_LIB@
-VBZ_LIB=@VBZ_LIB@
+#VBZ_LIB=@VBZ_LIB@
 ZSTD_LIB=@ZSTD_LIB@
 
 # location to copy the shared objects to
@@ -22,16 +22,16 @@ export PKG_LDFLAGS=@LDFLAGS@
 all: copying $(SHLIB)
 
 #copy hdf5 library headers to package include
-copying: libH5Zblosc.so libH5Zbz2.so libH5Zlzf.so libH5Zvbz.so
+copying: libH5Zblosc.so libH5Zbz2.so libH5Zlzf.so 
 	mkdir -p "${USER_LIB_DIR}"
 	cp ${BZIP2_LIB} "${USER_LIB_DIR}"
 	cp ${BLOSC_LIB} "${USER_LIB_DIR}"
 	cp ${LZF_LIB} "${USER_LIB_DIR}"
-	cp ${VBZ_LIB} "${USER_LIB_DIR}"
+#	cp ${VBZ_LIB} "${USER_LIB_DIR}"
 	cp ${ZSTD_LIB} "${USER_LIB_DIR}"
 	
-libH5Zvbz.so: libH5Zzstd.so
-	$(MAKE) -C vbz
+#libH5Zvbz.so: libH5Zzstd.so
+#	$(MAKE) -C vbz
 
 libH5Zblosc.so: libH5Zzstd.so
 	$(MAKE) -C blosc
@@ -49,5 +49,5 @@ clean:
 	$(MAKE) -C blosc clean
 	$(MAKE) -C bzip2 clean
 	$(MAKE) -C lzf clean
-	$(MAKE) -C vbz clean
+#	$(MAKE) -C vbz clean
 	$(MAKE) -C zstd clean
