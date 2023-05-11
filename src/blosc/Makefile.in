@@ -1,3 +1,6 @@
+BLOSC_INCLUDE=@BLOSC_INCLUDE@
+BLOSC_LIB=@BLOSC_LIB@
+
 BLOSC_OBJS=	@AVX2_OBJ_PATH@@AVX2_BITSHUFFLE_OBJ@ \
 			lib/blosc-1.20.1/blosc.o \
 			@AVX2_OBJ_PATH@@AVX2_SHUFFLE_OBJ@ \
@@ -20,9 +23,9 @@ SNAPPY_OBJS=lib/snappy-1.1.1/snappy.o \
 
 all: libH5Zblosc.so
 
-libH5Zblosc.so:	H5Zblosc.o
-	$(CXX) $(PKG_CXXFLAGS) $(PKG_CXXPICFLAGS) $(PKG_LDFLAGS) -shared -o libH5Zblosc.so H5Zblosc.o \
-	libblosc.a ../zstd/libzstd.a -lz
+libH5Zblosc.so: @BUILD_BLOSC@
+	$(CXX) $(PKG_CXXFLAGS) $(PKG_CXXPICFLAGS) -shared H5Zblosc.c $(PKG_CPPFLAGS) \
+	${PKG_LDFLAGS} $(BLOSC_INCLUDE) $(BLOSC_LIB) -o libH5Zblosc.so
 
 H5Zblosc.o: libblosc.a
 	$(CC) $(PKG_CFLAGS) $(PKG_CPICFLAGS) -c -o H5Zblosc.o H5Zblosc.c \

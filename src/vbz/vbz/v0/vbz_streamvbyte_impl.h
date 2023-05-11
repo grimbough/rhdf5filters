@@ -8,6 +8,7 @@
 #include <gsl/gsl-lite.hpp>
 
 #include <vector>
+#include <cstdint>
 
 /// \brief Generic implementation, safe for all integer types, and platforms.
 template <typename T, bool UseZigZag>

@@ -9,6 +9,7 @@
 
 #include <cassert>
 #include <vector>
+#include <cstdint>
 
 #ifdef _MSC_VER
 # define VBZ_RESTRICT __restrict

@@ -1,3 +1,5 @@
+BLOSC_INCLUDE=@BLOSC_INCLUDE@
+BLOSC_LIB=@BLOSC_LIB@
 
 EXTRA_FLAGS=-I. -I./common -DXXH_NAMESPACE=ZSTD_ -DZSTD_DISABLE_ASM
 FLAGS=$(PKG_CFLAGS) $(PKG_CPICFLAGS) $(EXTRA_FLAGS)
@@ -13,9 +15,9 @@ ZSTD_OBJ   := $(patsubst %.c,%.o,$(ZSTD_FILES))
 
 all: libH5Zzstd.so
 
-libH5Zzstd.so: libzstd.a
+libH5Zzstd.so: @BUILD_ZSTD@
 	${CC} ${PKG_CFLAGS} ${PKG_CPICFLAGS} -shared H5Zzstd.c $(PKG_CPPFLAGS) \
-	libzstd.a ${PKG_LDFLAGS} -o libH5Zzstd.so
+	$(BLOSC_INCLUDE) ${PKG_LDFLAGS} -o libH5Zzstd.so
 
 libzstd.a: $(ZSTD_OBJ)
 	rm -f libzstd.a

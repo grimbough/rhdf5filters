@@ -29,5 +29,5 @@ streamvbyte:
 
 clean:
 	rm -f *.o libH5Zvbz.so
-	rm -f vbz/*.o vbz/libvbz.a
+	rm -f vbz/*.o vbz/v0/*.o vbz/v1/*.o vbz/libvbz.a
 	rm -f third_party/streamvbyte/*.o third_party/streamvbyte/libstreamvbyte.a
