@@ -40,7 +40,7 @@ jobs:
       
       - name: Install system dependencies
         if: runner.os == 'linux'
-        run: apt-get update && apt-get install ${{ matrix.sys-libs }}
+        run: sudo apt-get update && sudo apt-get install ${{ matrix.sys-libs }}
           
       - name: Setup R and Bioconductor
         uses: grimbough/bioc-actions/setup-bioc@v1
