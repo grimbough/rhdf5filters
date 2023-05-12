@@ -1,8 +1,8 @@
 on:
   push:
     branches:
-      - master
       - devel
+      - use-sys-libs
   pull_request:
     branches:
       - master
@@ -26,8 +26,9 @@ jobs:
         config:
         - { os: windows-2022, bioc-version: 'devel', bioc-mirror: 'https://ftp.gwdg.de/pub/misc/bioconductor'}
         - { os: macOS-12,     bioc-version: 'devel', bioc-mirror: 'https://ftp.gwdg.de/pub/misc/bioconductor'}
-        - { os: ubuntu-22.04, bioc-version: 'devel', bioc-mirror: 'https://ftp.gwdg.de/pub/misc/bioconductor'}
-        - { os: ubuntu-22.04, bioc-version: 'release',  bioc-mirror: 'https://packagemanager.rstudio.com/bioconductor'}
+        - { os: ubuntu-22.04, bioc-version: 'devel', bioc-mirror: 'https://ftp.gwdg.de/pub/misc/bioconductor', sys-libs: ''}
+        - { os: ubuntu-22.04, bioc-version: 'devel', bioc-mirror: 'https://ftp.gwdg.de/pub/misc/bioconductor', sys-libs: 'libblosc-dev libbz2-dev libzstd-dev'}
+        - { os: ubuntu-22.04, bioc-version: 'release',  bioc-mirror: 'https://packagemanager.rstudio.com/bioconductor', sys-libs: 'libblosc-dev libbz2-dev libzstd-dev'}
     steps:
     
       ## R CMD check complains about Windows line endings without this
@@ -36,6 +37,10 @@ jobs:
           git config --global core.autocrlf false
     
       - uses: actions/checkout@v3
+      
+      - name: Install system dependencies
+        if: runner.os == 'linux'
+        run: apt-get update && apt-get install ${{ matrix.sys-libs }}
           
       - name: Setup R and Bioconductor
         uses: grimbough/bioc-actions/setup-bioc@v1
