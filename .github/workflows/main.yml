@@ -39,8 +39,12 @@ jobs:
       - uses: actions/checkout@v3
       
       - name: Install system dependencies
-        if: runner.os == 'linux' & ${{ matrix.config.sys-libs }} == 'true'
-        run: sudo apt-get update && sudo apt-get install libblosc-dev libbz2-dev libzstd-dev
+        if: runner.os == 'linux' && ${{ matrix.config.sys-libs }} == 'true'
+        run: sudo apt-get update && sudo apt-get install -y libblosc-dev libbz2-dev libzstd-dev
+        
+      - name: Remove system dependencies
+        if: runner.os == 'linux' && ${{ matrix.config.sys-libs }} == 'false'
+        run: sudo apt-get update && sudo apt-get remove -y libblosc-dev libbz2-dev libzstd-dev
           
       - name: Setup R and Bioconductor
         uses: grimbough/bioc-actions/setup-bioc@v1
