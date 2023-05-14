@@ -26,7 +26,7 @@ all: libH5Zblosc.so
 
 libH5Zblosc.so: @BUILD_BLOSC@
 	$(CXX) $(PKG_CXXFLAGS) $(PKG_CXXPICFLAGS) -shared H5Zblosc.c $(PKG_CPPFLAGS) \
-	${PKG_LDFLAGS} $(BLOSC_INCLUDE) $(BLOSC_LIB) $(ZSTD_LIB) -o libH5Zblosc.so
+	${PKG_LDFLAGS} $(BLOSC_INCLUDE) $(BLOSC_LIB) $(ZSTD_LIB) -lz -o libH5Zblosc.so
 
 H5Zblosc.o: libblosc.a
 	$(CC) $(PKG_CFLAGS) $(PKG_CPICFLAGS) -c -o H5Zblosc.o H5Zblosc.c \

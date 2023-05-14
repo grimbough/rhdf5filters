@@ -10,8 +10,9 @@
 "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e \
       'lines <- gsub("@M?AVX2[A-Z_]*@", "", readLines("src/blosc/Makefile.in"));
        lines <- gsub("@M?SSE2[A-Z_]*@", "", lines);
+       lines <- gsub("@BLOSC_INCLUDE@", "-I./lib/blosc-1.20.1", lines, fixed = TRUE);
        lines <- gsub("@BLOSC_LIB@", "./libblosc.a", lines, fixed = TRUE);
-       lines <- gsub("@BLOSC_LIBRARY@", "./lib/blosc-1.20.1", lines, fixed = TRUE);
+       lines <- gsub("@ZSTD_LIB@", "libzstd.a", lines, fixed = TRUE);
        lines <- gsub("@BUILD_BLOSC@", "H5Zblosc.o", lines, fixed = TRUE);
        out_file <- file("src/blosc/Makefile", open="wb");
        writeLines(lines, con = out_file);
