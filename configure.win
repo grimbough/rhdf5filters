@@ -29,6 +29,6 @@
       'lines <- gsub("@BZ2_INCLUDE@", "-Ibzip2-1.0.8", readLines("src/bzip2/Makefile.in"), fixed = TRUE);
        lines <- gsub("@BZ2_LIB@", "bzip2-1.0.8/libbz2.a", lines, fixed = TRUE);
        lines <- gsub("@BUILD_BZ2@", "bzip2-1.0.8/libbz2.a", lines, fixed = TRUE);
-       out_file <- file("src/zstd/Makefile", open="wb");
+       out_file <- file("src/bzip2/Makefile", open="wb");
        writeLines(lines, con = out_file, sep = "\n");
        close(out_file);'
