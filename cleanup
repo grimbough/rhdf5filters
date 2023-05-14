@@ -3,6 +3,7 @@
 rm -f src/bzip2/bzip2-*/*.o 
 rm -f src/bzip2/bzip2-*/libbz2.a
 rm -f src/bzip2/libH5Zbz2.so*
+rm -f src/bzip2/Makefile
 
 rm -f src/blosc/*.o
 rm -f src/blosc/libblosc.a
@@ -33,5 +34,6 @@ rm -f src/zstd/common/*.o
 rm -f src/zstd/compress/*.o 
 rm -f src/zstd/decompress/*.o
 rm -f src/zstd/libH5Zzstd.so
+rm -f src/zstd/Makefile
 
 rm -f src/Makevars
