@@ -6,8 +6,29 @@
              out_file <- file("src/blosc/lib/blosc-1.20.1/Makefile", open="wb");
              writeLines(lines, con = out_file, sep = "\n");
              close(out_file);'
-"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e 'lines <- gsub("@M?AVX2[A-Z_]*@", "", readLines("src/blosc/Makefile.in"));
-             lines <- gsub("@M?SSE2[A-Z_]*@", "", lines);
-             out_file <- file("src/blosc/Makefile", open="wb");
-             writeLines(lines, con = out_file);
-             close(out_file);'
+             
+"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e \
+      'lines <- gsub("@M?AVX2[A-Z_]*@", "", readLines("src/blosc/Makefile.in"));
+       lines <- gsub("@M?SSE2[A-Z_]*@", "", lines);
+       lines <- gsub("@BLOSC_LIB@", "./libblosc.a", lines, fixed = TRUE);
+       lines <- gsub("@BLOSC_LIBRARY@", "./lib/blosc-1.20.1", lines, fixed = TRUE);
+       lines <- gsub("@BUILD_BLOSC@", "H5Zblosc.o", lines, fixed = TRUE);
+       out_file <- file("src/blosc/Makefile", open="wb");
+       writeLines(lines, con = out_file);
+       close(out_file);'
+             
+"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e \
+      'lines <- gsub("@ZSTD_INCLUDE@", "-I. -Icommon", readLines("src/zstd/Makefile.in"), fixed = TRUE);
+       lines <- gsub("@ZSTD_LIB@", "libzstd.a", lines, fixed = TRUE);
+       lines <- gsub("@BUILD_ZSTD@", "libzstd.a", lines, fixed = TRUE);
+       out_file <- file("src/zstd/Makefile", open="wb");
+       writeLines(lines, con = out_file, sep = "\n");
+       close(out_file);'
+       
+"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e \
+      'lines <- gsub("@BZ2_INCLUDE@", "-Ibzip2-1.0.8", readLines("src/bzip2/Makefile.in"), fixed = TRUE);
+       lines <- gsub("@BZ2_LIB@", "bzip2-1.0.8/libbz2.a", lines, fixed = TRUE);
+       lines <- gsub("@BUILD_BZ2@", "bzip2-1.0.8/libbz2.a", lines, fixed = TRUE);
+       out_file <- file("src/zstd/Makefile", open="wb");
+       writeLines(lines, con = out_file, sep = "\n");
+       close(out_file);'
