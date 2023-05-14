@@ -73,8 +73,8 @@ fi
 
 if test -z "$HAVE_ZSTD"; then
   AC_SUBST(BUILD_ZSTD, libzstd.a)
-  AC_SUBST(ZSTD_INCLUDE, -I. -Icommon)
-  AC_SUBST(ZSTD_LIB, libzstd.a)
+  AC_SUBST(ZSTD_INCLUDE, "-I. -Icommon")
+  AC_SUBST(ZSTD_LIB, ../zstd/libzstd.a)
 else
   AC_SUBST(BUILD_ZSTD, "")
   AC_SUBST(ZSTD_INCLUDE, "")

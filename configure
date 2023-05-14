@@ -4817,9 +4817,9 @@ fi
 if test -z "$HAVE_ZSTD"; then
   BUILD_ZSTD=libzstd.a
 
-  ZSTD_INCLUDE=-I. -Icommon
+  ZSTD_INCLUDE="-I. -Icommon"
 
-  ZSTD_LIB=libzstd.a
+  ZSTD_LIB=../zstd/libzstd.a
 
 else
   BUILD_ZSTD=""
