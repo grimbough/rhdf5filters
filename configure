@@ -660,8 +660,8 @@ ac_subst_vars='ZSTD_F_LIB
 LZF_F_LIB
 BLOSC_F_LIB
 BZIP2_F_LIB
-BLOSC_LIB
 BUILD_BLOSC
+BLOSC_LIB
 BLOSC_INCLUDE
 AVX2_OBJ_PATH
 AVX2_SHUFFLE_OBJ
@@ -5278,7 +5278,7 @@ fi
 
   BLOSC_INCLUDE="-I./lib/blosc-1.20.1"
 
-  BLOSC_INCLUDE="-I./lib/blosc-1.20.1/libblosc.a"
+  BLOSC_LIB="./lib/blosc-1.20.1/libblosc.a"
 
 else
   BUILD_BLOSC=""

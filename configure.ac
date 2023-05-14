@@ -186,7 +186,7 @@ if test -z "$HAVE_BLOSC"; then
   AC_SUBST(AVX2_OBJ_PATH)
   
   AC_SUBST(BLOSC_INCLUDE, "-I./lib/blosc-1.20.1")
-  AC_SUBST(BLOSC_INCLUDE, "-I./lib/blosc-1.20.1/libblosc.a")
+  AC_SUBST(BLOSC_LIB, "./lib/blosc-1.20.1/libblosc.a")
 else
   AC_SUBST(BUILD_BLOSC, "")
   AC_SUBST(BLOSC_INCLUDE, "")
