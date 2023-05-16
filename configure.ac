@@ -85,7 +85,7 @@ AC_SUBST(BUILD_ZSTD)
 AC_SUBST(ZSTD_INCLUDE)
 AC_SUBST(ZSTD_LIB)
 
-AC_CONFIG_FILES([src/zstd/Makefile])
+AC_CONFIG_FILES([src/zstd/Makefile src/vbz/Makefile])
 
 ##############################
 echo "configuring the BLOSC filter..."
@@ -196,17 +196,52 @@ fi
 
 AC_CONFIG_FILES([src/blosc/lib/blosc-1.20.1/Makefile src/blosc/Makefile])
 
+##############################
+echo "configuring the VBZ filter..."
+
+  ## check if we have an x86 CPU
+  machine=`uname -m`
+  AS_CASE([$machine],
+    [*86*], [x86_CPU=true],
+    [x86_CPU=false]
+  )
+  
+  ## see if -mavx is a supported flag
+  AX_CHECK_COMPILE_FLAG([-mavx], [MAVX=true], [MAVX=false])
+  
+  AC_RUN_IFELSE(
+        [AC_LANG_PROGRAM([#include <stdlib.h>],
+          [__builtin_cpu_init ();])
+        ],
+        [ax_cv_gcc_check_x86_cpu_init=true],
+        [ax_cv_gcc_check_x86_cpu_init=false])
+  
+  ## check CPU supports avx
+  if [ "$x86_CPU" == true ] && [ "$ax_cv_gcc_check_x86_cpu_init" == true ]; then
+      AX_GCC_X86_CPU_SUPPORTS(avx, [AVX_SUPPORTED=true], [AVX_SUPPORTED=false])
+  else
+      AVX_SUPPORTED=false
+  fi
+
+  if [ "$MAVX" = true ] && [ "$AVX_SUPPORTED" = true ] ; then
+    AC_SUBST(USE_VBZ, "libH5Zvbz.so")
+    AC_SUBST(VBZ_F_LIB, "vbz/libH5Zvbz.so")
+  else
+    AC_SUBST(USE_VBZ, "")
+    AC_SUBST(VBZ_F_LIB, "")
+  fi
+
+##############################
+
 dnl update variables in Makevars
 BZIP2_F_LIB="bzip2/libH5Zbz2.so"
 BLOSC_F_LIB="blosc/libH5Zblosc.so"
 LZF_F_LIB="lzf/libH5Zlzf.so"
-#VBZ_LIB="vbz/libH5Zvbz.so"
 ZSTD_F_LIB="zstd/libH5Zzstd.so"
 
 AC_SUBST(BZIP2_F_LIB)
 AC_SUBST(BLOSC_F_LIB)
 AC_SUBST(LZF_F_LIB)
-#AC_SUBST(VBZ_LIB)
 AC_SUBST(ZSTD_F_LIB)
 AC_CONFIG_FILES([src/Makevars])
 AC_OUTPUT

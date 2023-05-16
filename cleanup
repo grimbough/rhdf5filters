@@ -21,13 +21,13 @@ rm -f src/lzf/lzf/*.o
 rm -f src/lzf/lzf/liblzf.a
 rm -f src/lzf/libH5Zlzf.so
 
-# rm -f src/vbz/vbz/*.o
-# rm -f src/vbz/vbz/v0/*.o
-# rm -f src/vbz/vbz/v1/*.o
-# rm -f src/vbz/third_party/streamvbyte/*.o
-# rm -f src/vbz/third_party/streamvbyte/*.a
-# rm -f src/vbz/libvbz.a
-# rm -f src/vbz/libH5Zvbz.so
+rm -f src/vbz/vbz/*.o
+rm -f src/vbz/vbz/v0/*.o
+rm -f src/vbz/vbz/v1/*.o
+rm -f src/vbz/third_party/streamvbyte/*.o
+rm -f src/vbz/third_party/streamvbyte/*.a
+rm -f src/vbz/libvbz.a
+rm -f src/vbz/libH5Zvbz.so
 
 rm -f src/zstd/libzstd.a
 rm -f src/zstd/common/*.o 

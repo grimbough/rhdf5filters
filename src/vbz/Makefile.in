@@ -1,4 +1,4 @@
-ZSTD_LIB=-lzstd
+ZSTD_LIB=@ZSTD_LIB@
 
 STREAMVBYTE_OBJS=	third_party/streamvbyte/streamvbyte_0124_decode.o \
 					third_party/streamvbyte/streamvbyte_0124_encode.o \
