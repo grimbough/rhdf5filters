@@ -40,3 +40,20 @@ hdf5_plugin_path <- function() {
     
     return(patharch)
 }
+
+#' Return a list of installed filters
+#' 
+#' This function can be used to produce a vector of the installed filters.
+#' 
+#' @return A character vector containing the names of the installed filters.
+#' @examples
+#' available_filters()
+#' 
+#' @export
+available_filters <- function() {
+  
+  path <- system.file("lib", package="rhdf5filters", mustWork=FALSE)
+  object_files <- tools::file_path_sans_ext(list.files(path))
+  filters <- sub(pattern = "libH5Z", replacement = "", x = object_files)
+  return(filters)
+}

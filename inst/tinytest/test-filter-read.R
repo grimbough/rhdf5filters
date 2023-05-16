@@ -5,8 +5,8 @@ example_file <- system.file("h5examples", "h5ex_filters.h5", package = "rhdf5fil
 filters <- c(
   "BLOSC",
   "BZIP",
-  "LZF"
-  #"VBZ"
+  "LZF",
+  "VBZ"
 )
 
 for(filter in filters) {
