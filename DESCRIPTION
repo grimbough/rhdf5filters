@@ -1,7 +1,7 @@
 Package: rhdf5filters
 Type: Package
 Title: HDF5 Compression Filters 
-Version: 1.13.2
+Version: 1.13.3
 Authors@R: c(person("Mike", "Smith", 
                 role=c("aut", "cre"), 
                 email = "grimbough@gmail.com",
@@ -24,6 +24,6 @@ SystemRequirements: GNU make
 URL: https://github.com/grimbough/rhdf5filters
 BugReports: https://github.com/grimbough/rhdf5filters
 LinkingTo: Rhdf5lib
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 Encoding: UTF-8
 biocViews: Infrastructure, DataImport

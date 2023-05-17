@@ -18,7 +18,7 @@ jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} (${{ matrix.config.bioc-version }})
+    name: ${{ matrix.config.os }} (${{ matrix.config.bioc-version }}, System Libs: ${{ matrix.config.sys-libs }})
 
     strategy:
       fail-fast: false
@@ -40,11 +40,11 @@ jobs:
       
       - name: Install system dependencies
         if: ${{ runner.os == 'linux' && matrix.config.sys-libs == 'true' }}
-        run: sudo apt-get update && sudo apt-get install -y libblosc-dev libbz2-dev libzstd-dev
+        run: sudo apt-get update && sudo apt-get install -y libblosc-dev libbz2-dev libzstd-dev liblzf-dev
         
       - name: Remove system dependencies
         if: ${{ runner.os == 'linux' && matrix.config.sys-libs == 'false' }}
-        run: sudo apt-get update && sudo apt-get remove -y libblosc-dev libbz2-dev libzstd-dev
+        run: sudo apt-get update && sudo apt-get remove -y libblosc-dev libbz2-dev libzstd-dev liblzf-dev
           
       - name: Setup R and Bioconductor
         uses: grimbough/bioc-actions/setup-bioc@v1
