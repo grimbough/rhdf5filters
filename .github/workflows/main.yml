@@ -18,7 +18,7 @@ jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} (${{ matrix.config.bioc-version }}, System Libs: ${{ matrix.config.sys-libs }})
+    name: '${{ matrix.config.os }} (${{ matrix.config.bioc-version }}, System Libs: ${{ matrix.config.sys-libs }})'
 
     strategy:
       fail-fast: false
