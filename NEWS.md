@@ -1,3 +1,11 @@
+# rhdf5filters 1.14.0
+
+## CHANGES
+
+* The package will now test for system libraries for several compression tools
+and will use those libraries rather than compiling from source if they are
+found.
+
 # rhdf5filters 1.12.0
 
 ## USER VISIBLE CHANGES

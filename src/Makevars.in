@@ -1,7 +1,6 @@
 BZIP2_LIB=@BZIP2_F_LIB@
 BLOSC_LIB=@BLOSC_F_LIB@
 LZF_LIB=@LZF_F_LIB@
-#VBZ_LIB=@VBZ_LIB@
 ZSTD_LIB=@ZSTD_F_LIB@
 
 # location to copy the shared objects to
@@ -45,5 +44,5 @@ clean:
 	$(MAKE) -C blosc clean
 	$(MAKE) -C bzip2 clean
 	$(MAKE) -C lzf clean
-#	$(MAKE) -C vbz clean
+	$(MAKE) -C vbz clean
 	$(MAKE) -C zstd clean
