@@ -30,26 +30,51 @@ AR=`"${R_HOME}/bin/R" CMD config AR`
 AS_IF([test "x$AR" = "xERROR: no information for variable 'AR'"], [AC_PATH_PROG([AR], [ar])], [])
 AC_SUBST(AR)
 
+AC_PROG_CC
+
 ## determine the location of the Rhdf5lib versions of the HDF5 library
 RHDF5_INCLUDE=`"${R_HOME}/bin${R_ARCH_BIN}/Rscript" -e 'cat(system.file("include", package="Rhdf5lib"))' | \
     tail -n1`
 AC_SUBST(RHDF5_INCLUDE)
 
 ##############################
-echo "configuring BZIP2 filter..."
 
-HAVE_BZ2="yes"
+AC_ARG_WITH(bundled-libraries,,
+  [
+    bundled_libs="yes"
+    AC_MSG_NOTICE([Forcing the use of bundled compression libraries])
+  ],
+  [
+    bundled_libs="no"
+  ])
+
+AS_IF([test "x$bundled_libs" = xyes],
+      [],
+      [
+        HAVE_BZ2="yes"
+        HAVE_ZSTD="yes"
+        HAVE_BLOSC="yes"
+      ])
+
+
+##############################
+AC_MSG_NOTICE(configuring BZIP2 filter...)
+
+if test "x$HAVE_BZ2" = "xyes"; then
 AC_CHECK_HEADERS([bzlib.h], [HAVE_BZ2_H="yes"], [unset HAVE_BZ2])
-if test "x$HAVE_BZ2" = "xyes" -a "x$HAVE_BZ2_H" = "xyes"; then
-  AC_CHECK_LIB([bz2], [BZ2_bzDecompressInit],, [unset HAVE_BZ2])
+  if test "x$HAVE_BZ2_H" = "xyes"; then
+    AC_CHECK_LIB([bz2], [BZ2_bzDecompressInit],, [unset HAVE_BZ2])
+  fi
 fi
   
 dnl if there's not a system install of bzip2 build our own version
 if test -z "$HAVE_BZ2"; then
+  AC_MSG_NOTICE(Compiling bundled bzip2 library)
   AC_SUBST(BUILD_BZ2, bzip2-1.0.8/libbz2.a)
   AC_SUBST(BZ2_INCLUDE, -Ibzip2-1.0.8)
   AC_SUBST(BZ2_LIB, bzip2-1.0.8/libbz2.a)
 else
+  AC_MSG_NOTICE(Using system bzip2 library)
   AC_SUBST(BUILD_BZ2, "")
   AC_SUBST(BZ2_INCLUDE, "")
   AC_SUBST(BZ2_LIB, -lbz2)
@@ -60,22 +85,24 @@ AC_SUBST(BZ2_INCLUDE)
 AC_SUBST(BZ2_LIB)
 
 AC_CONFIG_FILES([src/bzip2/Makefile])
-AC_OUTPUT
 
 ##############################
-echo "configuring the Zstd filter..."
+AC_MSG_NOTICE(configuring the Zstd filter...)
 
-HAVE_ZSTD="yes"
-AC_CHECK_HEADERS([zstd.h], [HAVE_ZSTD_H="yes"], [unset HAVE_ZSTD])
-if test "x$HAVE_ZSTD" = "xyes" -a "x$HAVE_ZSTD_H" = "xyes"; then
-  AC_CHECK_LIB([zstd], [ZSTD_decompress],, [unset HAVE_ZSTD])
+if test "x$HAVE_ZSTD" = "xyes"; then
+  AC_CHECK_HEADERS([zstd.h], [HAVE_ZSTD_H="yes"], [unset HAVE_ZSTD])
+  if test "x$HAVE_ZSTD_H" = "xyes"; then
+    AC_CHECK_LIB([zstd], [ZSTD_decompress],, [unset HAVE_ZSTD])
+  fi
 fi
 
 if test -z "$HAVE_ZSTD"; then
+  AC_MSG_NOTICE(Compiling bundled Zstd library)
   AC_SUBST(BUILD_ZSTD, libzstd.a)
   AC_SUBST(ZSTD_INCLUDE, "-I. -Icommon")
   AC_SUBST(ZSTD_LIB, ../zstd/libzstd.a)
 else
+  AC_MSG_NOTICE(Using system Zstd library)
   AC_SUBST(BUILD_ZSTD, "")
   AC_SUBST(ZSTD_INCLUDE, "")
   AC_SUBST(ZSTD_LIB, -lzstd)
@@ -85,20 +112,23 @@ AC_SUBST(BUILD_ZSTD)
 AC_SUBST(ZSTD_INCLUDE)
 AC_SUBST(ZSTD_LIB)
 
-AC_CONFIG_FILES([src/zstd/Makefile src/vbz/Makefile])
+AC_CONFIG_FILES([src/zstd/Makefile])
 
 ##############################
-echo "configuring the BLOSC filter..."
+AC_MSG_NOTICE(configuring the BLOSC filter...)
 
-HAVE_BLOSC="yes"
-AC_CHECK_HEADERS([blosc.h], [HAVE_BLOSC_H="yes"], [unset HAVE_BLOSC])
-if test "x$HAVE_BLOSC" = "xyes" -a "x$HAVE_BLOSC_H" = "xyes"; then
-  AC_CHECK_LIB([blosc], [blosc_compress],, [unset HAVE_BLOSC])
+if test "x$HAVE_BLOSC" = "xyes"; then
+  AC_CHECK_HEADERS([blosc.h], [HAVE_BLOSC_H="yes"], [unset HAVE_BLOSC])
+  if test "x$HAVE_BLOSC_H" = "xyes"; then
+    AC_CHECK_LIB([blosc], [blosc_compress],, [unset HAVE_BLOSC])
+  fi
 fi
 
 dnl if there's not a system install of blosc build our own version
 
 if test -z "$HAVE_BLOSC"; then
+
+  AC_MSG_NOTICE(Compiling bundled BLOSC library)
 
   ## check if we have an x86 CPU
   machine=`uname -m`
@@ -189,6 +219,7 @@ if test -z "$HAVE_BLOSC"; then
   AC_SUBST(BLOSC_INCLUDE, "-I./lib/blosc-1.20.1")
   AC_SUBST(BLOSC_LIB, "./libblosc.a")
 else
+  AC_MSG_NOTICE(Using system BLOSC library)
   AC_SUBST(BUILD_BLOSC, "")
   AC_SUBST(BLOSC_INCLUDE, "")
   AC_SUBST(BLOSC_LIB, -lblosc)
@@ -197,39 +228,41 @@ fi
 AC_CONFIG_FILES([src/blosc/lib/blosc-1.20.1/Makefile src/blosc/Makefile])
 
 ##############################
-echo "configuring the VBZ filter..."
+AC_MSG_NOTICE(configuring the VBZ filter)
 
-  ## check if we have an x86 CPU
-  machine=`uname -m`
-  AS_CASE([$machine],
-    [*86*], [x86_CPU=true],
-    [x86_CPU=false]
-  )
+## check if we have an x86 CPU
+machine=`uname -m`
+AS_CASE([$machine],
+  [*86*], [x86_CPU=true],
+  [x86_CPU=false]
+)
   
-  ## see if -mavx is a supported flag
-  AX_CHECK_COMPILE_FLAG([-mavx], [MAVX=true], [MAVX=false])
+## see if -mavx is a supported flag
+AX_CHECK_COMPILE_FLAG([-mavx], [MAVX=true], [MAVX=false])
   
-  AC_RUN_IFELSE(
-        [AC_LANG_PROGRAM([#include <stdlib.h>],
-          [__builtin_cpu_init ();])
-        ],
-        [ax_cv_gcc_check_x86_cpu_init=true],
-        [ax_cv_gcc_check_x86_cpu_init=false])
+AC_RUN_IFELSE(
+      [AC_LANG_PROGRAM([#include <stdlib.h>],
+        [__builtin_cpu_init ();])
+      ],
+      [ax_cv_gcc_check_x86_cpu_init=true],
+      [ax_cv_gcc_check_x86_cpu_init=false])
   
-  ## check CPU supports avx
-  if [ "$x86_CPU" == true ] && [ "$ax_cv_gcc_check_x86_cpu_init" == true ]; then
-      AX_GCC_X86_CPU_SUPPORTS(avx, [AVX_SUPPORTED=true], [AVX_SUPPORTED=false])
-  else
-      AVX_SUPPORTED=false
-  fi
+## check CPU supports avx
+if [ "$x86_CPU" == true ] && [ "$ax_cv_gcc_check_x86_cpu_init" == true ]; then
+    AX_GCC_X86_CPU_SUPPORTS(avx, [AVX_SUPPORTED=true], [AVX_SUPPORTED=false])
+else
+    AVX_SUPPORTED=false
+fi
 
-  if [ "$MAVX" = true ] && [ "$AVX_SUPPORTED" = true ] ; then
-    AC_SUBST(USE_VBZ, "libH5Zvbz.so")
-    AC_SUBST(VBZ_F_LIB, "vbz/libH5Zvbz.so")
-  else
-    AC_SUBST(USE_VBZ, "")
-    AC_SUBST(VBZ_F_LIB, "")
-  fi
+if [ "$MAVX" = true ] && [ "$AVX_SUPPORTED" = true ] ; then
+  AC_SUBST(USE_VBZ, "libH5Zvbz.so")
+  AC_SUBST(VBZ_F_LIB, "vbz/libH5Zvbz.so")
+else
+  AC_SUBST(USE_VBZ, "")
+  AC_SUBST(VBZ_F_LIB, "")
+fi
+  
+AC_CONFIG_FILES([src/vbz/Makefile])
 
 ##############################
 
