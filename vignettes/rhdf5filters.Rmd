@@ -137,6 +137,24 @@ cat(
 )
 ```
 
+# Compiling the compression libraries
+
+In order to compile the compression filters **rhdf5filters** needs to link them
+against libraries for the relevant compression tools.  These libraries include `bzip2`,
+`blosc` and `zstd`.  By default **rhdf5filters** will look for system installations 
+of those libraries and link against them.  If they are not found then versions 
+that are bundled with the pacakge will be compiles and used instead. It is possible 
+to use system libraries for some filters and the bundled versions for others - 
+**rhdf5filters** should be able to determine this at compile time.
+
+If you wish to force the use of the bundled libraries, perhaps to ensure linking
+against the static versions, this can be done by providing the configure argument
+`"--with-bundled-libraries"` during package installation e.g.
+
+```r
+BiocManager::install('rhdf5filters', configure.args = "--with-bundled-libraries")
+```
+
 # Session info {.unnumbered}
 
 ```{r sessionInfo, echo=FALSE}
