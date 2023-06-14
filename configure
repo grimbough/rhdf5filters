@@ -3502,9 +3502,16 @@ else $as_nop
 fi
 
 
+
+
 if test "x$bundled_libs" = xyes
 then :
-
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: requesting bundled libs" >&5
+printf "%s\n" "$as_me: requesting bundled libs" >&6;}
+elif test "${IS_BIOC_BUILD_MACHINE}" = "yes"
+then :
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: is Bioc build machine" >&5
+printf "%s\n" "$as_me: is Bioc build machine" >&6;}
 else $as_nop
 
         HAVE_BZ2="yes"
@@ -3611,8 +3618,8 @@ fi
 fi
 
 if test -z "$HAVE_BZ2"; then
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Compiling bundled bzip2 library" >&5
-printf "%s\n" "$as_me: Compiling bundled bzip2 library" >&6;}
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: compiling bundled bzip2 library" >&5
+printf "%s\n" "$as_me: compiling bundled bzip2 library" >&6;}
   BUILD_BZ2=bzip2-1.0.8/libbz2.a
 
   BZ2_INCLUDE=-Ibzip2-1.0.8
@@ -3704,8 +3711,8 @@ fi
 fi
 
 if test -z "$HAVE_ZSTD"; then
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Compiling bundled Zstd library" >&5
-printf "%s\n" "$as_me: Compiling bundled Zstd library" >&6;}
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: compiling bundled Zstd library" >&5
+printf "%s\n" "$as_me: compiling bundled Zstd library" >&6;}
   BUILD_ZSTD=libzstd.a
 
   ZSTD_INCLUDE="-I. -Icommon"
@@ -3799,8 +3806,8 @@ fi
 
 if test -z "$HAVE_BLOSC"; then
 
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Compiling bundled BLOSC library" >&5
-printf "%s\n" "$as_me: Compiling bundled BLOSC library" >&6;}
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: compiling bundled BLOSC library" >&5
+printf "%s\n" "$as_me: compiling bundled BLOSC library" >&6;}
 
   ## check if we have an x86 CPU
   machine=`uname -m`

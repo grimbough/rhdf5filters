@@ -28,7 +28,7 @@ jobs:
         - { os: macOS-12,     bioc-version: 'devel', bioc-mirror: 'https://ftp.gwdg.de/pub/misc/bioconductor', sys-libs: 'false'}
         - { os: ubuntu-22.04, bioc-version: 'devel', bioc-mirror: 'https://ftp.gwdg.de/pub/misc/bioconductor', sys-libs: 'false'}
         - { os: ubuntu-22.04, bioc-version: 'devel', bioc-mirror: 'https://ftp.gwdg.de/pub/misc/bioconductor', sys-libs: 'true'}
-        - { os: ubuntu-22.04, bioc-version: 'release',  bioc-mirror: 'https://packagemanager.rstudio.com/bioconductor', sys-libs: 'true'}
+        - { os: ubuntu-22.04, bioc-version: 'release',  bioc-mirror: 'https://packagemanager.posit.co/bioconductor', sys-libs: 'true'}
     steps:
     
       ## R CMD check complains about Windows line endings without this

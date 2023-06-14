@@ -48,8 +48,12 @@ AC_ARG_WITH(bundled-libraries,,
     bundled_libs="no"
   ])
 
+
+
 AS_IF([test "x$bundled_libs" = xyes],
-      [],
+      [AC_MSG_NOTICE(requesting bundled libs)],
+      [test "${IS_BIOC_BUILD_MACHINE}" = "yes"],
+      [AC_MSG_NOTICE(is Bioc build machine)],
       [
         HAVE_BZ2="yes"
         HAVE_ZSTD="yes"
@@ -69,7 +73,7 @@ fi
   
 dnl if there's not a system install of bzip2 build our own version
 if test -z "$HAVE_BZ2"; then
-  AC_MSG_NOTICE(Compiling bundled bzip2 library)
+  AC_MSG_NOTICE(compiling bundled bzip2 library)
   AC_SUBST(BUILD_BZ2, bzip2-1.0.8/libbz2.a)
   AC_SUBST(BZ2_INCLUDE, -Ibzip2-1.0.8)
   AC_SUBST(BZ2_LIB, bzip2-1.0.8/libbz2.a)
@@ -97,7 +101,7 @@ if test "x$HAVE_ZSTD" = "xyes"; then
 fi
 
 if test -z "$HAVE_ZSTD"; then
-  AC_MSG_NOTICE(Compiling bundled Zstd library)
+  AC_MSG_NOTICE(compiling bundled Zstd library)
   AC_SUBST(BUILD_ZSTD, libzstd.a)
   AC_SUBST(ZSTD_INCLUDE, "-I. -Icommon")
   AC_SUBST(ZSTD_LIB, ../zstd/libzstd.a)
@@ -128,7 +132,7 @@ dnl if there's not a system install of blosc build our own version
 
 if test -z "$HAVE_BLOSC"; then
 
-  AC_MSG_NOTICE(Compiling bundled BLOSC library)
+  AC_MSG_NOTICE(compiling bundled BLOSC library)
 
   ## check if we have an x86 CPU
   machine=`uname -m`
