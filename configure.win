@@ -33,3 +33,9 @@
        out_file <- file("src/bzip2/Makefile", open="wb");
        writeLines(lines, con = out_file, sep = "\n");
        close(out_file);'
+       
+"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e \
+      'lines <- gsub("@ZSTD_LIB@", "../zstd/libzstd.a", readLines("src/vbz/Makefile.in"), fixed = TRUE);
+       out_file <- file("src/vbz/Makefile", open="wb");
+       writeLines(lines, con = out_file, sep = "\n");
+       close(out_file);'
