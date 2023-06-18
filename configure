@@ -3502,7 +3502,7 @@ else $as_nop
 fi
 
 
-
+echo "IS_BIOC_BUILD_MACHINE=${IS_BIOC_BUILD_MACHINE}"
 
 if test "x$bundled_libs" = xyes
 then :
@@ -3514,6 +3514,8 @@ then :
 printf "%s\n" "$as_me: is Bioc build machine" >&6;}
 else $as_nop
 
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: is NOT Bioc build machine" >&5
+printf "%s\n" "$as_me: is NOT Bioc build machine" >&6;}
         HAVE_BZ2="yes"
         HAVE_ZSTD="yes"
         HAVE_BLOSC="yes"

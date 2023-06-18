@@ -48,13 +48,14 @@ AC_ARG_WITH(bundled-libraries,,
     bundled_libs="no"
   ])
 
-
+echo "IS_BIOC_BUILD_MACHINE=${IS_BIOC_BUILD_MACHINE}"
 
 AS_IF([test "x$bundled_libs" = xyes],
       [AC_MSG_NOTICE(requesting bundled libs)],
       [test "${IS_BIOC_BUILD_MACHINE}" = "yes"],
       [AC_MSG_NOTICE(is Bioc build machine)],
       [
+        AC_MSG_NOTICE(is NOT Bioc build machine)
         HAVE_BZ2="yes"
         HAVE_ZSTD="yes"
         HAVE_BLOSC="yes"
