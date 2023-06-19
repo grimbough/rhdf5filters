@@ -238,8 +238,9 @@ AC_MSG_NOTICE(configuring the VBZ filter)
 ## check if we have an x86 CPU
 machine=`uname -m`
 AS_CASE([$machine],
-  [*86*], [x86_CPU=true],
-  [x86_CPU=false]
+  [*86*], [SUPPORTED_CPU=true],
+  [aarch64], [SUPPORTED_CPU=true],
+  [SUPPORTED_CPU=false]
 )
   
 ## see if -mavx is a supported flag
@@ -253,13 +254,31 @@ AC_RUN_IFELSE(
       [ax_cv_gcc_check_x86_cpu_init=false])
   
 ## check CPU supports avx
-if [ "$x86_CPU" == true ] && [ "$ax_cv_gcc_check_x86_cpu_init" == true ]; then
-    AX_GCC_X86_CPU_SUPPORTS(avx, [AVX_SUPPORTED=true], [AVX_SUPPORTED=false])
+#if [ "$xSUPPORTED_CPU" == true ] && [ "$ax_cv_gcc_check_x86_cpu_init" == true ] ; then
+#  AX_GCC_X86_CPU_SUPPORTS(avx, [VBZ_SUPPORTED=true], [VBZ_SUPPORTED=false])
+#elif [ "$xSUPPORTED_CPU" == true ] && [ "${machine}" == "aarch64" ] ; then
+#  echo "VBZ supported on ARM64"
+#  VBZ_SUPPORTED=true
+#else
+#  VBZ_SUPPORTED=false
+#fi
+
+## check CPU supports avx
+if [ "$xSUPPORTED_CPU" = true ]; then
+  if [ "${machine}" = "aarch64" ] ; then
+    echo "VBZ supported on ARM64"
+    VBZ_SUPPORTED=true
+  elif [ "$ax_cv_gcc_check_x86_cpu_init" = true ]; then
+    AX_GCC_X86_CPU_SUPPORTS(avx, [VBZ_SUPPORTED=true], [VBZ_SUPPORTED=false])
+  else
+    VBZ_SUPPORTED=false
+  fi
 else
-    AVX_SUPPORTED=false
+  VBZ_SUPPORTED=false
 fi
 
-if [ "$MAVX" = true ] && [ "$AVX_SUPPORTED" = true ] ; then
+
+if [ ${VBZ_SUPPORTED} = true ] ; then
   AC_SUBST(USE_VBZ, "libH5Zvbz.so")
   AC_SUBST(VBZ_F_LIB, "vbz/libH5Zvbz.so")
 else

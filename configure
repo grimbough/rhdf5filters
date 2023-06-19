@@ -4211,9 +4211,11 @@ printf "%s\n" "$as_me: configuring the VBZ filter" >&6;}
 machine=`uname -m`
 case $machine in #(
   *86*) :
-    x86_CPU=true ;; #(
+    SUPPORTED_CPU=true ;; #(
+  aarch64) :
+    SUPPORTED_CPU=true ;; #(
   *) :
-    x86_CPU=false
+    SUPPORTED_CPU=false
  ;;
 esac
 
@@ -4288,7 +4290,21 @@ fi
 
 
 ## check CPU supports avx
-if  "$x86_CPU" == true  &&  "$ax_cv_gcc_check_x86_cpu_init" == true ; then
+#if [ "$xSUPPORTED_CPU" == true ] && [ "$ax_cv_gcc_check_x86_cpu_init" == true ] ; then
+#  AX_GCC_X86_CPU_SUPPORTS(avx, [VBZ_SUPPORTED=true], [VBZ_SUPPORTED=false])
+#elif [ "$xSUPPORTED_CPU" == true ] && [ "${machine}" == "aarch64" ] ; then
+#  echo "VBZ supported on ARM64"
+#  VBZ_SUPPORTED=true
+#else
+#  VBZ_SUPPORTED=false
+#fi
+
+## check CPU supports avx
+if  "$xSUPPORTED_CPU" = true ; then
+  if  "${machine}" = "aarch64"  ; then
+    echo "VBZ supported on ARM64"
+    VBZ_SUPPORTED=true
+  elif  "$ax_cv_gcc_check_x86_cpu_init" = true ; then
 
 
    ac_ext=c
@@ -4352,18 +4368,22 @@ then :
 
 printf "%s\n" "#define HAVE_AVX_INSTRUCTIONS 1" >>confdefs.h
 
-          AVX_SUPPORTED=true
+          VBZ_SUPPORTED=true
 else $as_nop
-  AVX_SUPPORTED=false
+  VBZ_SUPPORTED=false
 
 fi
 
 
+  else
+    VBZ_SUPPORTED=false
+  fi
 else
-    AVX_SUPPORTED=false
+  VBZ_SUPPORTED=false
 fi
 
-if  "$MAVX" = true  &&  "$AVX_SUPPORTED" = true  ; then
+
+if  ${VBZ_SUPPORTED} = true  ; then
   USE_VBZ="libH5Zvbz.so"
 
   VBZ_F_LIB="vbz/libH5Zvbz.so"

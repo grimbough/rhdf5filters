@@ -13,7 +13,13 @@ PROCESSOR:=$(shell uname -m)
 #CFLAGS = -fPIC -march=native -std=c99 -O3 -Wall -Wextra -pedantic -Wshadow
 #endif
 
-CFLAGS=$(PKG_CFLAGS) $(PKG_CPICFLAGS) -Iinclude
+ifeq ($(PROCESSOR), aarch64)
+EXTRA_FLAGS = -std=c99 -D__ARM_NEON__
+else
+EXTRA_FLAGS = -std=c99 -mavx
+endif
+
+CFLAGS=$(PKG_CFLAGS) $(PKG_CPICFLAGS) -Iinclude ${EXTRA_FLAGS}
 
 HEADERS=./include/streamvbyte.h ./include/streamvbytedelta.h ./include/streamvbyte_zigzag.h
 
