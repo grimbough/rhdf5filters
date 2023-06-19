@@ -264,8 +264,10 @@ AC_RUN_IFELSE(
 #fi
 
 ## check CPU supports avx
-if [ "$xSUPPORTED_CPU" = true ]; then
-  if [ "${machine}" = "aarch64" ] ; then
+if test "$xSUPPORTED_CPU" = true 
+then
+  if test "${machine}" = "aarch64"
+  then
     echo "VBZ supported on ARM64"
     VBZ_SUPPORTED=true
   elif [ "$ax_cv_gcc_check_x86_cpu_init" = true ]; then
