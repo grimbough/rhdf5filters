@@ -52,7 +52,7 @@ echo "IS_BIOC_BUILD_MACHINE=${IS_BIOC_BUILD_MACHINE}"
 
 AS_IF([test "x$bundled_libs" = xyes],
       [AC_MSG_NOTICE(requesting bundled libs)],
-      [test "${IS_BIOC_BUILD_MACHINE}" = "yes"],
+      [test "${IS_BIOC_BUILD_MACHINE}" = "true"],
       [AC_MSG_NOTICE(is Bioc build machine)],
       [
         AC_MSG_NOTICE(is NOT Bioc build machine)
@@ -238,57 +238,55 @@ AC_MSG_NOTICE(configuring the VBZ filter)
 ## check if we have an x86 CPU
 machine=`uname -m`
 AS_CASE([$machine],
-  [*86*], [SUPPORTED_CPU=true],
-  [aarch64], [SUPPORTED_CPU=true],
-  [SUPPORTED_CPU=false]
+  [*86*], [CPU_ARCH=x86],
+  [aarch64], [CPU_ARCH=arm64],
+  [CPU_ARCH=false]
 )
-  
-## see if -mavx is a supported flag
-AX_CHECK_COMPILE_FLAG([-mavx], [MAVX=true], [MAVX=false])
-  
-AC_RUN_IFELSE(
+
+echo $CPU_ARCH
+
+if test "${CPU_ARCH}" = arm64; then
+  echo "ARM64 flags"
+  VBZ_FLAGS="-std=c99 -D__ARM_NEON__"
+elif test "${CPU_ARCH}" = x86; then
+
+  echo "checking x86"
+
+  ## see if -mavx is a supported flag
+  AX_CHECK_COMPILE_FLAG([-mavx], [MAVX=true], [MAVX=false])
+  AC_RUN_IFELSE(
       [AC_LANG_PROGRAM([#include <stdlib.h>],
         [__builtin_cpu_init ();])
       ],
       [ax_cv_gcc_check_x86_cpu_init=true],
       [ax_cv_gcc_check_x86_cpu_init=false])
-  
-## check CPU supports avx
-#if [ "$xSUPPORTED_CPU" == true ] && [ "$ax_cv_gcc_check_x86_cpu_init" == true ] ; then
-#  AX_GCC_X86_CPU_SUPPORTS(avx, [VBZ_SUPPORTED=true], [VBZ_SUPPORTED=false])
-#elif [ "$xSUPPORTED_CPU" == true ] && [ "${machine}" == "aarch64" ] ; then
-#  echo "VBZ supported on ARM64"
-#  VBZ_SUPPORTED=true
-#else
-#  VBZ_SUPPORTED=false
-#fi
-
-## check CPU supports avx
-if test "$xSUPPORTED_CPU" = true 
-then
-  if test "${machine}" = "aarch64"
-  then
-    echo "VBZ supported on ARM64"
-    VBZ_SUPPORTED=true
-  elif [ "$ax_cv_gcc_check_x86_cpu_init" = true ]; then
-    AX_GCC_X86_CPU_SUPPORTS(avx, [VBZ_SUPPORTED=true], [VBZ_SUPPORTED=false])
-  else
-    VBZ_SUPPORTED=false
+      
+  if [ "${MAVX}" = "true" ] && [ "${ax_cv_gcc_check_x86_cpu_init}" = "true" ] ; then
+    AX_GCC_X86_CPU_SUPPORTS(avx, [AVX_SUPPORTED=true], [AVX_SUPPORTED=false])
   fi
-else
-  VBZ_SUPPORTED=false
+  
+  echo "AVX_SUPPORTED=${AVX_SUPPORTED}"
+  
+  if test ${AVX_SUPPORTED} = "true"; then
+    VBZ_FLAGS="-std=c99 -mavx"
+  fi
 fi
 
-
-if [ ${VBZ_SUPPORTED} = true ] ; then
-  AC_SUBST(USE_VBZ, "libH5Zvbz.so")
-  AC_SUBST(VBZ_F_LIB, "vbz/libH5Zvbz.so")
-else
+echo "VBZ_FLAGS=${VBZ_FLAGS}"
+  
+dnl if VBZ_FLAG isn't set don't compile the VBZ filter
+if test -z "${VBZ_FLAGS}"; then
   AC_SUBST(USE_VBZ, "")
   AC_SUBST(VBZ_F_LIB, "")
+  AC_SUBST(VBZ_FLAGS, "")
+else
+  echo "here"
+  AC_SUBST(USE_VBZ, "libH5Zvbz.so")
+  AC_SUBST(VBZ_F_LIB, "vbz/libH5Zvbz.so")
+  AC_SUBST(VBZ_FLAGS, "${VBZ_FLAGS}")
 fi
   
-AC_CONFIG_FILES([src/vbz/Makefile])
+AC_CONFIG_FILES([src/vbz/Makefile src/vbz/third_party/streamvbyte/Makefile])
 
 ##############################
 

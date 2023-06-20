@@ -654,6 +654,7 @@ ZSTD_F_LIB
 LZF_F_LIB
 BLOSC_F_LIB
 BZIP2_F_LIB
+VBZ_FLAGS
 VBZ_F_LIB
 USE_VBZ
 BLOSC_LIB
@@ -3508,7 +3509,7 @@ if test "x$bundled_libs" = xyes
 then :
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: requesting bundled libs" >&5
 printf "%s\n" "$as_me: requesting bundled libs" >&6;}
-elif test "${IS_BIOC_BUILD_MACHINE}" = "yes"
+elif test "${IS_BIOC_BUILD_MACHINE}" = "true"
 then :
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: is Bioc build machine" >&5
 printf "%s\n" "$as_me: is Bioc build machine" >&6;}
@@ -4211,16 +4212,25 @@ printf "%s\n" "$as_me: configuring the VBZ filter" >&6;}
 machine=`uname -m`
 case $machine in #(
   *86*) :
-    SUPPORTED_CPU=true ;; #(
+    CPU_ARCH=x86 ;; #(
   aarch64) :
-    SUPPORTED_CPU=true ;; #(
+    CPU_ARCH=arm64 ;; #(
   *) :
-    SUPPORTED_CPU=false
+    CPU_ARCH=false
  ;;
 esac
 
-## see if -mavx is a supported flag
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -mavx" >&5
+echo $CPU_ARCH
+
+if test "${CPU_ARCH}" = arm64; then
+  echo "ARM64 flags"
+  VBZ_FLAGS="-std=c99 -D__ARM_NEON__"
+elif test "${CPU_ARCH}" = x86; then
+
+  echo "checking x86"
+
+  ## see if -mavx is a supported flag
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -mavx" >&5
 printf %s "checking whether C compiler accepts -mavx... " >&6; }
 if test ${ax_cv_check_cflags___mavx+y}
 then :
@@ -4258,8 +4268,7 @@ else $as_nop
   MAVX=false
 fi
 
-
-if test "$cross_compiling" = yes
+  if test "$cross_compiling" = yes
 then :
   { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
@@ -4289,24 +4298,7 @@ rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
 fi
 
 
-## check CPU supports avx
-#if [ "$xSUPPORTED_CPU" == true ] && [ "$ax_cv_gcc_check_x86_cpu_init" == true ] ; then
-#  AX_GCC_X86_CPU_SUPPORTS(avx, [VBZ_SUPPORTED=true], [VBZ_SUPPORTED=false])
-#elif [ "$xSUPPORTED_CPU" == true ] && [ "${machine}" == "aarch64" ] ; then
-#  echo "VBZ supported on ARM64"
-#  VBZ_SUPPORTED=true
-#else
-#  VBZ_SUPPORTED=false
-#fi
-
-## check CPU supports avx
-if test "$xSUPPORTED_CPU" = true
-then
-  if test "${machine}" = "aarch64"
-  then
-    echo "VBZ supported on ARM64"
-    VBZ_SUPPORTED=true
-  elif  "$ax_cv_gcc_check_x86_cpu_init" = true ; then
+  if  "${MAVX}" = "true"  &&  "${ax_cv_gcc_check_x86_cpu_init}" = "true"  ; then
 
 
    ac_ext=c
@@ -4370,34 +4362,42 @@ then :
 
 printf "%s\n" "#define HAVE_AVX_INSTRUCTIONS 1" >>confdefs.h
 
-          VBZ_SUPPORTED=true
+          AVX_SUPPORTED=true
 else $as_nop
-  VBZ_SUPPORTED=false
+  AVX_SUPPORTED=false
 
 fi
 
 
-  else
-    VBZ_SUPPORTED=false
   fi
-else
-  VBZ_SUPPORTED=false
+
+  echo "AVX_SUPPORTED=${AVX_SUPPORTED}"
+
+  if test ${AVX_SUPPORTED} = "true"; then
+    VBZ_FLAGS="-std=c99 -mavx"
+  fi
 fi
 
+echo "VBZ_FLAGS=${VBZ_FLAGS}"
 
-if  ${VBZ_SUPPORTED} = true  ; then
-  USE_VBZ="libH5Zvbz.so"
-
-  VBZ_F_LIB="vbz/libH5Zvbz.so"
-
-else
+if test -z "${VBZ_FLAGS}"; then
   USE_VBZ=""
 
   VBZ_F_LIB=""
 
+  VBZ_FLAGS=""
+
+else
+  echo "here"
+  USE_VBZ="libH5Zvbz.so"
+
+  VBZ_F_LIB="vbz/libH5Zvbz.so"
+
+  VBZ_FLAGS="${VBZ_FLAGS}"
+
 fi
 
-ac_config_files="$ac_config_files src/vbz/Makefile"
+ac_config_files="$ac_config_files src/vbz/Makefile src/vbz/third_party/streamvbyte/Makefile"
 
 
 ##############################
@@ -5118,6 +5118,7 @@ do
     "src/blosc/lib/blosc-1.20.1/Makefile") CONFIG_FILES="$CONFIG_FILES src/blosc/lib/blosc-1.20.1/Makefile" ;;
     "src/blosc/Makefile") CONFIG_FILES="$CONFIG_FILES src/blosc/Makefile" ;;
     "src/vbz/Makefile") CONFIG_FILES="$CONFIG_FILES src/vbz/Makefile" ;;
+    "src/vbz/third_party/streamvbyte/Makefile") CONFIG_FILES="$CONFIG_FILES src/vbz/third_party/streamvbyte/Makefile" ;;
     "src/Makevars") CONFIG_FILES="$CONFIG_FILES src/Makevars" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;

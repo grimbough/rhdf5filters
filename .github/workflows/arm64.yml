@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - devel
+      - test-autoconf
   workflow_dispatch:
   
 env:
