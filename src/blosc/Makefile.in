@@ -29,7 +29,7 @@ libH5Zblosc.so: @BUILD_BLOSC@
 	${PKG_LDFLAGS} $(BLOSC_INCLUDE) $(BLOSC_LIB) $(ZSTD_LIB) -lz -o libH5Zblosc.so
 
 H5Zblosc.o: libblosc.a
-	$(CC) $(PKG_CFLAGS) $(PKG_CPICFLAGS) -c -o H5Zblosc.o H5Zblosc.c \
+	$(CC) $(PKG_CFLAGS) $(PKG_CPICFLAGS) -c -o H5Zblosc.o H5Zblosc.cpp \
 	$(PKG_CPPFLAGS) -I./lib/blosc-1.20.1
 
 libblosc.a: blosc
