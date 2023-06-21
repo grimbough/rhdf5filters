@@ -25,7 +25,7 @@ SNAPPY_OBJS=lib/snappy-1.1.1/snappy.o \
 all: libH5Zblosc.so
 
 libH5Zblosc.so: @BUILD_BLOSC@
-	$(CC) $(PKG_CFLAGS) $(PKG_CPICFLAGS) -shared H5Zblosc.c $(PKG_CPPFLAGS) \
+	$(CXX) $(PKG_CFLAGS) $(PKG_CPICFLAGS) -shared H5Zblosc.cpp $(PKG_CPPFLAGS) \
 	${PKG_LDFLAGS} $(BLOSC_INCLUDE) $(BLOSC_LIB) $(ZSTD_LIB) -lz -o libH5Zblosc.so
 
 H5Zblosc.o: libblosc.a
