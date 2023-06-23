@@ -55,7 +55,6 @@ jobs:
             --env R_LIBS_USER=/R-lib
             --env PKG=${{ env.PKG }}
           run: |
-            uname -a
             echo "options(Ncpus=2L, timeout = 300)" >> ~/.Rprofile
             Rscript -e "library(remotes)" -e "dev_package_deps('/build/${PKG}', dependencies = TRUE) |> update(upgrade = 'always')"
             
@@ -98,9 +97,7 @@ jobs:
             --env PKG=${{ env.PKG }}
             --workdir /build
           run: |
-            ls -l
             R CMD INSTALL ${PKG} &> ${PKG}.install-out.txt 
-            ls -l
           shell: bash
 
       - name: R CMD build
@@ -115,9 +112,7 @@ jobs:
             --env PKG=${{ env.PKG }}
             --workdir /build
           run: |
-            ls -l "${R_LIBS_USER}"
             R CMD build --keep-empty-dirs --no-resave-data ${PKG}
-            ls -l
 
       - name: R CMD check
         uses: addnab/docker-run-action@v3
@@ -131,10 +126,8 @@ jobs:
             --env PKG=${{ env.PKG }}
             --workdir /build
           run: |
-            ls -l
             R CMD check --install=check:${PKG}.install-out.txt --library="${R_LIBS_USER}" --no-vignettes --timings ${PKG}*.tar.gz
             cat ${PKG}.install-out.txt
-            ls -l
 
       - name: Build Package Binary
         uses: addnab/docker-run-action@v3
@@ -150,7 +143,6 @@ jobs:
           run: |
             mkdir -p ${PKG}.buildbin-libdir
             R CMD INSTALL --build --library=${PKG}.buildbin-libdir ${PKG}*.tar.gz
-            ls -l
 
       - uses: actions/upload-artifact@v3
         if: always()
