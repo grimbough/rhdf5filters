@@ -93,7 +93,6 @@ static size_t H5Z_filter_blosc(unsigned flags, size_t cd_nelmts,
     int code;
     const char *compname = NULL;
     const char *complist;
-    char errmsg[256];
     
     //int nthreads = 4;
     //int pnthreads = blosc_set_nthreads(nthreads);
