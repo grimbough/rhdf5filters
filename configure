@@ -4184,7 +4184,7 @@ fi
 
 
 
-  BUILD_BLOSC="H5Zblosc.o"
+  BUILD_BLOSC="libblosc.a"
 
   BLOSC_INCLUDE="-I./lib/blosc-1.20.1"
 
