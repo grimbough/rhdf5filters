@@ -116,7 +116,7 @@ jobs:
             --workdir /build
           run: |
             R CMD build --keep-empty-dirs --no-resave-data ${PKG}
-            if [ $? -eq 1 ]; then; exit 1; fi
+            if [ $? -eq 1 ]; then exit 1; fi
 
       - name: R CMD check
         uses: addnab/docker-run-action@v3
@@ -131,7 +131,7 @@ jobs:
             --workdir /build
           run: |
             R CMD check --install=check:${PKG}.install-out.txt --library="${R_LIBS_USER}" --no-vignettes --timings ${PKG}*.tar.gz
-            if [ $? -eq 1 ]; then; exit 1; fi
+            if [ $? -eq 1 ]; then exit 1; fi
 
       - name: Build Package Binary
         uses: addnab/docker-run-action@v3
@@ -147,7 +147,7 @@ jobs:
           run: |
             mkdir -p ${PKG}.buildbin-libdir
             R CMD INSTALL --build --library=${PKG}.buildbin-libdir ${PKG}*.tar.gz
-            if [ $? -eq 1 ]; then; exit 1; fi
+            if [ $? -eq 1 ]; then exit 1; fi
             
       - uses: actions/upload-artifact@v3
         if: always()
