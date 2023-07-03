@@ -57,7 +57,7 @@ jobs:
           run: |
             echo "options(Ncpus=2L, timeout = 300)" >> ~/.Rprofile
             Rscript -e "library(remotes)" \
-                    -e "BiocManager::install('eddelbuettel/digest/')" \
+                    -e "BiocManager::install('eddelbuettel/digest')" \
                     -e "dev_package_deps('/build/${PKG}', dependencies = TRUE) |> update(upgrade = 'always')"
             
   check-arm64:
