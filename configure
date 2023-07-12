@@ -3503,11 +3503,15 @@ else $as_nop
 fi
 
 
+echo "OSTYPE=${OSTYPE}"
+echo uname=`uname`
+UNAME=`uname`
+
 if test "x$bundled_libs" = xyes
 then :
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: requesting bundled libs" >&5
 printf "%s\n" "$as_me: requesting bundled libs" >&6;}
-elif test "${OSTYPE}" = "darwin"
+elif test "${UNAME}" = "Darwin"
 then :
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: running on Mac OSX" >&5
 printf "%s\n" "$as_me: running on Mac OSX" >&6;}

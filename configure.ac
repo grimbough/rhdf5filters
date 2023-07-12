@@ -48,10 +48,14 @@ AC_ARG_WITH(bundled-libraries,,
     bundled_libs="no"
   ])
 
+echo "OSTYPE=${OSTYPE}"
+echo uname=`uname`
+UNAME=`uname`
+
 dnl we will use the bundled compression libraries if: requested OR this is a Mac OR this is the BBS
 AS_IF([test "x$bundled_libs" = xyes],
       [AC_MSG_NOTICE(requesting bundled libs)],
-      [test "${OSTYPE}" = "darwin"],
+      [test "${UNAME}" = "Darwin"],
       [AC_MSG_NOTICE(running on Mac OSX)],  
       [test "${IS_BIOC_BUILD_MACHINE}" = "true"],
       [AC_MSG_NOTICE(is Bioc build machine)],
