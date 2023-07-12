@@ -48,8 +48,6 @@ AC_ARG_WITH(bundled-libraries,,
     bundled_libs="no"
   ])
 
-echo "OSTYPE=${OSTYPE}"
-echo uname=`uname`
 UNAME=`uname`
 
 dnl we will use the bundled compression libraries if: requested OR this is a Mac OR this is the BBS

@@ -3503,8 +3503,6 @@ else $as_nop
 fi
 
 
-echo "OSTYPE=${OSTYPE}"
-echo uname=`uname`
 UNAME=`uname`
 
 if test "x$bundled_libs" = xyes
