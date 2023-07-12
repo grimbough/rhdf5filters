@@ -150,6 +150,13 @@ if test -z "$HAVE_BLOSC"; then
   ## see if -mavx2 is a supported flag
   AX_CHECK_COMPILE_FLAG([-mavx2], [MAVX2=true], [MAVX2=false])
   
+  AS_IF([test "${IS_BIOC_BUILD_MACHINE}" = "true"],
+      [
+        AC_MSG_NOTICE(Bioc OSX build machine; disabling MAVX2)
+        MAVX2=false
+      ],
+      [])
+  
   AC_RUN_IFELSE(
         [AC_LANG_PROGRAM([#include <stdlib.h>],
           [__builtin_cpu_init ();])

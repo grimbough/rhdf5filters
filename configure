@@ -3905,6 +3905,15 @@ else $as_nop
 fi
 
 
+  if test "${IS_BIOC_BUILD_MACHINE}" = "true"
+then :
+
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Bioc OSX build machine; disabling MAVX2" >&5
+printf "%s\n" "$as_me: Bioc OSX build machine; disabling MAVX2" >&6;}
+        MAVX2=false
+
+fi
+
   if test "$cross_compiling" = yes
 then :
   { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
