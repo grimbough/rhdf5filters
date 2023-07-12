@@ -112,13 +112,13 @@ static size_t H5Z_filter_blosc(unsigned flags, size_t cd_nelmts,
         compcode = cd_values[6];     /* The Blosc compressor used */
 	/* Check that we actually have support for the compressor code */
         complist = blosc_list_compressors();
-    	code = blosc_compcode_to_compname(compcode, &compname);
-    	if (code == -1) {
-    	    fprintf(stderr, "blosc filter: this Blosc library does not have support for "
-                 "the '%s' compressor, but only for: %s\n",
-    		    compname, complist);
-                goto failed;
-    	}
+      	code = blosc_compcode_to_compname(compcode, &compname);
+      	if (code == -1) {
+      	    fprintf(stderr, "blosc filter: this Blosc library does not have support for "
+                   "the '%s' compressor, but only for: %s\n",
+      		    compname, complist);
+                  goto failed;
+      	}
     }   
 
     /* We're compressing */

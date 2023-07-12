@@ -3503,12 +3503,14 @@ else $as_nop
 fi
 
 
-echo "IS_BIOC_BUILD_MACHINE=${IS_BIOC_BUILD_MACHINE}"
-
 if test "x$bundled_libs" = xyes
 then :
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: requesting bundled libs" >&5
 printf "%s\n" "$as_me: requesting bundled libs" >&6;}
+elif test "${OSTYPE}" = "darwin"
+then :
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: running on Mac OSX" >&5
+printf "%s\n" "$as_me: running on Mac OSX" >&6;}
 elif test "${IS_BIOC_BUILD_MACHINE}" = "true"
 then :
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: is Bioc build machine" >&5
@@ -3821,7 +3823,6 @@ printf "%s\n" "$as_me: compiling bundled BLOSC library" >&6;}
     x86_CPU=false
    ;;
 esac
-  echo x86_CPU="$x86_CPU"
 
   ## see if -msse2 is a supported flag
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -msse2" >&5
@@ -4220,15 +4221,9 @@ case $machine in #(
  ;;
 esac
 
-echo $CPU_ARCH
-
 if test "${CPU_ARCH}" = arm64; then
-  echo "ARM64 flags"
   VBZ_FLAGS="-std=c99 -D__ARM_NEON__"
 elif test "${CPU_ARCH}" = x86; then
-
-  echo "checking x86"
-
   ## see if -mavx is a supported flag
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -mavx" >&5
 printf %s "checking whether C compiler accepts -mavx... " >&6; }
@@ -4371,14 +4366,10 @@ fi
 
   fi
 
-  echo "AVX_SUPPORTED=${AVX_SUPPORTED}"
-
   if test ${AVX_SUPPORTED} = "true"; then
     VBZ_FLAGS="-std=c99 -mavx"
   fi
 fi
-
-echo "VBZ_FLAGS=${VBZ_FLAGS}"
 
 if test -z "${VBZ_FLAGS}"; then
   USE_VBZ=""
@@ -4388,7 +4379,6 @@ if test -z "${VBZ_FLAGS}"; then
   VBZ_FLAGS=""
 
 else
-  echo "here"
   USE_VBZ="libH5Zvbz.so"
 
   VBZ_F_LIB="vbz/libH5Zvbz.so"

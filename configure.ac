@@ -48,10 +48,11 @@ AC_ARG_WITH(bundled-libraries,,
     bundled_libs="no"
   ])
 
-echo "IS_BIOC_BUILD_MACHINE=${IS_BIOC_BUILD_MACHINE}"
-
+dnl we will use the bundled compression libraries if: requested OR this is a Mac OR this is the BBS
 AS_IF([test "x$bundled_libs" = xyes],
       [AC_MSG_NOTICE(requesting bundled libs)],
+      [test "${OSTYPE}" = "darwin"],
+      [AC_MSG_NOTICE(running on Mac OSX)],  
       [test "${IS_BIOC_BUILD_MACHINE}" = "true"],
       [AC_MSG_NOTICE(is Bioc build machine)],
       [
@@ -141,7 +142,6 @@ if test -z "$HAVE_BLOSC"; then
     [*86*], [x86_CPU=true],
     [x86_CPU=false]
   )
-  echo x86_CPU="$x86_CPU"
   
   ## see if -msse2 is a supported flag
   AX_CHECK_COMPILE_FLAG([-msse2], [MSSE2=true], [MSSE2=false])
@@ -243,15 +243,9 @@ AS_CASE([$machine],
   [CPU_ARCH=false]
 )
 
-echo $CPU_ARCH
-
 if test "${CPU_ARCH}" = arm64; then
-  echo "ARM64 flags"
   VBZ_FLAGS="-std=c99 -D__ARM_NEON__"
 elif test "${CPU_ARCH}" = x86; then
-
-  echo "checking x86"
-
   ## see if -mavx is a supported flag
   AX_CHECK_COMPILE_FLAG([-mavx], [MAVX=true], [MAVX=false])
   AC_RUN_IFELSE(
@@ -265,14 +259,10 @@ elif test "${CPU_ARCH}" = x86; then
     AX_GCC_X86_CPU_SUPPORTS(avx, [AVX_SUPPORTED=true], [AVX_SUPPORTED=false])
   fi
   
-  echo "AVX_SUPPORTED=${AVX_SUPPORTED}"
-  
   if test ${AVX_SUPPORTED} = "true"; then
     VBZ_FLAGS="-std=c99 -mavx"
   fi
 fi
-
-echo "VBZ_FLAGS=${VBZ_FLAGS}"
   
 dnl if VBZ_FLAG isn't set don't compile the VBZ filter
 if test -z "${VBZ_FLAGS}"; then
@@ -280,7 +270,6 @@ if test -z "${VBZ_FLAGS}"; then
   AC_SUBST(VBZ_F_LIB, "")
   AC_SUBST(VBZ_FLAGS, "")
 else
-  echo "here"
   AC_SUBST(USE_VBZ, "libH5Zvbz.so")
   AC_SUBST(VBZ_F_LIB, "vbz/libH5Zvbz.so")
   AC_SUBST(VBZ_FLAGS, "${VBZ_FLAGS}")
