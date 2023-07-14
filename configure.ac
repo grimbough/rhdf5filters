@@ -53,8 +53,8 @@ UNAME=`uname`
 dnl we will use the bundled compression libraries if: requested OR this is a Mac OR this is the BBS
 AS_IF([test "x$bundled_libs" = xyes],
       [AC_MSG_NOTICE(requesting bundled libs)],
-      [test "${UNAME}" = "Darwin"],
-      [AC_MSG_NOTICE(running on Mac OSX)],  
+      #[test "${UNAME}" = "Darwin"],
+      #[AC_MSG_NOTICE(running on Mac OSX)],  
       [test "${IS_BIOC_BUILD_MACHINE}" = "true"],
       [AC_MSG_NOTICE(is Bioc build machine)],
       [
@@ -150,12 +150,11 @@ if test -z "$HAVE_BLOSC"; then
   ## see if -mavx2 is a supported flag
   AX_CHECK_COMPILE_FLAG([-mavx2], [MAVX2=true], [MAVX2=false])
   
-  AS_IF([test "${IS_BIOC_BUILD_MACHINE}" = "true"],
-      [
-        AC_MSG_NOTICE(Bioc OSX build machine; disabling MAVX2)
-        MAVX2=false
-      ],
-      [])
+  if [ "${IS_BIOC_BUILD_MACHINE}" == true ]; then
+    AC_MSG_NOTICE(Bioc OSX build machine; disabling MAVX2)
+    MSSE2=false
+    MAVX2=false
+  fi
   
   AC_RUN_IFELSE(
         [AC_LANG_PROGRAM([#include <stdlib.h>],

@@ -3509,11 +3509,9 @@ if test "x$bundled_libs" = xyes
 then :
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: requesting bundled libs" >&5
 printf "%s\n" "$as_me: requesting bundled libs" >&6;}
-elif test "${UNAME}" = "Darwin"
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: running on Mac OSX" >&5
-printf "%s\n" "$as_me: running on Mac OSX" >&6;}
-elif test "${IS_BIOC_BUILD_MACHINE}" = "true"
+elif #[test "${UNAME}" = "Darwin"],
+      #[AC_MSG_NOTICE(running on Mac OSX)],
+      test "${IS_BIOC_BUILD_MACHINE}" = "true"
 then :
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: is Bioc build machine" >&5
 printf "%s\n" "$as_me: is Bioc build machine" >&6;}
@@ -3905,14 +3903,12 @@ else $as_nop
 fi
 
 
-  if test "${IS_BIOC_BUILD_MACHINE}" = "true"
-then :
-
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Bioc OSX build machine; disabling MAVX2" >&5
+  if  "${IS_BIOC_BUILD_MACHINE}" == true ; then
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Bioc OSX build machine; disabling MAVX2" >&5
 printf "%s\n" "$as_me: Bioc OSX build machine; disabling MAVX2" >&6;}
-        MAVX2=false
-
-fi
+    MSSE2=false
+    MAVX2=false
+  fi
 
   if test "$cross_compiling" = yes
 then :
