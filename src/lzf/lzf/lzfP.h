@@ -80,11 +80,11 @@
  */
 #ifndef STRICT_ALIGN
 /* Modified in response to clang warning -Wexpansion-to-defined */
-//# define STRICT_ALIGN !(defined(__i386) || defined (__amd64))
 #if defined(__i386) || defined (__amd64)
 # define STRICT_ALIGN 0
 #else 
 # define STRICT_ALIGN 1
+#endif
 #endif
 
 /*
