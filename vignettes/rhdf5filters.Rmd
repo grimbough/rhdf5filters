@@ -10,8 +10,6 @@ vignette: |
   %\VignetteIndexEntry{HDF5 Compression Filters}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-params:
-  h5dump_found: !r (system2('h5dump', stdout = NULL, stderr = NULL) != 127)
 ---
 
 # Motivation
@@ -66,7 +64,7 @@ rhdf5filters::hdf5_plugin_path()
 
 The next example demonstrates how the filters distributed by `r Biocpkg("rhdf5filters")` can be used by external applications to decompress data.  Do do this we'll use the version of **h5dump** installed on the system^[If **h5dump** is not found on your system these example will fail.] and a file distributed with this package that has been compressed using the *blosc* filter.  Since `r Biocpkg("rhdf5filters")` sets the `HDF5_PLUGIN_PATH` environment variable in an R session, we will manually unset it to demonstrate the typical behaviour.
 
-```{r, warning = FALSE, eval = params$h5dump_found}
+```{r, warning = FALSE, eval = FALSE}
 ## blosc compressed file
 blosc_file <- system.file("h5examples/h5ex_d_blosc.h5", 
                           package = "rhdf5filters")
@@ -76,14 +74,14 @@ Sys.setenv("HDF5_PLUGIN_PATH" = "")
 
 Now we use `system2()` to call the system version of **h5dump** and capture the output, which is then printed below.  The most important parts to note are the `FILTERS` section, which shows the dataset was indeed compressed with *blosc*, and `DATA`, where the error shows that **h5dump** is currently unable to read the dataset.
 
-```{r, h5dump-1, warning = FALSE, eval = params$h5dump_found}
+```{r, h5dump-1, warning = FALSE, eval = FALSE}
 h5dump_out <- system2('h5dump', 
                       args = c('-p', '-d /dset', blosc_file), 
                       stdout = TRUE, stderr = TRUE)
 cat(h5dump_out, sep = "\n")
 ```
 
-```{r, h5dump-1-out, eval = !params$h5dump_found, echo = FALSE}
+```{r, h5dump-1-out, eval = TRUE, echo = FALSE}
 cat(
 'HDF5 "rhdf5filters/h5examples/h5ex_d_blosc.h5" {
 DATASET "/dset" {
@@ -117,7 +115,7 @@ DATASET "/dset" {
 
 Next we set `HDF5_PLUGIN_PATH` to the location where `r Biocpkg("rhdf5filters")` has stored the filters and re-run the call to **h5dump**. Printing the output^[The dataset is quite large, so we only show a few lines here.] no longer returns an error in the `DATA` section, indicating that the *blosc* filter plugin was found and used by **h5dump**. 
 
-```{r h5dump-2, eval = params$h5dump_found}
+```{r h5dump-2, eval = FALSE}
 ## set environment variable to hdf5filter location
 Sys.setenv("HDF5_PLUGIN_PATH" = rhdf5filters::hdf5_plugin_path())
 h5dump_out <- system2('h5dump', 
@@ -129,7 +127,7 @@ DATA_line <- grep(h5dump_out, pattern = "DATA \\{")
 cat( h5dump_out[ (DATA_line):(DATA_line+2) ], sep = "\n" )
 ```
 
-```{r h5dump-2-out, eval = !params$h5dump_found, echo = FALSE}
+```{r h5dump-2-out, eval = TRUE, echo = FALSE}
 cat(
 '  DATA {
    (0,0,0): 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
