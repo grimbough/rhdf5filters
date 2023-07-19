@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - devel
-      - test-autoconf
   workflow_dispatch:
   
 env:
@@ -36,13 +35,6 @@ jobs:
           restore-keys: |
             R_lib-ARM64-${{ hashFiles('**/DESCRIPTION') }}
             R_lib-ARM64-
-            
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Run the build process with Docker
         uses: addnab/docker-run-action@v3
@@ -98,13 +90,10 @@ jobs:
             --env PKG=${{ env.PKG }}
             --workdir /build
           run: |
-            echo "R CMD INSTALL ${PKG}"
-            R CMD INSTALL ${PKG} &> ${PKG}.install-out.txt
+            R CMD INSTALL ${PKG} > ${PKG}.install-out.txt 2>&1
             if [ $? -eq  1 ]; then
               cat ${PKG}.install-out.txt
               exit 1;
-            else
-              cat ${PKG}.install-out.txt
             fi
 
       - name: R CMD build
