@@ -94,11 +94,12 @@ jobs:
             echo "R CMD INSTALL ${PKG}"
             ls -l /build
             R CMD INSTALL ${PKG}
-            R CMD INSTALL ${PKG} &> ${PKG}.install-out.txt
+            R CMD INSTALL ${PKG} > ${PKG}.install-out.txt 2>&1
             if [ $? -eq  1 ]; then
               cat ${PKG}.install-out.txt
               exit 1;
             else
+              ls -l
               cat ${PKG}.install-out.txt
             fi
 
