@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - devel
-      - grimbough-patch-1
   workflow_dispatch:
   
 env:
@@ -91,16 +90,10 @@ jobs:
             --env PKG=${{ env.PKG }}
             --workdir /build
           run: |
-            echo "R CMD INSTALL ${PKG}"
-            ls -l /build
-            R CMD INSTALL ${PKG}
             R CMD INSTALL ${PKG} > ${PKG}.install-out.txt 2>&1
             if [ $? -eq  1 ]; then
               cat ${PKG}.install-out.txt
               exit 1;
-            else
-              ls -l
-              cat ${PKG}.install-out.txt
             fi
 
       - name: R CMD build
