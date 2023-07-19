@@ -57,7 +57,6 @@ jobs:
           run: |
             echo "options(Ncpus=2L, timeout = 300)" >> ~/.Rprofile
             Rscript -e "library(remotes)" \
-                    -e "BiocManager::install('eddelbuettel/digest')" \
                     -e "dev_package_deps('/build/${PKG}', dependencies = TRUE) |> update(upgrade = 'always')"
             
   check-arm64:
@@ -99,10 +98,13 @@ jobs:
             --env PKG=${{ env.PKG }}
             --workdir /build
           run: |
+            echo "R CMD INSTALL ${PKG}"
             R CMD INSTALL ${PKG} &> ${PKG}.install-out.txt
             if [ $? -eq  1 ]; then
-              cat examplePKG.install-out.txt
+              cat ${PKG}.install-out.txt
               exit 1;
+            else
+              cat ${PKG}.install-out.txt
             fi
 
       - name: R CMD build
