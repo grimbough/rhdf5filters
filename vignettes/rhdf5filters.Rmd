@@ -150,7 +150,8 @@ against the static versions, this can be done by providing the configure argumen
 `"--with-bundled-libraries"` during package installation e.g.
 
 ```r
-BiocManager::install('rhdf5filters', configure.args = "--with-bundled-libraries")
+BiocManager::install('rhdf5filters', 
+                     configure.args = "--with-bundled-libraries")
 ```
 
 # Session info {.unnumbered}
