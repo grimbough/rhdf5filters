@@ -20,3 +20,4 @@ src/vbz/Makefile
 src/vbz/third_party/streamvbyte/Makefile
 config.log
 config.status
+configure~
