@@ -1,4 +1,4 @@
-EXTRA_FLAGS+=-I../third_party/streamvbyte/include/ -I../third_party/ -I../../zstd/ -msse3
+EXTRA_FLAGS+=-I../third_party/streamvbyte/include/ -I../third_party/ -I../../zstd/ -mssse3
 FLAGS=$(PKG_CXXFLAGS) $(PKG_CXXPICFLAGS) $(PKG_CPPFLAGS) $(EXTRA_FLAGS)
 
 all: vbz.o v0/vbz_streamvbyte.o v1/vbz_streamvbyte.o
