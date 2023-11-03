@@ -654,6 +654,7 @@ ZSTD_F_LIB
 LZF_F_LIB
 BLOSC_F_LIB
 BZIP2_F_LIB
+STREAMBYTE_FLAGS
 VBZ_FLAGS
 VBZ_F_LIB
 USE_VBZ
@@ -4235,6 +4236,7 @@ esac
 if test "${CPU_ARCH}" = arm64; then
   VBZ_FLAGS="-std=c99 -D__ARM_NEON__"
 elif test "${CPU_ARCH}" = x86; then
+
   ## see if -mavx is a supported flag
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -mavx" >&5
 printf %s "checking whether C compiler accepts -mavx... " >&6; }
@@ -4378,7 +4380,8 @@ fi
   fi
 
   if test ${AVX_SUPPORTED} = "true"; then
-    VBZ_FLAGS="-std=c99 -mavx"
+    VBZ_FLAGS="-mssse3"
+    STREAMBYTE_FLAGS="-std=c99 -mavx"
   fi
 fi
 
@@ -4389,6 +4392,8 @@ if test -z "${VBZ_FLAGS}"; then
 
   VBZ_FLAGS=""
 
+  STREAMBYTE_FLAGS=""
+
 else
   USE_VBZ="libH5Zvbz.so"
 
@@ -4396,9 +4401,11 @@ else
 
   VBZ_FLAGS="${VBZ_FLAGS}"
 
+  STREAMBYTE_FLAGS="${STREAMBYTE_FLAGS}"
+
 fi
 
-ac_config_files="$ac_config_files src/vbz/Makefile src/vbz/third_party/streamvbyte/Makefile"
+ac_config_files="$ac_config_files src/vbz/Makefile src/vbz/vbz/Makefile src/vbz/third_party/streamvbyte/Makefile"
 
 
 ##############################
@@ -5119,6 +5126,7 @@ do
     "src/blosc/lib/blosc-1.20.1/Makefile") CONFIG_FILES="$CONFIG_FILES src/blosc/lib/blosc-1.20.1/Makefile" ;;
     "src/blosc/Makefile") CONFIG_FILES="$CONFIG_FILES src/blosc/Makefile" ;;
     "src/vbz/Makefile") CONFIG_FILES="$CONFIG_FILES src/vbz/Makefile" ;;
+    "src/vbz/vbz/Makefile") CONFIG_FILES="$CONFIG_FILES src/vbz/vbz/Makefile" ;;
     "src/vbz/third_party/streamvbyte/Makefile") CONFIG_FILES="$CONFIG_FILES src/vbz/third_party/streamvbyte/Makefile" ;;
     "src/Makevars") CONFIG_FILES="$CONFIG_FILES src/Makevars" ;;
 

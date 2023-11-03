@@ -258,6 +258,7 @@ AS_CASE([$machine],
 if test "${CPU_ARCH}" = arm64; then
   VBZ_FLAGS="-std=c99 -D__ARM_NEON__"
 elif test "${CPU_ARCH}" = x86; then
+
   ## see if -mavx is a supported flag
   AX_CHECK_COMPILE_FLAG([-mavx], [MAVX=true], [MAVX=false])
   AC_RUN_IFELSE(
@@ -272,7 +273,8 @@ elif test "${CPU_ARCH}" = x86; then
   fi
   
   if test ${AVX_SUPPORTED} = "true"; then
-    VBZ_FLAGS="-std=c99 -mavx"
+    VBZ_FLAGS="-mssse3"
+    STREAMBYTE_FLAGS="-std=c99 -mavx"
   fi
 fi
   
@@ -281,13 +283,15 @@ if test -z "${VBZ_FLAGS}"; then
   AC_SUBST(USE_VBZ, "")
   AC_SUBST(VBZ_F_LIB, "")
   AC_SUBST(VBZ_FLAGS, "")
+  AC_SUBST(STREAMBYTE_FLAGS, "")
 else
   AC_SUBST(USE_VBZ, "libH5Zvbz.so")
   AC_SUBST(VBZ_F_LIB, "vbz/libH5Zvbz.so")
   AC_SUBST(VBZ_FLAGS, "${VBZ_FLAGS}")
+  AC_SUBST(STREAMBYTE_FLAGS, "${STREAMBYTE_FLAGS}")
 fi
   
-AC_CONFIG_FILES([src/vbz/Makefile src/vbz/third_party/streamvbyte/Makefile])
+AC_CONFIG_FILES([src/vbz/Makefile src/vbz/vbz/Makefile src/vbz/third_party/streamvbyte/Makefile])
 
 ##############################
 
