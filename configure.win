@@ -41,7 +41,13 @@
        close(out_file);'
        
 "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e \
-      'lines <- gsub("@VBZ_FLAGS@", "-std=c99 -mavx", readLines("src/vbz/third_party/streamvbyte/Makefile.in"), fixed = TRUE);
+      'lines <- gsub("@STREAMBYTE_FLAGS@", "-std=c99 -mavx", readLines("src/vbz/third_party/streamvbyte/Makefile.in"), fixed = TRUE);
        out_file <- file("src/vbz/third_party/streamvbyte/Makefile", open="wb");
+       writeLines(lines, con = out_file, sep = "\n");
+       close(out_file);'
+       
+"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e \
+      'lines <- gsub("@VBZ_FLAGS@", "-mssse3", readLines("src/vbz/vbz/Makefile.in"), fixed = TRUE);
+       out_file <- file("src/vbz/vbz/Makefile", open="wb");
        writeLines(lines, con = out_file, sep = "\n");
        close(out_file);'
