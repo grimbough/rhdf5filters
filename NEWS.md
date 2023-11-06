@@ -1,3 +1,11 @@
+# rhdf5filters 1.16.0
+
+## BUG FIXES
+
+* Fixed issue compiling VBZ filter when R was installed via conda. Backported
+to version 1.14.1.  (Reported in 
+https://github.com/grimbough/rhdf5filters/issues/20)
+
 # rhdf5filters 1.14.0
 
 ## CHANGES
