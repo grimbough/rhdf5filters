@@ -4221,6 +4221,8 @@ ac_config_files="$ac_config_files src/blosc/lib/blosc-1.20.1/Makefile src/blosc/
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: configuring the VBZ filter" >&5
 printf "%s\n" "$as_me: configuring the VBZ filter" >&6;}
 
+echo "Using rhdf5filters sse3-conda branch"
+
 ## check if we have an x86 CPU
 machine=`uname -m`
 case $machine in #(
@@ -4380,6 +4382,7 @@ fi
   fi
 
   if test ${AVX_SUPPORTED} = "true"; then
+    echo "Setting VBZ and STREAMBYTE flags"
     VBZ_FLAGS="-mssse3"
     STREAMBYTE_FLAGS="-std=c99 -mavx"
   fi
@@ -4407,6 +4410,9 @@ fi
 
 ac_config_files="$ac_config_files src/vbz/Makefile src/vbz/vbz/Makefile src/vbz/third_party/streamvbyte/Makefile"
 
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: finished configuring the VBZ filter" >&5
+printf "%s\n" "$as_me: finished configuring the VBZ filter" >&6;}
 
 ##############################
 
