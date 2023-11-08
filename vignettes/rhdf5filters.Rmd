@@ -14,7 +14,7 @@ vignette: |
 
 # Motivation
 
-One of the advantages of using HDF5 is that data stored on disk can be compressed, reducing both the space required to store them and the time needed to read those data.  This data compression is applied as part of the HDF5 "filter pipeline" that modifies data during I/O operations.  HDF5 includes several filter algorithms as standard, and the version of the HDF5 library found in `r Biocpkg("Rhdf5lib")` is additionally compiled with support for the *deflate* and *szip* compression filters which rely on third-party compression libraries.  Collectively HDF5 refer to these as the "internal" filters.  It is possible to use any combination of these (including none) when writing data using `r Biocpkg("rhdf5")`.  The default filter pipeline is shown in Figure \@ref(fig:filter-pipeline).
+One of the advantages of using HDF5 is that data stored on disk can be compressed, reducing both the space required to store them and the time needed to read those data.  This data compression is applied as part of the HDF5 "filter pipeline" that modifies data during I/O operations.  HDF5 includes several filter algorithms as standard, and the version of the HDF5 library found in `r BiocStyle::Biocpkg("Rhdf5lib")` is additionally compiled with support for the *deflate* and *szip* compression filters which rely on third-party compression libraries.  Collectively HDF5 refer to these as the "internal" filters.  It is possible to use any combination of these (including none) when writing data using `r BiocStyle::Biocpkg("rhdf5")`.  The default filter pipeline is shown in Figure \@ref(fig:filter-pipeline).
 
 ```{r filter-pipeline, echo = FALSE, fig.cap="The default compression pipeline used by rhdf5"}
 knitr::include_graphics("filter_pipeline.png")
@@ -40,21 +40,21 @@ This package currently distributes external HDF5 filters employing [**bzip2**](h
 
 ## With **rhdf5**
 
-`r Biocpkg("rhdf5filters")` is principally designed to be used via the `r Biocpkg("rhdf5")` package, where several functions are able to utilise the compression filters.  For completeness those functions are described here and are also documented in the `r Biocpkg("rhdf5")` vignette.
+`r BiocStyle::Biocpkg("rhdf5filters")` is principally designed to be used via the `r BiocStyle::Biocpkg("rhdf5")` package, where several functions are able to utilise the compression filters.  For completeness those functions are described here and are also documented in the `r BiocStyle::Biocpkg("rhdf5")` vignette.
 
 ### Writing data
 
-The function `h5createDataset()` within `r Biocpkg("rhdf5")` takes the argument `filter` which specifies which compression filter should be used when a new dataset is created.
+The function `h5createDataset()` within `r BiocStyle::Biocpkg("rhdf5")` takes the argument `filter` which specifies which compression filter should be used when a new dataset is created.
 
-Also available in `r Biocpkg("rhdf5")` are the functions `H5Pset_bzip2()`, ``H5Pset_lzf()` and `H5Pset_blosc()`.  These are not part of the standard HDF5 interface, but are modeled on the `H5Pset_deflate()` function and allow the *bzip2*, *lzf* and *blosc* filters to be set on dataset create property lists.
+Also available in `r BiocStyle::Biocpkg("rhdf5")` are the functions `H5Pset_bzip2()`, ``H5Pset_lzf()` and `H5Pset_blosc()`.  These are not part of the standard HDF5 interface, but are modeled on the `H5Pset_deflate()` function and allow the *bzip2*, *lzf* and *blosc* filters to be set on dataset create property lists.
 
 ### Reading data
 
-As long as `r Biocpkg("rhdf5filters")` is installed, `r Biocpkg("rhdf5")` will be able to transparently read data compressed using any of the filters available in the package without requiring any action on your part.
+As long as `r BiocStyle::Biocpkg("rhdf5filters")` is installed, `r BiocStyle::Biocpkg("rhdf5")` will be able to transparently read data compressed using any of the filters available in the package without requiring any action on your part.
 
 ## With external applications
 
-The dynamic loading design of the HDF5 compression filters means that you can use the versions distributed with `r Biocpkg("rhdf5filters")` with other applications, including other R packages that interface HDF5 as well as external applications not written in R e.g. HDFVIEW.  The function `hdf5_plugin_path()` will return the location of in your packages library where the compiled plugins are stored.  You can the set the environment variable `HDF5_PLUGIN_PATH` and other applications will be able to dynamically load the compression plugins found there if needed.
+The dynamic loading design of the HDF5 compression filters means that you can use the versions distributed with `r BiocStyle::Biocpkg("rhdf5filters")` with other applications, including other R packages that interface HDF5 as well as external applications not written in R e.g. HDFVIEW.  The function `hdf5_plugin_path()` will return the location of in your packages library where the compiled plugins are stored.  You can the set the environment variable `HDF5_PLUGIN_PATH` and other applications will be able to dynamically load the compression plugins found there if needed.
 
 ```{r, plugin-path, eval = TRUE}
 rhdf5filters::hdf5_plugin_path()
@@ -62,7 +62,7 @@ rhdf5filters::hdf5_plugin_path()
 
 ### **h5dump** example
 
-The next example demonstrates how the filters distributed by `r Biocpkg("rhdf5filters")` can be used by external applications to decompress data.  Do do this we'll use the version of **h5dump** installed on the system^[If **h5dump** is not found on your system these example will fail.] and a file distributed with this package that has been compressed using the *blosc* filter.  Since `r Biocpkg("rhdf5filters")` sets the `HDF5_PLUGIN_PATH` environment variable in an R session, we will manually unset it to demonstrate the typical behaviour.
+The next example demonstrates how the filters distributed by `r BiocStyle::Biocpkg("rhdf5filters")` can be used by external applications to decompress data.  Do do this we'll use the version of **h5dump** installed on the system^[If **h5dump** is not found on your system these example will fail.] and a file distributed with this package that has been compressed using the *blosc* filter.  Since `r BiocStyle::Biocpkg("rhdf5filters")` sets the `HDF5_PLUGIN_PATH` environment variable in an R session, we will manually unset it to demonstrate the typical behaviour.
 
 ```{r, warning = FALSE, eval = FALSE}
 ## blosc compressed file
@@ -113,7 +113,7 @@ DATASET "/dset" {
 )
 ```
 
-Next we set `HDF5_PLUGIN_PATH` to the location where `r Biocpkg("rhdf5filters")` has stored the filters and re-run the call to **h5dump**. Printing the output^[The dataset is quite large, so we only show a few lines here.] no longer returns an error in the `DATA` section, indicating that the *blosc* filter plugin was found and used by **h5dump**. 
+Next we set `HDF5_PLUGIN_PATH` to the location where `r BiocStyle::Biocpkg("rhdf5filters")` has stored the filters and re-run the call to **h5dump**. Printing the output^[The dataset is quite large, so we only show a few lines here.] no longer returns an error in the `DATA` section, indicating that the *blosc* filter plugin was found and used by **h5dump**. 
 
 ```{r h5dump-2, eval = FALSE}
 ## set environment variable to hdf5filter location
