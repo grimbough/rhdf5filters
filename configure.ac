@@ -247,6 +247,8 @@ AC_CONFIG_FILES([src/blosc/lib/blosc-1.20.1/Makefile src/blosc/Makefile])
 ##############################
 AC_MSG_NOTICE(configuring the VBZ filter)
 
+echo "Using rhdf5filters sse3-conda branch"
+
 ## check if we have an x86 CPU
 machine=`uname -m`
 AS_CASE([$machine],
@@ -273,6 +275,7 @@ elif test "${CPU_ARCH}" = x86; then
   fi
   
   if test ${AVX_SUPPORTED} = "true"; then
+    echo "Setting VBZ and STREAMBYTE flags"
     VBZ_FLAGS="-mssse3"
     STREAMBYTE_FLAGS="-std=c99 -mavx"
   fi
@@ -280,11 +283,13 @@ fi
   
 dnl if VBZ_FLAG isn't set don't compile the VBZ filter
 if test -z "${VBZ_FLAGS}"; then
+  echo "Substituting empty VBZ and STREAMBYTE flags"
   AC_SUBST(USE_VBZ, "")
   AC_SUBST(VBZ_F_LIB, "")
   AC_SUBST(VBZ_FLAGS, "")
   AC_SUBST(STREAMBYTE_FLAGS, "")
 else
+  echo "Substituting real VBZ and STREAMBYTE flags"
   AC_SUBST(USE_VBZ, "libH5Zvbz.so")
   AC_SUBST(VBZ_F_LIB, "vbz/libH5Zvbz.so")
   AC_SUBST(VBZ_FLAGS, "${VBZ_FLAGS}")
@@ -292,6 +297,8 @@ else
 fi
   
 AC_CONFIG_FILES([src/vbz/Makefile src/vbz/vbz/Makefile src/vbz/third_party/streamvbyte/Makefile])
+
+AC_MSG_NOTICE(finished configuring the VBZ filter)
 
 ##############################
 
