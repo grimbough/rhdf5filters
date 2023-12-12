@@ -255,6 +255,13 @@ AS_CASE([$machine],
   [CPU_ARCH=false]
 )
 
+IS_BIOC_BUILD_MACHINE=${IS_BIOC_BUILD_MACHINE:-false}
+
+if [ "${IS_BIOC_BUILD_MACHINE}" == true ]; then
+  echo machine=${machine}
+  echo CPU_ARCH=${CPU_ARCH}
+fi
+
 if test "${CPU_ARCH}" = arm64; then
   VBZ_FLAGS="-std=c99 -D__ARM_NEON__"
 elif test "${CPU_ARCH}" = x86; then
@@ -276,6 +283,12 @@ elif test "${CPU_ARCH}" = x86; then
     VBZ_FLAGS="-mssse3"
     STREAMBYTE_FLAGS="-std=c99 -mavx"
   fi
+else
+  echo "Unknown architecture"
+fi
+
+if [ "${IS_BIOC_BUILD_MACHINE}" == true ]; then
+  echo VBZ_FLAGS=${VBZ_FLAGS}
 fi
   
 dnl if VBZ_FLAG isn't set don't compile the VBZ filter
