@@ -4236,8 +4236,8 @@ esac
 IS_BIOC_BUILD_MACHINE=${IS_BIOC_BUILD_MACHINE:-false}
 
 if  "${IS_BIOC_BUILD_MACHINE}" == true ; then
-  echo $machine
-  echo $CPU_ARCH
+  echo machine=${machine}
+  echo CPU_ARCH=${CPU_ARCH}
 fi
 
 if test "${CPU_ARCH}" = arm64; then
@@ -4395,7 +4395,7 @@ else
 fi
 
 if  "${IS_BIOC_BUILD_MACHINE}" == true ; then
-  echo $VBZ_FLAG
+  echo VBZ_FLAGS=${VBZ_FLAGS}
 fi
 
 if test -z "${VBZ_FLAGS}"; then
