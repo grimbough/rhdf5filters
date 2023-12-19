@@ -4228,8 +4228,12 @@ case $machine in #(
     CPU_ARCH=x86 ;; #(
   aarch64) :
     CPU_ARCH=arm64 ;; #(
+  ## Linux ARM64
+  arm64) :
+    CPU_ARCH=arm64 ;; #(
   *) :
-    CPU_ARCH=false
+    ## Mac M1
+  CPU_ARCH=false
  ;;
 esac
 

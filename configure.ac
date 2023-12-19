@@ -251,7 +251,8 @@ AC_MSG_NOTICE(configuring the VBZ filter)
 machine=`uname -m`
 AS_CASE([$machine],
   [*86*], [CPU_ARCH=x86],
-  [aarch64], [CPU_ARCH=arm64],
+  [aarch64], [CPU_ARCH=arm64], ## Linux ARM64
+  [arm64], [CPU_ARCH=arm64], ## Mac M1
   [CPU_ARCH=false]
 )
 
