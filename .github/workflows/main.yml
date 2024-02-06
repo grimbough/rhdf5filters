@@ -62,6 +62,7 @@ jobs:
           extra-packages: |
             covr
             rcmdcheck
+        continue-on-error: true
             
       - name: Bioc - Build, Install, Check
         uses: grimbough/bioc-actions/build-install-check@v1
