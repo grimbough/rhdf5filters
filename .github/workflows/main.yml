@@ -46,6 +46,11 @@ jobs:
       - name: Remove system dependencies
         if: ${{ runner.os == 'linux' && matrix.config.sys-libs == 'false' }}
         run: sudo apt-get update && sudo apt-get remove -y libblosc-dev libbz2-dev libzstd-dev liblzf-dev
+        
+      - name: Install mac system dependencies
+        if: matrix.config.os == 'macOS-14'
+        run: |
+          sudo R -e 'source("https://mac.R-project.org/bin/install.R")' -e 'install.libs("openssl")'
           
       - name: Setup R and Bioconductor
         uses: grimbough/bioc-actions/setup-bioc@v1
