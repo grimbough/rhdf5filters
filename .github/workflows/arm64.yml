@@ -47,7 +47,7 @@ jobs:
             --env R_LIBS_USER=/R-lib
             --env PKG=${{ env.PKG }}
           run: |
-            echo "options(Ncpus=2L, timeout = 300)" >> ~/.Rprofile
+            echo "options(Ncpus=4L, timeout = 300)" >> ~/.Rprofile
             Rscript -e "library(remotes)" \
                     -e "dev_package_deps('/build/${PKG}', dependencies = TRUE) |> update(upgrade = 'always')"
             

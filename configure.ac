@@ -264,7 +264,8 @@ if [ "${IS_BIOC_BUILD_MACHINE}" == true ]; then
 fi
 
 if test "${CPU_ARCH}" = arm64; then
-  VBZ_FLAGS="-std=c99 -D__ARM_NEON__"
+  VBZ_FLAGS="-D__ARM_NEON__"
+  STREAMBYTE_FLAGS="-std=c99"
 elif test "${CPU_ARCH}" = x86; then
 
   ## see if -mavx is a supported flag
