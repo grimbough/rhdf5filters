@@ -4403,16 +4403,16 @@ if  "${IS_BIOC_BUILD_MACHINE}" == true ; then
   echo VBZ_FLAGS=${VBZ_FLAGS}
 fi
 
-if test -z "${VBZ_FLAGS}"; then
-  USE_VBZ=""
+#if test -z "${VBZ_FLAGS}"; then
+#  USE_VBZ=""
+#
+#  VBZ_F_LIB=""
+#
+# VBZ_FLAGS=""
+#
+#  STREAMBYTE_FLAGS=""
 
-  VBZ_F_LIB=""
-
-  VBZ_FLAGS=""
-
-  STREAMBYTE_FLAGS=""
-
-else
+#else
   USE_VBZ="libH5Zvbz.so"
 
   VBZ_F_LIB="vbz/libH5Zvbz.so"
@@ -4421,7 +4421,7 @@ else
 
   STREAMBYTE_FLAGS="${STREAMBYTE_FLAGS}"
 
-fi
+#fi
 
 ac_config_files="$ac_config_files src/vbz/Makefile src/vbz/vbz/Makefile src/vbz/third_party/streamvbyte/Makefile"
 
