@@ -17,7 +17,7 @@ libH5Zvbz.so: libvbz.a
 libvbz.a: vbz
 	rm -f libvbz.a
 	$(AR) cq libvbz.a vbz/vbz.o vbz/v0/vbz_streamvbyte.o vbz/v1/vbz_streamvbyte.o
-	ranlib libvbz.a
+	$(RANLIB) libvbz.a
 
 .PHONY: vbz
 

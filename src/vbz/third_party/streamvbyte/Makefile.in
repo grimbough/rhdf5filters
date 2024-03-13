@@ -24,7 +24,7 @@ all: libstreamvbyte.a
 libstreamvbyte.a: $(OBJS)
 	rm -f libstreamvbyte.a
 	$(AR) cq libstreamvbyte.a $(OBJS)
-	ranlib libstreamvbyte.a 
+	$(RANLIB) libstreamvbyte.a 
 
 clean: 
 	rm -f *.o libstreamvbyte.a
