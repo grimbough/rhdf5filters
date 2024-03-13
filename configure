@@ -693,6 +693,8 @@ CPPFLAGS
 CXXPICFLAGS
 CXXFLAGS
 CXX
+CC99FLAGS
+CC99
 CPICFLAGS
 CFLAGS
 CC
@@ -2417,6 +2419,10 @@ CC=`"${R_HOME}/bin/R" CMD config CC`
 CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
 
 CPICFLAGS=`"${R_HOME}/bin/R" CMD config CPICFLAGS`
+
+CC99=`"${R_HOME}/bin/R" CMD config CC99`
+
+CC99FLAGS=`"${R_HOME}/bin/R" CMD config CC99FLAGS`
 
 CXX=`"${R_HOME}/bin/R" CMD config CXX`
 
