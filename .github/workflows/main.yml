@@ -2,7 +2,7 @@ on:
   push:
     branches:
       - devel
-      - more-vbz-testing
+      - tmp
   pull_request:
     branches:
       - master
@@ -58,6 +58,9 @@ jobs:
           bioc-version: ${{ matrix.config.bioc-version }}
           bioc-mirror: ${{ matrix.config.bioc-mirror }}
           Ncpus: ${{ matrix.config.Ncpus }}
+          
+      - name: R CMD config
+        run: R CMD config --all
           
       - uses: r-lib/actions/setup-pandoc@v2
           
