@@ -51,3 +51,31 @@
        out_file <- file("src/vbz/vbz/Makefile", open="wb");
        writeLines(lines, con = out_file, sep = "\n");
        close(out_file);'
+       
+CC=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config CC`
+CFLAGS=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config CFLAGS`
+CPICFLAGS=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config CPICFLAGS`
+CC99=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config CC99`
+C99FLAGS=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config C99FLAGS`
+CXX=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config CXX`
+CXXFLAGS=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config CXXFLAGS`
+CXXPICFLAGS=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config CXXPICFLAGS`
+CPPFLAGS=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config CPPFLAGS`
+AR=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config AR`
+RANLIB=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config RANLIB`
+MAKE=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config MAKE`
+
+sed \
+-e "s^@CC@^${CC}^" \
+-e "s^@CFLAGS@^${CFLAGS}^" \
+-e "s^@CPICFLAGS@^${CPICFLAGS}^" \
+-e "s^@CC99@^${CC99}^" \
+-e "s^@C99FLAGS@^${C99FLAGS}^" \
+-e "s^@CXX@^${CXX}^" \
+-e "s^@CXXFLAGS@^${CXXFLAGS}^" \
+-e "s^@CXXPICFLAGS@^${CXXPICFLAGS}^" \
+-e "s^@CPPFLAGS@^${CPPFLAGS}^" \
+-e "s^@AR@^${AR}^" \
+-e "s^@RANLIB@^${RANLIB}^" \
+-e "s^@MAKE@^${MAKE}^" \
+src/Makevars.win.in > src/Makevars.win
