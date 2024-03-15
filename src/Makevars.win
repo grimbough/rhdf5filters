@@ -1,13 +1,14 @@
 
 USER_LIB_DIR = ${R_PACKAGE_DIR}/lib${R_ARCH}/
 
+
 export CC=$(shell "${R_HOME}/bin/R" CMD config CC)
-export CFLAGS=`R CMD config CFLAGS`
+export CFLAGS=$(shell "${R_HOME}/bin/R" CMD config CFLAGS)
 export PKG_CPICFLAGS=$(shell "${R_HOME}/bin/R" CMD config CPICFLAGS)
 export CC99=`R CMD config CC99`
 export PKG_CC99FLAGS=`R CMD config C99FLAGS`
 export CXX=`R CMD config CXX`
-export CXXFLAGS=`R CMD config CXXFLAGS`
+export CXXFLAGS=$(shell "${R_HOME}/bin/R" CMD config CXXFLAGS)
 export PKG_CXXPICFLAGS=`R CMD config CXXPICFLAGS`
 export AR=`R CMD config AR`
 export RANLIB=`R CMD config RANLIB`
