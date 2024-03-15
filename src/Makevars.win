@@ -1,7 +1,7 @@
 
 USER_LIB_DIR = ${R_PACKAGE_DIR}/lib${R_ARCH}/
 
-export CC=`R CMD config CC`
+export CC="${R_HOME}/bin/R" config CC
 export CFLAGS=`R CMD config CFLAGS`
 export PKG_CPICFLAGS=`R CMD config CPICFLAGS`
 export CC99=`R CMD config CC99`

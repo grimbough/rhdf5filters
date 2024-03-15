@@ -52,6 +52,12 @@ jobs:
         run: |
           sudo R -e 'source("https://mac.R-project.org/bin/install.R")' -e 'install.libs("openssl")'
           
+      - name: Test for R
+        if: matrix.config.os == 'macOS-13'
+        run: |
+          R --version
+          Rscript --version
+          
       - name: Setup R and Bioconductor
         uses: grimbough/bioc-actions/setup-bioc@v1
         with:
