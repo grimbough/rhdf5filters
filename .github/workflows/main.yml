@@ -60,8 +60,10 @@ jobs:
           Ncpus: ${{ matrix.config.Ncpus }}
           
       - name: R CMD config
-        run: R CMD config --all
-          
+        run: |
+          R CMD config --all
+        shell: bash
+        
       - uses: r-lib/actions/setup-pandoc@v2
           
       - name: Install dependencies
