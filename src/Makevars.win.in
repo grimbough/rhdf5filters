@@ -2,17 +2,17 @@
 USER_LIB_DIR = ${R_PACKAGE_DIR}/lib${R_ARCH}/
 
 
-export CC=$(shell "${R_HOME}/bin/R" CMD config CC)
-export PKG_CFLAGS=$(shell "${R_HOME}/bin/R" CMD config CFLAGS)
-export PKG_CPICFLAGS=$(shell "${R_HOME}/bin/R" CMD config CPICFLAGS)
-export CC99=$(shell "${R_HOME}/bin/R" CMD config CC99)
-export PKG_C99FLAGS=$(shell "${R_HOME}/bin/R" CMD config C99FLAGS)
-export CXX=$(shell "${R_HOME}/bin/R" CMD config CXX)
-export PKG_CXXFLAGS=$(shell "${R_HOME}/bin/R" CMD config CXXFLAGS)
-export PKG_CXXPICFLAGS=$(shell "${R_HOME}/bin/R" CMD config CXXPICFLAGS)
-export AR=$(shell "${R_HOME}/bin/R" CMD config AR)
-export RANLIB=$(shell "${R_HOME}/bin/R" CMD config RANLIB)
-export MAKE=$(shell "${R_HOME}/bin/R" CMD config MAKE)
+export CC=@CC@
+export PKG_CFLAGS=@CFLAGS@
+export PKG_CPICFLAGS=@CPICFLAGS@
+export CC99=@CC99@
+export PKG_C99FLAGS=@C99FLAGS@
+export CXX=@CXX@
+export PKG_CXXFLAGS=@CXXFLAGS@
+export PKG_CXXPICFLAGS=@CXXPICFLAGS@
+export AR=@AR@
+export RANLIB=@RANLIB@
+export MAKE=@MAKE@
 
 RHDF5_INCLUDE=$(shell echo 'cat(system.file("include", package="Rhdf5lib"))'|\
 	"${R_HOME}/bin/R" --vanilla --slave)
@@ -34,7 +34,7 @@ vbz/libH5Zvbz.so: zstd/libH5Zzstd.so
 blosc/libH5Zblosc.so: zstd/libH5Zzstd.so
 	$(MAKE) -C blosc
 	
-zstd/libH5Zzstd.so: 
+zstd/libH5Zzstd.so:
 	$(MAKE) -C zstd
 	
 bzip2/libH5Zbz2.so:
