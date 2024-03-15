@@ -2,9 +2,22 @@
 % Please edit documentation in R/rhdf5filters.R
 \docType{package}
 \name{rhdf5filters}
+\alias{rhdf5filters-package}
 \alias{rhdf5filters}
 \title{rhdf5filters}
 \description{
 This package provides several HDF5 compression filters for use with rhdf5 
 or other tools using HDF5.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/grimbough/rhdf5filters}
+  \item Report bugs at \url{https://github.com/grimbough/rhdf5filters}
+}
+
+}
+\author{
+\strong{Maintainer}: Mike Smith \email{grimbough@gmail.com} (\href{https://orcid.org/0000-0002-7800-3848}{ORCID})
+
 }
