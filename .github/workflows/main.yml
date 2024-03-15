@@ -2,7 +2,7 @@ on:
   push:
     branches:
       - devel
-      - more-vbz-testing
+      - Makevars_win
   pull_request:
     branches:
       - master
@@ -25,11 +25,11 @@ jobs:
       matrix:
         config:
         - { os: windows-2022, bioc-version: 'devel', Ncpus: 4, bioc-mirror: 'https://ftp.gwdg.de/pub/misc/bioconductor', sys-libs: 'false'}
-        - { os: ubuntu-22.04, bioc-version: 'devel', Ncpus: 4, bioc-mirror: 'https://ftp.gwdg.de/pub/misc/bioconductor', sys-libs: 'false'}
-        - { os: ubuntu-22.04, bioc-version: 'devel', Ncpus: 4, bioc-mirror: 'https://ftp.gwdg.de/pub/misc/bioconductor', sys-libs: 'true'}
-        - { os: ubuntu-22.04, bioc-version: 'release',  Ncpus: 4, bioc-mirror: 'https://packagemanager.posit.co/bioconductor', sys-libs: 'true'}
-        - { os: macOS-13,     bioc-version: 'devel', Ncpus: 4, bioc-mirror: 'https://ftp.gwdg.de/pub/misc/bioconductor', sys-libs: 'false'}
-        - { os: macOS-14,     bioc-version: 'devel', Ncpus: 3, bioc-mirror: 'https://ftp.gwdg.de/pub/misc/bioconductor', sys-libs: 'false'}
+        # - { os: ubuntu-22.04, bioc-version: 'devel', Ncpus: 4, bioc-mirror: 'https://ftp.gwdg.de/pub/misc/bioconductor', sys-libs: 'false'}
+        # - { os: ubuntu-22.04, bioc-version: 'devel', Ncpus: 4, bioc-mirror: 'https://ftp.gwdg.de/pub/misc/bioconductor', sys-libs: 'true'}
+        # - { os: ubuntu-22.04, bioc-version: 'release',  Ncpus: 4, bioc-mirror: 'https://packagemanager.posit.co/bioconductor', sys-libs: 'true'}
+        # - { os: macOS-13,     bioc-version: 'devel', Ncpus: 4, bioc-mirror: 'https://ftp.gwdg.de/pub/misc/bioconductor', sys-libs: 'false'}
+        # - { os: macOS-14,     bioc-version: 'devel', Ncpus: 3, bioc-mirror: 'https://ftp.gwdg.de/pub/misc/bioconductor', sys-libs: 'false'}
     steps:
     
       ## R CMD check complains about Windows line endings without this
