@@ -686,6 +686,8 @@ OBJEXT
 EXEEXT
 ac_ct_CC
 AR
+CC99
+C99FLAGS
 LDFLAGS
 RANLIB
 MAKE
@@ -693,8 +695,6 @@ CPPFLAGS
 CXXPICFLAGS
 CXXFLAGS
 CXX
-C99FLAGS
-CC99
 CPICFLAGS
 CFLAGS
 CC
@@ -2420,10 +2420,6 @@ CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
 
 CPICFLAGS=`"${R_HOME}/bin/R" CMD config CPICFLAGS`
 
-CC99=`"${R_HOME}/bin/R" CMD config CC99`
-
-C99FLAGS=`"${R_HOME}/bin/R" CMD config C99FLAGS`
-
 CXX=`"${R_HOME}/bin/R" CMD config CXX`
 
 CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
@@ -2437,6 +2433,23 @@ MAKE=`"${R_HOME}/bin/R" CMD config MAKE`
 RANLIB=`"${R_HOME}/bin/R" CMD config RANLIB`
 
 LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
+
+C99FLAGS=`"${R_HOME}/bin/R" CMD config C99FLAGS`
+
+
+echo "CC99=$CC99"
+# CC99=`"${R_HOME}/bin/R" CMD config CC99`
+echo "CC99=$CC99"
+if test -z x$CC99
+then :
+  CC99=`"${R_HOME}/bin/R" CMD config CC`
+fi
+echo "CC99=$CC99"
+if test -z "$HAVE_ZSTD"; then
+  CC99=`"${R_HOME}/bin/R" CMD config CC`
+fi
+echo "CC99=$CC99"
+
 
 
 ## seems unreliable as to whether this information is available

@@ -1,4 +1,4 @@
-PROCESSOR:=$(shell uname -m)
+# PROCESSOR:=$(shell uname -m)
 
 #ifeq ($(PROCESSOR), aarch64)
 # for 64-bit ARM processors

@@ -17,8 +17,6 @@ fi
 AC_SUBST(CC, `"${R_HOME}/bin/R" CMD config CC`)
 AC_SUBST(CFLAGS, `"${R_HOME}/bin/R" CMD config CFLAGS`)
 AC_SUBST(CPICFLAGS, `"${R_HOME}/bin/R" CMD config CPICFLAGS`)
-AC_SUBST(CC99, `"${R_HOME}/bin/R" CMD config CC99`)
-AC_SUBST(C99FLAGS, `"${R_HOME}/bin/R" CMD config C99FLAGS`)
 AC_SUBST(CXX, `"${R_HOME}/bin/R" CMD config CXX`)
 AC_SUBST(CXXFLAGS, `"${R_HOME}/bin/R" CMD config CXXFLAGS`)
 AC_SUBST(CXXPICFLAGS, `"${R_HOME}/bin/R" CMD config CXXPICFLAGS`)
@@ -26,6 +24,19 @@ AC_SUBST(CPPFLAGS, `"${R_HOME}/bin/R" CMD config CPPFLAGS`)
 AC_SUBST(MAKE, `"${R_HOME}/bin/R" CMD config MAKE`)
 AC_SUBST(RANLIB, `"${R_HOME}/bin/R" CMD config RANLIB`)
 AC_SUBST(LDFLAGS, `"${R_HOME}/bin/R" CMD config LDFLAGS`)
+AC_SUBST(C99FLAGS, `"${R_HOME}/bin/R" CMD config C99FLAGS`)
+
+echo "CC99=$CC99"
+# CC99=`"${R_HOME}/bin/R" CMD config CC99`
+echo "CC99=$CC99"
+AS_IF([test -z x$CC99], [CC99=`"${R_HOME}/bin/R" CMD config CC`], [])
+echo "CC99=$CC99"
+if test -z "$HAVE_ZSTD"; then
+  CC99=`"${R_HOME}/bin/R" CMD config CC`
+fi
+echo "CC99=$CC99"
+AC_SUBST(CC99)
+
 
 ## seems unreliable as to whether this information is available
 AR=`"${R_HOME}/bin/R" CMD config AR`
