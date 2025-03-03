@@ -42,6 +42,7 @@
        
 "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e \
       'lines <- gsub("@STREAMBYTE_FLAGS@", "-mavx", readLines("src/vbz/third_party/streamvbyte/Makefile.in"), fixed = TRUE);
+       lines <- gsub("@CC99@", "gcc -std=gnu99", lines, fixed = TRUE);
        out_file <- file("src/vbz/third_party/streamvbyte/Makefile", open="wb");
        writeLines(lines, con = out_file, sep = "\n");
        close(out_file);'
