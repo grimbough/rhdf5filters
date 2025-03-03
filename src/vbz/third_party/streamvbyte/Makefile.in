@@ -15,13 +15,11 @@
 
 CC99:=@CC99@
 
-STREAM_BYTE_CFLAGS:=$(PKG_C99FLAGS) $(PKG_CPICFLAGS) -Iinclude @STREAMBYTE_FLAGS@
+STREAM_BYTE_CFLAGS:=$(PKG_C99FLAGS) $(PKG_CPICFLAGS) -Iinclude $(PKG_CPPFLAGS) @STREAMBYTE_FLAGS@ 
 
 HEADERS=./include/streamvbyte.h ./include/streamvbytedelta.h ./include/streamvbyte_zigzag.h
 
 OBJS= streamvbyte_decode.o streamvbyte_encode.o streamvbytedelta_decode.o streamvbytedelta_encode.o streamvbyte_0124_encode.o streamvbyte_0124_decode.o streamvbyte_zigzag.o
-
-$(info    streambyte CC99 is $(CC99))
 
 all: libstreamvbyte.a
 
