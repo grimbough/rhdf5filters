@@ -27,11 +27,9 @@ AC_SUBST(LDFLAGS, `"${R_HOME}/bin/R" CMD config LDFLAGS`)
 AC_SUBST(C99FLAGS, `"${R_HOME}/bin/R" CMD config C99FLAGS`)
 
 echo "CC99=$CC99"
-# CC99=`"${R_HOME}/bin/R" CMD config CC99`
+CC99=`"${R_HOME}/bin/R" CMD config CC99`
 echo "CC99=$CC99"
-AS_IF([test -z x$CC99], [CC99=`"${R_HOME}/bin/R" CMD config CC`], [])
-echo "CC99=$CC99"
-if test -z "$HAVE_ZSTD"; then
+if test -z "$CC99"; then
   CC99=`"${R_HOME}/bin/R" CMD config CC`
 fi
 echo "CC99=$CC99"

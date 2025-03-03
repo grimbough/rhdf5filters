@@ -6,10 +6,12 @@ ZSTD_LIB=@ZSTD_F_LIB@
 # location to copy the shared objects to
 USER_LIB_DIR = ${R_PACKAGE_DIR}/lib/
 
+$(info   Makevars 1 CC99 is $(CC99))
+
 CC := @CC@
 PKG_CFLAGS := @CFLAGS@
 PKG_CPICFLAGS := @CPICFLAGS@
-CC99 = @CC99@
+CC99=@CC99@
 PKG_C99FLAGS := @C99FLAGS@
 CXX := @CXX@
 PKG_CXXFLAGS := @CXXFLAGS@
@@ -20,6 +22,10 @@ AR := @AR@
 PKG_CPPFLAGS := @CPPFLAGS@ -I"@RHDF5_INCLUDE@"
 PKG_LDFLAGS := @LDFLAGS@
 export
+
+$(info   Makevars 2 CC99 is $(CC99))
+
+export CC99
 
 all: copying $(SHLIB)
 
@@ -35,6 +41,7 @@ libH5Zblosc.so: libH5Zzstd.so
 	$(MAKE) -C blosc
 	
 libH5Zzstd.so:
+	$(info    CC99 is $(CC99))
 	$(MAKE) -C zstd
 
 libH5Zbz2.so:
