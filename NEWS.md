@@ -1,28 +1,34 @@
 # rhdf5filters 1.20.0
 
 * Small changes to compilation of internal blosc and vbz libraries to cope with
-the C23 compiler becoming the default in R-4.5.0
+  the C23 compiler becoming the default in R-4.5.0
+
+## BUG FIXES
+ 
+* Ensure PKG_CPPFLAGS are passed to all compilation step. This was an issue
+  in the case where R was installed via conda and package binaries were not 
+  available. Backported to version 1.18.1.
 
 # rhdf5filters 1.16.0
 
 ## CHANGES
 
 * rhdf5filters no longer sets the `HDF5_PLUGIN_PATH` environment variable when
-it is loaded.  Instead this is handled by the `H5PLprepend()` function in rhdf5.
+  it is loaded.  Instead this is handled by the `H5PLprepend()` function in rhdf5.
 
 ## BUG FIXES
 
 * Fixed issue compiling VBZ filter when R was installed via conda. Backported
-to version 1.14.1.  (Reported in 
-https://github.com/grimbough/rhdf5filters/issues/20)
+  to version 1.14.1.  (Reported in 
+  https://github.com/grimbough/rhdf5filters/issues/20)
 
 # rhdf5filters 1.14.0
 
 ## CHANGES
 
 * The package will now test for system libraries for several compression tools
-and will use those libraries rather than compiling from source if they are
-found.
+  and will use those libraries rather than compiling from source if they are
+  found.
 
 # rhdf5filters 1.12.0
 
