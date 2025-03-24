@@ -21,8 +21,8 @@ Suggests:
     tinytest,
     rhdf5 (>= 2.47.7)
 SystemRequirements: GNU make
-URL: https://github.com/grimbough/rhdf5filters
-BugReports: https://github.com/grimbough/rhdf5filters
+URL: https://github.com/Huber-group-EMBL/rhdf5filters
+BugReports: https://github.com/Huber-group-EMBL/rhdf5filters/issues
 LinkingTo: Rhdf5lib
 RoxygenNote: 7.3.2
 Encoding: UTF-8
