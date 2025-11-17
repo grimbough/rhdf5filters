@@ -4,7 +4,7 @@
   Author: Francesc Alted <francesc@blosc.org>
   Creation date: 2009-05-20
 
-  See LICENSES/BLOSC.txt for details about copyright and rights to use.
+  See LICENSE.txt for details about copyright and rights to use.
 **********************************************************************/
 
 
@@ -17,9 +17,9 @@
 
 #include "fastcopy.h"
 
-//#if defined(USING_CMAKE)
-#include "config.h"
-//#endif /*  USING_CMAKE */
+#if defined(USING_CMAKE)
+  #include "config.h"
+#endif /*  USING_CMAKE */
 #include "blosc.h"
 #include "shuffle.h"
 #include "blosclz.h"
@@ -56,15 +56,13 @@
   #include <inttypes.h>
 #endif  /* _WIN32 */
 
-/* Include the win32/pthread.h library for all the Windows builds. See #224. 
- * rhdf5filters: pthread is included in rtools, so we don't need the bundled
- * version here.  If this is included we get a 'multiple definitions' error. */
-//#if defined(_WIN32)
-//  #include "win32/pthread.h"
-//  #include "win32/pthread.c"
-//#else
+/* Include the win32/pthread.h library for all the Windows builds. See #224. */
+#if defined(_WIN32)
+  #include "win32/pthread.h"
+  #include "win32/pthread.c"
+#else
   #include <pthread.h>
-//#endif
+#endif
 
 
 /* Some useful units */
@@ -653,7 +651,7 @@ static int blosc_c(const struct blosc_context* context, int32_t blocksize,
     }
     if (context->compcode == BLOSC_BLOSCLZ) {
       cbytes = blosclz_compress(context->clevel, _tmp+j*neblock, neblock,
-                                dest, maxout);
+                                dest, maxout, !dont_split);
     }
     #if defined(HAVE_LZ4)
     else if (context->compcode == BLOSC_LZ4) {
@@ -839,7 +837,7 @@ static int serial_blosc(struct blosc_context* context)
                          context->destsize, context->src+j*context->blocksize,
                          context->dest+ntbytes, tmp, tmp2);
         if (cbytes == 0) {
-          ntbytes = 0;              /* uncompressible data */
+          ntbytes = 0;              /* incompressible data */
           break;
         }
       }
@@ -1838,7 +1836,7 @@ static void *t_blosc(void *ctxt)
         ntdest = context->parent_context->num_output_bytes;
         _sw32(bstarts + nblock_ * 4, ntdest); /* update block start counter */
         if ( (cbytes == 0) || (ntdest+cbytes > maxbytes) ) {
-          context->parent_context->thread_giveup_code = 0;  /* uncompressible buffer */
+          context->parent_context->thread_giveup_code = 0;  /* incompressible buffer */
           pthread_mutex_unlock(&context->parent_context->count_mutex);
           break;
         }
@@ -2197,7 +2195,7 @@ void blosc_set_splitmode(int mode)
  * trigger re-init of the global context.
  *
  * All pthread interfaces have undefined behavior in child handler in current
- * posix standards: http://pubs.opengroup.org/onlinepubs/9699919799/
+ * posix standards: https://pubs.opengroup.org/onlinepubs/9699919799/
  */
 void blosc_atfork_child(void) {
   if (!g_initlib) return;
