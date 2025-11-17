@@ -128,7 +128,7 @@ if test -z "$HAVE_BLOSC"; then
   
   IS_BIOC_BUILD_MACHINE=${IS_BIOC_BUILD_MACHINE:-false}
   
-  if [ "${IS_BIOC_BUILD_MACHINE}" == true ]; then
+  if [ "${IS_BIOC_BUILD_MACHINE}" = "true" ]; then
     AC_MSG_NOTICE(Bioc build machine; disabling MAVX2)
     MAVX2=false
   else
@@ -144,7 +144,7 @@ if test -z "$HAVE_BLOSC"; then
         [ax_cv_gcc_check_x86_cpu_init=false])
   
   ## check CPU supports sse2 and avx2
-  if [ "$x86_CPU" == true ] && [ "$ax_cv_gcc_check_x86_cpu_init" == true ]; then
+  if [ "$x86_CPU" = "true" ] && [ "$ax_cv_gcc_check_x86_cpu_init" = "true" ]; then
       AX_GCC_X86_CPU_SUPPORTS(sse2, [SSE2_SUPPORTED=true], [SSE2_SUPPORTED=false])
       if [ "$MAVX2" = true ]; then
         AX_GCC_X86_CPU_SUPPORTS(avx2, [AVX2_SUPPORTED=true], [AVX2_SUPPORTED=false])
@@ -236,7 +236,7 @@ AS_CASE([$machine],
 
 IS_BIOC_BUILD_MACHINE=${IS_BIOC_BUILD_MACHINE:-false}
 
-if [ "${IS_BIOC_BUILD_MACHINE}" == true ]; then
+if [ "${IS_BIOC_BUILD_MACHINE}" = "true" ]; then
   echo machine=${machine}
   echo CPU_ARCH=${CPU_ARCH}
 fi
@@ -267,7 +267,7 @@ else
   echo "Unknown architecture"
 fi
 
-if [ "${IS_BIOC_BUILD_MACHINE}" == true ]; then
+if [ "${IS_BIOC_BUILD_MACHINE}" = "true" ]; then
   echo VBZ_FLAGS=${VBZ_FLAGS}
 fi
   
