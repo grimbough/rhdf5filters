@@ -1,3 +1,10 @@
+# rhdf5filters 1.24.0
+
+## BUG FIXES
+
+* This package now compiles on -std=c23. This was an issue in the bundled
+  blosc library. Thanks to Alexander Bontempo for reporting the issue.
+
 # rhdf5filters 1.20.0
 
 * Small changes to compilation of internal blosc and vbz libraries to cope with
