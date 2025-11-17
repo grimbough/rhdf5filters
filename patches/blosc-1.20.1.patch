@@ -1,0 +1,39 @@
+From 52b0eed07202f1371a6f4a98551493bbf6ac459e Mon Sep 17 00:00:00 2001
+From: Hugo Gruson <10783929+Bisaloo@users.noreply.github.com>
+Date: Mon, 17 Nov 2025 13:39:49 +0100
+Subject: [PATCH] Remove outdated type def
+
+Fix #25
+---
+ src/blosc/lib/blosc-1.20.1/shuffle.c | 15 ---------------
+ 1 file changed, 15 deletions(-)
+
+diff --git a/src/blosc/lib/blosc-1.20.1/shuffle.c b/src/blosc/lib/blosc-1.20.1/shuffle.c
+index 3c2bd38..9abcba0 100644
+--- a/src/blosc/lib/blosc-1.20.1/shuffle.c
++++ b/src/blosc/lib/blosc-1.20.1/shuffle.c
+@@ -20,21 +20,6 @@
+ #include <pthread.h>
+ //#endif
+ 
+-
+-
+-/* Visual Studio < 2013 does not have stdbool.h so here it is a replacement: */
+-#if defined __STDC__ && defined __STDC_VERSION__
+-  #if __STDC_VERSION__ >= 199901L && __STDC_VERSION__ <= 201710L 
+-  /* have a C99 compiler */
+-  typedef _Bool bool;
+-  #endif
+-#else
+-/* do not have a C99 compiler */
+-typedef unsigned char bool;
+-#endif
+-
+-
+-
+ #if !defined(__clang__) && defined(__GNUC__) && defined(__GNUC_MINOR__) && \
+     __GNUC__ >= 5 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)
+ #define HAVE_CPU_FEAT_INTRIN
+-- 
+2.43.0
+
