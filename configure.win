@@ -1,28 +1,28 @@
 #!/bin/sh
 
 ## use R to remove SSE2 or AVX2 references from BLOSC Makefiles
-"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e 'lines <- gsub("@M?AVX2[A-Z_]*@", "", readLines("src/blosc/lib/blosc-1.20.1/Makefile.in"));
+"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e 'lines <- gsub("@M?AVX2[A-Z_]*@", "", readLines("src/blosc/lib/blosc-1.21.6/Makefile.in"));
              lines <- gsub("@M?SSE2[A-Z_]*@", "", lines);
-             out_file <- file("src/blosc/lib/blosc-1.20.1/Makefile", open="wb");
+             out_file <- file("src/blosc/lib/blosc-1.21.6/Makefile", open="wb");
              writeLines(lines, con = out_file, sep = "\n");
              close(out_file);'
              
 "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e \
       'lines <- gsub("@M?AVX2[A-Z_]*@", "", readLines("src/blosc/Makefile.in"));
        lines <- gsub("@M?SSE2[A-Z_]*@", "", lines);
-       lines <- gsub("@BLOSC_INCLUDE@", "-I./lib/blosc-1.20.1", lines, fixed = TRUE);
+       lines <- gsub("@BLOSC_INCLUDE@", "-I./lib/blosc-1.21.6", lines, fixed = TRUE);
        lines <- gsub("@BLOSC_LIB@", "./libblosc.a", lines, fixed = TRUE);
-       lines <- gsub("@ZSTD_LIB@", "../zstd/libzstd.a", lines, fixed = TRUE);
+       lines <- gsub("@ZSTD_LIB@", "../zstd-1.5.7/libzstd.a", lines, fixed = TRUE);
        lines <- gsub("@BUILD_BLOSC@", "libblosc.a", lines, fixed = TRUE);
        out_file <- file("src/blosc/Makefile", open="wb");
        writeLines(lines, con = out_file);
        close(out_file);'
              
 "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e \
-      'lines <- gsub("@ZSTD_INCLUDE@", "-I. -Icommon", readLines("src/zstd/Makefile.in"), fixed = TRUE);
+      'lines <- gsub("@ZSTD_INCLUDE@", "-I. -Icommon", readLines("src/zstd-1.5.7/Makefile.in"), fixed = TRUE);
        lines <- gsub("@ZSTD_LIB@", "libzstd.a", lines, fixed = TRUE);
        lines <- gsub("@BUILD_ZSTD@", "libzstd.a", lines, fixed = TRUE);
-       out_file <- file("src/zstd/Makefile", open="wb");
+       out_file <- file("src/zstd-1.5.7/Makefile", open="wb");
        writeLines(lines, con = out_file, sep = "\n");
        close(out_file);'
        
@@ -35,7 +35,7 @@
        close(out_file);'
        
 "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e \
-      'lines <- gsub("@ZSTD_LIB@", "../zstd/libzstd.a", readLines("src/vbz/Makefile.in"), fixed = TRUE);
+      'lines <- gsub("@ZSTD_LIB@", "../zstd-1.5.7/libzstd.a", readLines("src/vbz/Makefile.in"), fixed = TRUE);
        out_file <- file("src/vbz/Makefile", open="wb");
        writeLines(lines, con = out_file, sep = "\n");
        close(out_file);'
@@ -65,6 +65,10 @@ CPPFLAGS=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config CPPFLAGS`
 AR=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config AR`
 RANLIB=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config RANLIB`
 MAKE=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config MAKE`
+
+sed \
+-e "s^@NO_RLIB@^^" \
+src/compression_tools/blosc/lib/snappy-1.2.2/Makefile.in > src/compression_tools/blosc/lib/snappy-1.2.2/Makefile
 
 sed \
 -e "s^@CC@^${CC}^" \

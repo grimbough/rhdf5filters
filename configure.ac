@@ -116,7 +116,7 @@ if test -z "$HAVE_ZSTD"; then
   AC_MSG_NOTICE(compiling bundled Zstd library)
   AC_SUBST(BUILD_ZSTD, libzstd.a)
   AC_SUBST(ZSTD_INCLUDE, "-I. -Icommon")
-  AC_SUBST(ZSTD_LIB, ../zstd/libzstd.a)
+  AC_SUBST(ZSTD_LIB, ../zstd-1.5.7/libzstd.a)
 else
   AC_MSG_NOTICE(Using system Zstd library)
   AC_SUBST(BUILD_ZSTD, "")
@@ -128,7 +128,7 @@ AC_SUBST(BUILD_ZSTD)
 AC_SUBST(ZSTD_INCLUDE)
 AC_SUBST(ZSTD_LIB)
 
-AC_CONFIG_FILES([src/zstd/Makefile])
+AC_CONFIG_FILES([src/zstd-1.5.7/Makefile])
 
 ##############################
 AC_MSG_NOTICE(configuring the BLOSC filter...)
@@ -193,7 +193,7 @@ if test -z "$HAVE_BLOSC"; then
     SSE2_SHUFFLE='shuffle-sse2.o: shuffle-sse2.c
 	$(CC) $(FLAGS) -c shuffle-sse2.c'
     SSE2_SHUFFLE_OBJ='shuffle-sse2.o'
-    SSE2_OBJ_PATH='lib/blosc-1.20.1/'
+    SSE2_OBJ_PATH='lib/blosc-1.21.6/'
   else
     SSE2=""
     MSSE2=""
@@ -221,7 +221,7 @@ if test -z "$HAVE_BLOSC"; then
     AVX2_SHUFFLE='shuffle-avx2.o: shuffle-avx2.c
 	$(CC) $(FLAGS) -c shuffle-avx2.c'
     AVX2_SHUFFLE_OBJ='shuffle-avx2.o'
-    AVX2_OBJ_PATH='lib/blosc-1.20.1/'
+    AVX2_OBJ_PATH='lib/blosc-1.21.6/'
   else
     AVX2=""
     MAVX2=""
@@ -241,7 +241,7 @@ if test -z "$HAVE_BLOSC"; then
   AC_SUBST(AVX2_OBJ_PATH)
   
   AC_SUBST(BUILD_BLOSC, "libblosc.a")
-  AC_SUBST(BLOSC_INCLUDE, "-I./lib/blosc-1.20.1")
+  AC_SUBST(BLOSC_INCLUDE, "-I./lib/blosc-1.21.6")
   AC_SUBST(BLOSC_LIB, "./libblosc.a")
 else
   AC_MSG_NOTICE(Using system BLOSC library)
@@ -250,7 +250,7 @@ else
   AC_SUBST(BLOSC_LIB, -lblosc)
 fi
 
-AC_CONFIG_FILES([src/blosc/lib/blosc-1.20.1/Makefile src/blosc/Makefile])
+AC_CONFIG_FILES([src/blosc/lib/blosc-1.21.6/Makefile src/blosc/Makefile])
 
 ##############################
 AC_MSG_NOTICE(configuring the VBZ filter)
@@ -322,7 +322,7 @@ dnl update variables in Makevars
 BZIP2_F_LIB="bzip2/libH5Zbz2.so"
 BLOSC_F_LIB="blosc/libH5Zblosc.so"
 LZF_F_LIB="lzf/libH5Zlzf.so"
-ZSTD_F_LIB="zstd/libH5Zzstd.so"
+ZSTD_F_LIB="zstd-1.5.7/libH5Zzstd.so"
 
 AC_SUBST(BZIP2_F_LIB)
 AC_SUBST(BLOSC_F_LIB)

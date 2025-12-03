@@ -28,14 +28,14 @@ copying: blosc/libH5Zblosc.so bzip2/libH5Zbz2.so lzf/libH5Zlzf.so zstd/libH5Zzst
 	cp vbz/libH5Zvbz.so "${USER_LIB_DIR}/libH5Zvbz.dll"
 	cp zstd/libH5Zzstd.so "${USER_LIB_DIR}/libH5Zzstd.dll"
 	
-vbz/libH5Zvbz.so: zstd/libH5Zzstd.so
+vbz/libH5Zvbz.so: zstd-1.5.7/libH5Zzstd.so
 	$(MAKE) -C vbz
 
-blosc/libH5Zblosc.so: zstd/libH5Zzstd.so
+blosc/libH5Zblosc.so: zstd-1.5.7/libH5Zzstd.so
 	$(MAKE) -C blosc
 	
-zstd/libH5Zzstd.so:
-	$(MAKE) -C zstd
+zstd-1.5.7/libH5Zzstd.so:
+	$(MAKE) -C zstd-1.5.7
 	
 bzip2/libH5Zbz2.so:
 	$(MAKE) -C bzip2

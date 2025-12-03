@@ -35,7 +35,7 @@ libH5Zblosc.so: libH5Zzstd.so
 	$(MAKE) -C blosc
 	
 libH5Zzstd.so:
-	$(MAKE) -C zstd
+	$(MAKE) -C zstd-1.5.7
 
 libH5Zbz2.so:
 	$(MAKE) -C bzip2
@@ -48,4 +48,4 @@ clean:
 	$(MAKE) -C bzip2 clean
 	$(MAKE) -C lzf clean
 	$(MAKE) -C vbz clean
-	$(MAKE) -C zstd clean
+	$(MAKE) -C zstd-1.5.7 clean

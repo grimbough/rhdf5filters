@@ -3734,7 +3734,7 @@ printf "%s\n" "$as_me: compiling bundled Zstd library" >&6;}
 
   ZSTD_INCLUDE="-I. -Icommon"
 
-  ZSTD_LIB=../zstd/libzstd.a
+  ZSTD_LIB=../zstd-1.5.7/libzstd.a
 
 else
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Using system Zstd library" >&5
@@ -3751,7 +3751,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files src/zstd/Makefile"
+ac_config_files="$ac_config_files src/zstd-1.5.7/Makefile"
 
 
 ##############################
@@ -4161,7 +4161,7 @@ fi
     SSE2_SHUFFLE='shuffle-sse2.o: shuffle-sse2.c
 	$(CC) $(FLAGS) -c shuffle-sse2.c'
     SSE2_SHUFFLE_OBJ='shuffle-sse2.o'
-    SSE2_OBJ_PATH='lib/blosc-1.20.1/'
+    SSE2_OBJ_PATH='lib/blosc-1.21.6/'
   else
     SSE2=""
     MSSE2=""
@@ -4189,7 +4189,7 @@ fi
     AVX2_SHUFFLE='shuffle-avx2.o: shuffle-avx2.c
 	$(CC) $(FLAGS) -c shuffle-avx2.c'
     AVX2_SHUFFLE_OBJ='shuffle-avx2.o'
-    AVX2_OBJ_PATH='lib/blosc-1.20.1/'
+    AVX2_OBJ_PATH='lib/blosc-1.21.6/'
   else
     AVX2=""
     MAVX2=""
@@ -4210,7 +4210,7 @@ fi
 
   BUILD_BLOSC="libblosc.a"
 
-  BLOSC_INCLUDE="-I./lib/blosc-1.20.1"
+  BLOSC_INCLUDE="-I./lib/blosc-1.21.6"
 
   BLOSC_LIB="./libblosc.a"
 
@@ -4225,7 +4225,7 @@ printf "%s\n" "$as_me: Using system BLOSC library" >&6;}
 
 fi
 
-ac_config_files="$ac_config_files src/blosc/lib/blosc-1.20.1/Makefile src/blosc/Makefile"
+ac_config_files="$ac_config_files src/blosc/lib/blosc-1.21.6/Makefile src/blosc/Makefile"
 
 
 ##############################
@@ -5151,8 +5151,8 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "src/bzip2/Makefile") CONFIG_FILES="$CONFIG_FILES src/bzip2/Makefile" ;;
-    "src/zstd/Makefile") CONFIG_FILES="$CONFIG_FILES src/zstd/Makefile" ;;
-    "src/blosc/lib/blosc-1.20.1/Makefile") CONFIG_FILES="$CONFIG_FILES src/blosc/lib/blosc-1.20.1/Makefile" ;;
+    "src/zstd-1.5.7/Makefile") CONFIG_FILES="$CONFIG_FILES src/zstd-1.5.7/Makefile" ;;
+    "src/blosc/lib/blosc-1.21.6/Makefile") CONFIG_FILES="$CONFIG_FILES src/blosc/lib/blosc-1.21.6/Makefile" ;;
     "src/blosc/Makefile") CONFIG_FILES="$CONFIG_FILES src/blosc/Makefile" ;;
     "src/vbz/Makefile") CONFIG_FILES="$CONFIG_FILES src/vbz/Makefile" ;;
     "src/vbz/vbz/Makefile") CONFIG_FILES="$CONFIG_FILES src/vbz/vbz/Makefile" ;;
