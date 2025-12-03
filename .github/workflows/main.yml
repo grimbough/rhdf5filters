@@ -1,11 +1,10 @@
 on:
+  workflow_dispatch:
   push:
     branches:
       - devel
-      - more-vbz-testing
   pull_request:
     branches:
-      - master
       - devel
 
 name: R-CMD-check
