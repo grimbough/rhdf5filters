@@ -678,9 +678,6 @@ SSE2
 ZSTD_LIB
 ZSTD_INCLUDE
 BUILD_ZSTD
-BZ2_LIB
-BZ2_INCLUDE
-BUILD_BZ2
 RHDF5_INCLUDE
 OBJEXT
 EXEEXT
@@ -3537,12 +3534,11 @@ printf "%s\n" "$as_me: is NOT Bioc build machine" >&6;}
 
 fi
 
-
 ##############################
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: configuring BZIP2 filter..." >&5
-printf "%s\n" "$as_me: configuring BZIP2 filter..." >&6;}
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: configuring the Zstd filter..." >&5
+printf "%s\n" "$as_me: configuring the Zstd filter..." >&6;}
 
-if test "x$HAVE_BZ2" = "xyes"; then
+if test "x$HAVE_ZSTD" = "xyes"; then
 
 ac_header= ac_cache=
 for ac_item in $ac_header_c_list
@@ -3573,100 +3569,7 @@ then :
 printf "%s\n" "#define STDC_HEADERS 1" >>confdefs.h
 
 fi
-       for ac_header in bzlib.h
-do :
-  ac_fn_c_check_header_compile "$LINENO" "bzlib.h" "ac_cv_header_bzlib_h" "$ac_includes_default"
-if test "x$ac_cv_header_bzlib_h" = xyes
-then :
-  printf "%s\n" "#define HAVE_BZLIB_H 1" >>confdefs.h
- HAVE_BZ2_H="yes"
-else $as_nop
-  unset HAVE_BZ2
-fi
-
-done
-  if test "x$HAVE_BZ2_H" = "xyes"; then
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for BZ2_bzDecompressInit in -lbz2" >&5
-printf %s "checking for BZ2_bzDecompressInit in -lbz2... " >&6; }
-if test ${ac_cv_lib_bz2_BZ2_bzDecompressInit+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lbz2  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-char BZ2_bzDecompressInit ();
-int
-main (void)
-{
-return BZ2_bzDecompressInit ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"
-then :
-  ac_cv_lib_bz2_BZ2_bzDecompressInit=yes
-else $as_nop
-  ac_cv_lib_bz2_BZ2_bzDecompressInit=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_bz2_BZ2_bzDecompressInit" >&5
-printf "%s\n" "$ac_cv_lib_bz2_BZ2_bzDecompressInit" >&6; }
-if test "x$ac_cv_lib_bz2_BZ2_bzDecompressInit" = xyes
-then :
-  printf "%s\n" "#define HAVE_LIBBZ2 1" >>confdefs.h
-
-  LIBS="-lbz2 $LIBS"
-
-else $as_nop
-  unset HAVE_BZ2
-fi
-
-  fi
-fi
-
-if test -z "$HAVE_BZ2"; then
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: compiling bundled bzip2 library" >&5
-printf "%s\n" "$as_me: compiling bundled bzip2 library" >&6;}
-  BUILD_BZ2=bzip2-1.0.8/libbz2.a
-
-  BZ2_INCLUDE=-Ibzip2-1.0.8
-
-  BZ2_LIB=bzip2-1.0.8/libbz2.a
-
-else
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Using system bzip2 library" >&5
-printf "%s\n" "$as_me: Using system bzip2 library" >&6;}
-  BUILD_BZ2=""
-
-  BZ2_INCLUDE=""
-
-  BZ2_LIB=-lbz2
-
-fi
-
-
-
-
-
-ac_config_files="$ac_config_files src/bzip2/Makefile"
-
-
-##############################
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: configuring the Zstd filter..." >&5
-printf "%s\n" "$as_me: configuring the Zstd filter..." >&6;}
-
-if test "x$HAVE_ZSTD" = "xyes"; then
-         for ac_header in zstd.h
+       for ac_header in zstd.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "zstd.h" "ac_cv_header_zstd_h" "$ac_includes_default"
 if test "x$ac_cv_header_zstd_h" = xyes
@@ -5150,7 +5053,6 @@ cat >>$CONFIG_STATUS <<\_ACEOF || ac_write_fail=1
 for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
-    "src/bzip2/Makefile") CONFIG_FILES="$CONFIG_FILES src/bzip2/Makefile" ;;
     "src/zstd/Makefile") CONFIG_FILES="$CONFIG_FILES src/zstd/Makefile" ;;
     "src/blosc/lib/blosc-1.20.1/Makefile") CONFIG_FILES="$CONFIG_FILES src/blosc/lib/blosc-1.20.1/Makefile" ;;
     "src/blosc/Makefile") CONFIG_FILES="$CONFIG_FILES src/blosc/Makefile" ;;
