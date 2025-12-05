@@ -1,16 +1,12 @@
+
 BZ2_INCLUDE=@BZ2_INCLUDE@
 BZ2_LIB=@BZ2_LIB@
 
 all: libH5Zbz2.so
 
-libH5Zbz2.so: @BUILD_BZ2@
+libH5Zbz2.so:
 	${CC} ${PKG_CFLAGS} ${PKG_CPICFLAGS} -shared H5Zbzip2.c $(PKG_CPPFLAGS) \
 	${BZ2_INCLUDE} ${BZ2_LIB} ${PKG_LDFLAGS} -o libH5Zbz2.so
 
-bzip2-1.0.8/libbz2.a:
-	$(MAKE) -C bzip2-1.0.8
-
 clean:
 	rm -f libH5Zbz2.so
-	rm -f bzip2-1.0.8/libbz2.a
-	rm -f bzip2-1.0.8/*.o

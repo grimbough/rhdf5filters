@@ -72,36 +72,6 @@ AS_IF([test "x$bundled_libs" = xyes],
         HAVE_BLOSC="yes"
       ])
 
-
-##############################
-AC_MSG_NOTICE(configuring BZIP2 filter...)
-
-if test "x$HAVE_BZ2" = "xyes"; then
-AC_CHECK_HEADERS([bzlib.h], [HAVE_BZ2_H="yes"], [unset HAVE_BZ2])
-  if test "x$HAVE_BZ2_H" = "xyes"; then
-    AC_CHECK_LIB([bz2], [BZ2_bzDecompressInit],, [unset HAVE_BZ2])
-  fi
-fi
-  
-dnl if there's not a system install of bzip2 build our own version
-if test -z "$HAVE_BZ2"; then
-  AC_MSG_NOTICE(compiling bundled bzip2 library)
-  AC_SUBST(BUILD_BZ2, bzip2-1.0.8/libbz2.a)
-  AC_SUBST(BZ2_INCLUDE, -Ibzip2-1.0.8)
-  AC_SUBST(BZ2_LIB, bzip2-1.0.8/libbz2.a)
-else
-  AC_MSG_NOTICE(Using system bzip2 library)
-  AC_SUBST(BUILD_BZ2, "")
-  AC_SUBST(BZ2_INCLUDE, "")
-  AC_SUBST(BZ2_LIB, -lbz2)
-fi
-
-AC_SUBST(BUILD_BZ2)
-AC_SUBST(BZ2_INCLUDE)
-AC_SUBST(BZ2_LIB)
-
-AC_CONFIG_FILES([src/bzip2/Makefile])
-
 ##############################
 AC_MSG_NOTICE(configuring the Zstd filter...)
 
