@@ -4,6 +4,7 @@
 
 * This package now compiles on -std=c23. This was an issue in the bundled
   blosc library. Thanks to Alexander Bontempo for reporting the issue.
+* A R CMD check NOTE about bashims has been resolved.
 
 ## MINOR CHANGES
 
