@@ -5,6 +5,12 @@
 * This package now compiles on -std=c23. This was an issue in the bundled
   blosc library. Thanks to Alexander Bontempo for reporting the issue.
 
+## MINOR CHANGES
+
+* This package no longer bundles the bzip2 compression library, and uses
+  the system version instead. bzip2 is required by R itself so it is 
+  expected to be available on all systems.
+
 # rhdf5filters 1.20.0
 
 * Small changes to compilation of internal blosc and vbz libraries to cope with
