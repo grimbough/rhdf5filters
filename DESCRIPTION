@@ -1,7 +1,7 @@
 Package: rhdf5filters
 Type: Package
 Title: HDF5 Compression Filters
-Version: 1.23.2
+Version: 1.23.3
 Authors@R: c(
         person("Mike", "Smith",
                role = c("aut", "ccp"),
