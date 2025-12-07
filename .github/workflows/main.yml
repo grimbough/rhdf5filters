@@ -30,45 +30,32 @@ jobs:
         - { os: macOS-13,     bioc-version: 'devel',    Ncpus: 4, bioc-mirror: 'https://packagemanager.posit.co/bioconductor/latest', sys-libs: 'false'}
         - { os: macOS-14,     bioc-version: 'devel',    Ncpus: 3, bioc-mirror: 'https://packagemanager.posit.co/bioconductor/latest', sys-libs: 'false'}
     steps:
-    
-      ## R CMD check complains about Windows line endings without this
-      - name: Configure git
-        run: |
-          git config --global core.autocrlf false
-    
-      - uses: actions/checkout@v4
-      
+      - uses: actions/checkout@v6
+
       - name: Install system dependencies
         if: ${{ runner.os == 'linux' && matrix.config.sys-libs == 'true' }}
         run: sudo apt-get update && sudo apt-get install -y libblosc-dev libbz2-dev libzstd-dev liblzf-dev
-        
+
       - name: Remove system dependencies
         if: ${{ runner.os == 'linux' && matrix.config.sys-libs == 'false' }}
         run: sudo apt-get update && sudo apt-get remove -y libblosc-dev libbz2-dev libzstd-dev liblzf-dev
-          
+
       - name: Setup R and Bioconductor
         uses: grimbough/bioc-actions/setup-bioc@v1
         with:
           bioc-version: ${{ matrix.config.bioc-version }}
           bioc-mirror: ${{ matrix.config.bioc-mirror }}
           Ncpus: ${{ matrix.config.Ncpus }}
-          
-      ## This step needs to come after we've installed R as the base runner no longer has R included
-      - name: Install mac system dependencies
-        if: matrix.config.os == 'macOS-14'
-        run: |
-          sudo R -e 'source("https://mac.R-project.org/bin/install.R")' -e 'install.libs("openssl")'
-          
+
       - uses: r-lib/actions/setup-pandoc@v2
-          
+
       - name: Install dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: |
             covr
             rcmdcheck
-        continue-on-error: true
-            
+
       - name: Bioc - Build, Install, Check
         id: build-install-check
         uses: grimbough/bioc-actions/build-install-check@v1
