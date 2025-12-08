@@ -24,7 +24,7 @@ Suggests:
     BiocStyle,
     knitr,
     rmarkdown,
-    tinytest,
+    testthat,
     rhdf5 (>= 2.47.7)
 SystemRequirements: GNU make
 URL: https://github.com/Huber-group-EMBL/rhdf5filters
