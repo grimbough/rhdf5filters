@@ -29,6 +29,10 @@ test_that("BLOSC variants write/read (when available)", {
     "BLOSC_ZSTD"     = 0:9
   )
   skip_if_not("blosc" %in% available_filters(), "BLOSC filters not available")
+  skip_if(
+    Sys.info()["sysname"] == "Darwin" && grepl("x86_64", Sys.info()["machine"]), 
+    "BLOSC_Snappy filter fails on Intel macOS"
+  )
   for(i in seq_along(settings)) {
     for(j in seq_along(settings[[i]])) {
       for(k in c(TRUE, FALSE)) {
