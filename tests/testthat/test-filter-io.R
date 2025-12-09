@@ -20,12 +20,14 @@ max_file_size <- file.size(tf)
 file.remove(tf)
 
 test_that("BLOSC variants write/read (when available)", {
-  settings <- list("BLOSC_BLOSCLZ" = 0:1,
-                  "BLOSC_LZ4"      = 0:9,
-                  "BLOSC_LZ4HC"    = 0:9,
-                  "BLOSC_SNAPPY"   = 0:1,
-                  "BLOSC_ZLIB"     = 0:9,
-                  "BLOSC_ZSTD"     = 0:9)
+  settings <- list(
+    "BLOSC_BLOSCLZ" = 0:1,
+    "BLOSC_LZ4"      = 0:9,
+    "BLOSC_LZ4HC"    = 0:9,
+    "BLOSC_SNAPPY"   = 0:1,
+    "BLOSC_ZLIB"     = 0:9,
+    "BLOSC_ZSTD"     = 0:9
+  )
   skip_if_not("blosc" %in% available_filters(), "BLOSC filters not available")
   for(i in seq_along(settings)) {
     for(j in seq_along(settings[[i]])) {
@@ -37,7 +39,9 @@ test_that("BLOSC variants write/read (when available)", {
         if(settings[[i]][j] > 0)
           expect_true(file.size(tf) < max_file_size)
         expect_identical(
-          rhdf5::h5read(tf, "test"), mat
+          rhdf5::h5read(tf, "test"), 
+          mat, 
+          info = paste(names(settings)[i], settings[[i]][j], "shuffle =", k)
         )
         file.remove(tf)
       }
