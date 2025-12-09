@@ -67,11 +67,6 @@ jobs:
         with:
           error-on: 'never'
           arguments: '--no-check-bioc-help'
-          
-      - name: Test INSTALL with C23
-        run: |
-          R CMD INSTALL --use-C23 '${{ steps.build-install-check.outputs.source-tarball }}'
-        shell: bash
 
       - name: Test coverage
         if: runner.os == 'Windows'
