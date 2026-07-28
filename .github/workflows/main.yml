@@ -23,14 +23,14 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - { os: windows-latest,     r: 'devel',   sys-libs: 'false'}
-        - { os: windows-11-arm,     r: 'devel',   sys-libs: 'false'}
-        - { os: ubuntu-26.04,       r: 'devel',   sys-libs: 'false'}
-        - { os: ubuntu-26.04-arm,   r: 'release', sys-libs: 'false'}
-        - { os: ubuntu-26.04,       r: 'devel',   sys-libs: 'true' }
-        - { os: ubuntu-26.04,       r: 'release', sys-libs: 'true' }
-        - { os: macos-latest-large, r: 'devel',   sys-libs: 'false'}
-        - { os: macos-latest,       r: 'devel',   sys-libs: 'false'}
+        - { os: windows-latest,   r: 'devel',   sys-libs: 'false'}
+        - { os: windows-11-arm,   r: 'devel',   sys-libs: 'false'}
+        - { os: ubuntu-24.04,     r: 'devel',   sys-libs: 'false'}
+        - { os: ubuntu-24.04-arm, r: 'release', sys-libs: 'false'}
+        - { os: ubuntu-24.04,     r: 'devel',   sys-libs: 'true' }
+        - { os: ubuntu-24.04,     r: 'release', sys-libs: 'true' }
+        - { os: macos-26-intel,   r: 'devel',   sys-libs: 'false'}
+        - { os: macos-latest,     r: 'devel',   sys-libs: 'false'}
     steps:
       - uses: actions/checkout@v7
 
