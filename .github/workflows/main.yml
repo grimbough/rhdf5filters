@@ -17,22 +17,22 @@ jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
 
-    name: '${{ matrix.config.os }} (${{ matrix.config.bioc-version }}, System Libs: ${{ matrix.config.sys-libs }})'
+    name: '${{ matrix.config.os }} (R: ${{ matrix.config.r }}, System Libs: ${{ matrix.config.sys-libs }})'
 
     strategy:
       fail-fast: false
       matrix:
         config:
-        - { os: windows-latest,     bioc-version: 'devel',    Ncpus: 4, bioc-mirror: 'https://packagemanager.posit.co/bioconductor/latest', sys-libs: 'false'}
-        - { os: windows-11-arm,     bioc-version: 'devel',    Ncpus: 4, bioc-mirror: 'https://packagemanager.posit.co/bioconductor/latest', sys-libs: 'false'}
-        - { os: ubuntu-26.04,       bioc-version: 'devel',    Ncpus: 4, bioc-mirror: 'https://packagemanager.posit.co/bioconductor/latest', sys-libs: 'false'}
-        - { os: ubuntu-26.04-arm,   bioc-version: 'release',  Ncpus: 4, bioc-mirror: 'https://packagemanager.posit.co/bioconductor/latest', sys-libs: 'false'}
-        - { os: ubuntu-26.04,       bioc-version: 'devel',    Ncpus: 4, bioc-mirror: 'https://packagemanager.posit.co/bioconductor/latest', sys-libs: 'true'}
-        - { os: ubuntu-26.04,       bioc-version: 'release',  Ncpus: 4, bioc-mirror: 'https://packagemanager.posit.co/bioconductor/latest', sys-libs: 'true'}
-        - { os: macos-latest-large, bioc-version: 'devel',    Ncpus: 4, bioc-mirror: 'https://packagemanager.posit.co/bioconductor/latest', sys-libs: 'false'}
-        - { os: macos-latest,       bioc-version: 'devel',    Ncpus: 3, bioc-mirror: 'https://packagemanager.posit.co/bioconductor/latest', sys-libs: 'false'}
+        - { os: windows-latest,     r: 'devel',   sys-libs: 'false'}
+        - { os: windows-11-arm,     r: 'devel',   sys-libs: 'false'}
+        - { os: ubuntu-26.04,       r: 'devel',   sys-libs: 'false'}
+        - { os: ubuntu-26.04-arm,   r: 'release', sys-libs: 'false'}
+        - { os: ubuntu-26.04,       r: 'devel',   sys-libs: 'true' }
+        - { os: ubuntu-26.04,       r: 'release', sys-libs: 'true' }
+        - { os: macos-latest-large, r: 'devel',   sys-libs: 'false'}
+        - { os: macos-latest,       r: 'devel',   sys-libs: 'false'}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Install system dependencies
         if: ${{ runner.os == 'linux' && matrix.config.sys-libs == 'true' }}
@@ -41,35 +41,21 @@ jobs:
       - name: Remove system dependencies
         if: ${{ runner.os == 'linux' && matrix.config.sys-libs == 'false' }}
         run: sudo apt-get update && sudo apt-get remove -y libblosc-dev libbz2-dev libzstd-dev liblzf-dev
-
-      - name: Setup R and Bioconductor
-        uses: grimbough/bioc-actions/setup-bioc@v1
+        
+      - uses: r-lib/actions/setup-r@v2
         with:
-          bioc-version: ${{ matrix.config.bioc-version }}
-          bioc-mirror: ${{ matrix.config.bioc-mirror }}
-          Ncpus: ${{ matrix.config.Ncpus }}
+          r-version: ${{ matrix.config.r }}
+          use-public-rspm: true
 
       - uses: r-lib/actions/setup-pandoc@v2
 
-      - name: Install dependencies
-        uses: r-lib/actions/setup-r-dependencies@v2
+      - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: |
-            covr
-            rcmdcheck
+          extra-packages: any::rcmdcheck
+          needs: check
 
-      - name: Bioc - Build, Install, Check
-        id: build-install-check
-        uses: grimbough/bioc-actions/build-install-check@v1
-
-      - name: Run BiocCheck
-        uses: grimbough/bioc-actions/run-BiocCheck@v1
+      - uses: r-lib/actions/check-r-package@v2
         with:
-          error-on: 'never'
-          arguments: '--no-check-bioc-help'
+          upload-snapshots: true
+          build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")
 
-      - name: Test coverage
-        if: runner.os == 'Windows'
-        run: |
-          covr::codecov()
-        shell: Rscript {0}
