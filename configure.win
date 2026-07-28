@@ -1,5 +1,22 @@
 #!/bin/sh
 
+## Determine the target architecture so we can pick the correct SIMD flags for
+## the vbz / streamvbyte filter.  x86(-64) uses SSSE3/AVX, ARM64 uses NEON.
+## This mirrors the architecture handling in configure.ac for other platforms.
+CC=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config CC`
+MACHINE=`${CC} -dumpmachine 2>/dev/null`
+
+case "${MACHINE}" in
+  aarch64*|arm64*)
+    STREAMBYTE_FLAGS=""
+    VBZ_FLAGS="-D__ARM_NEON__"
+    ;;
+  *)
+    STREAMBYTE_FLAGS="-mavx"
+    VBZ_FLAGS="-mssse3"
+    ;;
+esac
+
 ## use R to remove SSE2 or AVX2 references from BLOSC Makefiles
 "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e 'lines <- gsub("@M?AVX2[A-Z_]*@", "", readLines("src/blosc/lib/blosc-1.20.1/Makefile.in"));
              lines <- gsub("@M?SSE2[A-Z_]*@", "", lines);
@@ -33,14 +50,14 @@
        close(out_file);'
        
 "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e \
-      'lines <- gsub("@STREAMBYTE_FLAGS@", "-mavx", readLines("src/vbz/third_party/streamvbyte/Makefile.in"), fixed = TRUE);
+      'lines <- gsub("@STREAMBYTE_FLAGS@", "'"${STREAMBYTE_FLAGS}"'", readLines("src/vbz/third_party/streamvbyte/Makefile.in"), fixed = TRUE);
        lines <- gsub("@CC99@", "gcc -std=gnu99", lines, fixed = TRUE);
        out_file <- file("src/vbz/third_party/streamvbyte/Makefile", open="wb");
        writeLines(lines, con = out_file, sep = "\n");
        close(out_file);'
        
 "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e \
-      'lines <- gsub("@VBZ_FLAGS@", "-mssse3", readLines("src/vbz/vbz/Makefile.in"), fixed = TRUE);
+      'lines <- gsub("@VBZ_FLAGS@", "'"${VBZ_FLAGS}"'", readLines("src/vbz/vbz/Makefile.in"), fixed = TRUE);
        out_file <- file("src/vbz/vbz/Makefile", open="wb");
        writeLines(lines, con = out_file, sep = "\n");
        close(out_file);'
