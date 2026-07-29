@@ -59,7 +59,6 @@ AS_IF([test "x$bundled_libs" = xyes],
       [AC_MSG_NOTICE(is Bioc build machine)],
       [
         AC_MSG_NOTICE(is NOT Bioc build machine)
-        HAVE_BZ2="yes"
         HAVE_ZSTD="yes"
         HAVE_BLOSC="yes"
       ])
