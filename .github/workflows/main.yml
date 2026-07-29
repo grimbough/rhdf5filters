@@ -47,6 +47,11 @@ jobs:
           r-version: ${{ matrix.config.r }}
           use-public-rspm: true
 
+      - name: Install openssl
+        if: runner.os == 'macOS'
+        run: |
+          sudo R -e 'source("https://mac.R-project.org/bin/install.R")' -e 'install.libs("openssl")'
+
       - uses: r-lib/actions/setup-pandoc@v2
 
       - uses: r-lib/actions/setup-r-dependencies@v2
