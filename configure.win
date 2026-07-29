@@ -51,7 +51,6 @@ esac
        
 "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e \
       'lines <- gsub("@STREAMBYTE_FLAGS@", "'"${STREAMBYTE_FLAGS}"'", readLines("src/vbz/third_party/streamvbyte/Makefile.in"), fixed = TRUE);
-       lines <- gsub("@CC99@", "gcc -std=gnu99", lines, fixed = TRUE);
        out_file <- file("src/vbz/third_party/streamvbyte/Makefile", open="wb");
        writeLines(lines, con = out_file, sep = "\n");
        close(out_file);'
@@ -65,8 +64,6 @@ esac
 CC=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config CC`
 CFLAGS=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config CFLAGS`
 CPICFLAGS=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config CPICFLAGS`
-CC99=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config CC99`
-C99FLAGS=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config C99FLAGS`
 CXX=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config CXX`
 CXXFLAGS=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config CXXFLAGS`
 CXXPICFLAGS=`"${R_HOME}/bin${R_ARCH_BIN}/Rcmd.exe" config CXXPICFLAGS`
@@ -79,8 +76,6 @@ sed \
 -e "s^@CC@^${CC}^" \
 -e "s^@CFLAGS@^${CFLAGS}^" \
 -e "s^@CPICFLAGS@^${CPICFLAGS}^" \
--e "s^@CC99@^${CC99}^" \
--e "s^@C99FLAGS@^${C99FLAGS}^" \
 -e "s^@CXX@^${CXX}^" \
 -e "s^@CXXFLAGS@^${CXXFLAGS}^" \
 -e "s^@CXXPICFLAGS@^${CXXPICFLAGS}^" \

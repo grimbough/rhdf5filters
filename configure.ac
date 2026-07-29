@@ -24,14 +24,6 @@ AC_SUBST(CPPFLAGS, `"${R_HOME}/bin/R" CMD config CPPFLAGS`)
 AC_SUBST(MAKE, `"${R_HOME}/bin/R" CMD config MAKE`)
 AC_SUBST(RANLIB, `"${R_HOME}/bin/R" CMD config RANLIB`)
 AC_SUBST(LDFLAGS, `"${R_HOME}/bin/R" CMD config LDFLAGS`)
-AC_SUBST(C99FLAGS, `"${R_HOME}/bin/R" CMD config C99FLAGS`)
-
-CC99=`"${R_HOME}/bin/R" CMD config CC99`
-if test -z "$CC99"; then
-  CC99=`"${R_HOME}/bin/R" CMD config CC`
-fi
-AC_SUBST(CC99)
-
 
 ## seems unreliable as to whether this information is available
 AR=`"${R_HOME}/bin/R" CMD config AR`
