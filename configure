@@ -683,8 +683,6 @@ OBJEXT
 EXEEXT
 ac_ct_CC
 AR
-CC99
-C99FLAGS
 LDFLAGS
 RANLIB
 MAKE
@@ -2431,15 +2429,6 @@ RANLIB=`"${R_HOME}/bin/R" CMD config RANLIB`
 
 LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
 
-C99FLAGS=`"${R_HOME}/bin/R" CMD config C99FLAGS`
-
-
-CC99=`"${R_HOME}/bin/R" CMD config CC99`
-if test -z "$CC99"; then
-  CC99=`"${R_HOME}/bin/R" CMD config CC`
-fi
-
-
 
 ## seems unreliable as to whether this information is available
 AR=`"${R_HOME}/bin/R" CMD config AR`
@@ -3528,7 +3517,6 @@ else $as_nop
 
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: is NOT Bioc build machine" >&5
 printf "%s\n" "$as_me: is NOT Bioc build machine" >&6;}
-        HAVE_BZ2="yes"
         HAVE_ZSTD="yes"
         HAVE_BLOSC="yes"
 
@@ -3781,7 +3769,7 @@ fi
 
   IS_BIOC_BUILD_MACHINE=${IS_BIOC_BUILD_MACHINE:-false}
 
-  if  "${IS_BIOC_BUILD_MACHINE}" == true ; then
+  if  "${IS_BIOC_BUILD_MACHINE}" = "true" ; then
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Bioc build machine; disabling MAVX2" >&5
 printf "%s\n" "$as_me: Bioc build machine; disabling MAVX2" >&6;}
     MAVX2=false
@@ -3858,7 +3846,7 @@ fi
 
 
   ## check CPU supports sse2 and avx2
-  if  "$x86_CPU" == true  &&  "$ax_cv_gcc_check_x86_cpu_init" == true ; then
+  if  "$x86_CPU" = "true"  &&  "$ax_cv_gcc_check_x86_cpu_init" = "true" ; then
       ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -4153,7 +4141,7 @@ esac
 
 IS_BIOC_BUILD_MACHINE=${IS_BIOC_BUILD_MACHINE:-false}
 
-if  "${IS_BIOC_BUILD_MACHINE}" == true ; then
+if  "${IS_BIOC_BUILD_MACHINE}" = "true" ; then
   echo machine=${machine}
   echo CPU_ARCH=${CPU_ARCH}
 fi
@@ -4313,7 +4301,7 @@ else
   echo "Unknown architecture"
 fi
 
-if  "${IS_BIOC_BUILD_MACHINE}" == true ; then
+if  "${IS_BIOC_BUILD_MACHINE}" = "true" ; then
   echo VBZ_FLAGS=${VBZ_FLAGS}
 fi
 
