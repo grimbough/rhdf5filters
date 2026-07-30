@@ -90,10 +90,6 @@ else
   AC_SUBST(ZSTD_LIB, -lzstd)
 fi
 
-AC_SUBST(BUILD_ZSTD)
-AC_SUBST(ZSTD_INCLUDE)
-AC_SUBST(ZSTD_LIB)
-
 AC_CONFIG_FILES([src/zstd/Makefile])
 
 ##############################
