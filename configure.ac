@@ -14,6 +14,9 @@ if test -z "${R_HOME}"; then
   exit 1
 fi
 
+IS_BIOC_BUILD_MACHINE=${IS_BIOC_BUILD_MACHINE:-false}
+MACHINE=`uname -m`
+
 AC_SUBST(CC, `"${R_HOME}/bin/R" CMD config CC`)
 AC_SUBST(CFLAGS, `"${R_HOME}/bin/R" CMD config CFLAGS`)
 AC_SUBST(CPICFLAGS, `"${R_HOME}/bin/R" CMD config CPICFLAGS`)
@@ -104,17 +107,13 @@ if test -z "$HAVE_BLOSC"; then
   AC_MSG_NOTICE(compiling bundled BLOSC library)
 
   ## check if we have an x86 CPU
-  machine=`uname -m`
-  AS_CASE([$machine],
+  AS_CASE([$MACHINE],
     [*86*], [x86_CPU=true],
     [x86_CPU=false]
   )
   
   ## see if -msse2 is a supported flag
   AX_CHECK_COMPILE_FLAG([-msse2], [MSSE2=true], [MSSE2=false])
-  
-  IS_BIOC_BUILD_MACHINE=${IS_BIOC_BUILD_MACHINE:-false}
-  
   if [ "${IS_BIOC_BUILD_MACHINE}" = "true" ]; then
     AC_MSG_NOTICE(Bioc build machine; disabling MAVX2)
     MAVX2=false
@@ -213,15 +212,12 @@ AC_CONFIG_FILES([src/blosc/lib/blosc-1.20.1/Makefile src/blosc/Makefile])
 AC_MSG_NOTICE(configuring the VBZ filter)
 
 ## check if we have an x86 CPU
-machine=`uname -m`
-AS_CASE([$machine],
+AS_CASE([$MACHINE],
   [*86*], [CPU_ARCH=x86],
   [aarch64], [CPU_ARCH=arm64], ## Linux ARM64
   [arm64], [CPU_ARCH=arm64], ## Mac M1
   [CPU_ARCH=false]
 )
-
-IS_BIOC_BUILD_MACHINE=${IS_BIOC_BUILD_MACHINE:-false}
 
 if [ "${IS_BIOC_BUILD_MACHINE}" = "true" ]; then
   echo machine=${machine}
