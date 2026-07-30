@@ -8,6 +8,10 @@ AC_CONFIG_SRCDIR([src])
 m4_include([tools/ax_gcc_x86_cpu_supports.m4])
 m4_include([tools/ax_check_compile_flag.m4])
 
+##############################
+## Basic environment / R setup
+##############################
+
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
   echo "could not determine R_HOME"
@@ -40,6 +44,8 @@ RHDF5_INCLUDE=`"${R_HOME}/bin${R_ARCH_BIN}/Rscript" -e 'cat(system.file("include
     tail -n1`
 AC_SUBST(RHDF5_INCLUDE)
 
+##############################
+## Bundled vs. system libraries
 ##############################
 
 AC_ARG_WITH(bundled-libraries,,
@@ -269,6 +275,8 @@ fi
   
 AC_CONFIG_FILES([src/vbz/Makefile src/vbz/vbz/Makefile src/vbz/third_party/streamvbyte/Makefile])
 
+##############################
+## Fixed filter library paths (used in Makevars)
 ##############################
 
 dnl update variables in Makevars
