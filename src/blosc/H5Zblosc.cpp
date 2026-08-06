@@ -100,7 +100,6 @@ static size_t H5Z_filter_blosc(unsigned flags, size_t cd_nelmts,
 
     /* Filter params that are always set */
     typesize = cd_values[2];      /* The datatype size */
-    outbuf_size = cd_values[3];   /* Precomputed buffer guess */
     /* Optional params */
     if (cd_nelmts >= 5) {
         clevel = cd_values[4];        /* The compression level */
