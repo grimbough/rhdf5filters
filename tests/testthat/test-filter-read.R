@@ -16,6 +16,7 @@ test_that("LZF read example", {
 })
 
 test_that("BLOSC read example (when available)", {
+  skip_if_not_installed("rhdf5", "2.57.5")
   skip_if_not("blosc" %in% available_filters(), "BLOSC filter not available")
   expect_equivalent(
     rhdf5::h5read(file = example_file, name = "BLOSC"),
