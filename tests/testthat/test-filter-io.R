@@ -20,6 +20,7 @@ max_file_size <- file.size(tf)
 file.remove(tf)
 
 test_that("BLOSC variants write/read (when available)", {
+  skip_if_not_installed("rhdf5", "2.57.5")
   settings <- list(
     "BLOSC_BLOSCLZ" = 0:1,
     "BLOSC_LZ4"      = 0:9,
