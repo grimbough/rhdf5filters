@@ -90,12 +90,7 @@ size_t H5Z_filter_lzf(unsigned int flags, size_t cd_nelmts,
 
     /* We're decompressing */
     } else {
-
-        if((cd_nelmts>=3)&&(cd_values[2]!=0)){
-            outbuf_size = cd_values[2];   /* Precomputed buffer guess */
-        }else{
-            outbuf_size = (*buf_size);
-        }
+        outbuf_size = (*buf_size);
 
 #ifdef H5PY_LZF_DEBUG
         fprintf(stderr, "Decompress %d chunk w/buffer %d\n", nbytes, outbuf_size);
