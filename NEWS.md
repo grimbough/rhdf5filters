@@ -1,5 +1,12 @@
 # rhdf5filters 1.26.0
 
+## BREAKING CHANGES
+
+* `H5Z_filter_blosc()` and `H5Z_filter_lzf()` no longer expect `outbuf_size` in
+  `cd_values`. This has no visible consequence for `H5Z_filter_lzf()` but 
+  requires shifting the parameters that previously followed it in 
+  `H5Z_filter_blosc()`.
+
 ## BUG FIXES
 
 * This package now compiles on Windows ARM. Thanks to Jeroen Ooms for 
