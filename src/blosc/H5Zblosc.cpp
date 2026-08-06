@@ -101,14 +101,14 @@ static size_t H5Z_filter_blosc(unsigned flags, size_t cd_nelmts,
     /* Filter params that are always set */
     typesize = cd_values[2];      /* The datatype size */
     /* Optional params */
+    if (cd_nelmts >= 4) {
+        clevel = cd_values[3];        /* The compression level */
+    }
     if (cd_nelmts >= 5) {
-        clevel = cd_values[4];        /* The compression level */
+        doshuffle = cd_values[4];     /* Shuffle? */
     }
     if (cd_nelmts >= 6) {
-        doshuffle = cd_values[5];     /* Shuffle? */
-    }
-    if (cd_nelmts >= 7) {
-        compcode = cd_values[6];     /* The Blosc compressor used */
+        compcode = cd_values[5];     /* The Blosc compressor used */
 	/* Check that we actually have support for the compressor code */
         complist = blosc_list_compressors();
       	code = blosc_compcode_to_compname(compcode, &compname);
