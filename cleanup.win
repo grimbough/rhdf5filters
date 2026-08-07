@@ -35,4 +35,4 @@ rm -f src/vbz/third_party/streamvbyte/Makefile
 rm -f src/vbz/Makefile
 rm -f src/zstd/Makefile
 rm -f src/blosc/Makefile
-rm -f src/blosc/lib/blosc-1.20.1/Makefile
+rm -f src/blosc/lib/blosc-1.21.6/Makefile

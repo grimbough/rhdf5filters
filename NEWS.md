@@ -12,6 +12,11 @@
 * This package now compiles on Windows ARM. Thanks to Jeroen Ooms for 
   reporting the issue and providing a patch.
 
+## MINOR CHANGES
+
+* Bundled compression libraries have been updated to their latest version:
+  - blosc: 1.20.1 🠪 1.21.6
+
 # rhdf5filters 1.24.0
 
 ## BUG FIXES
